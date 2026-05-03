@@ -1,0 +1,578 @@
+openapi: 3.1.0
+info:
+  title: MS Template API
+  description: "API documentation for company, salesman, and admin user endpoints"
+  contact:
+    name: MS Template Team
+    email: support@snb.com
+  license:
+    name: Proprietary
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: Local
+- url: /
+  description: Default
+tags:
+- name: Companies
+  description: Operations for company resources
+- name: Salesmen
+  description: Operations for salesman resources
+- name: Admin Users
+  description: Operations for admin user resources
+paths:
+  /api/salesmen/{id}:
+    get:
+      tags:
+      - Salesmen
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanDto"
+    put:
+      tags:
+      - Salesmen
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesmanUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanDto"
+    delete:
+      tags:
+      - Salesmen
+      operationId: softDelete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanDto"
+  /api/companies/{id}:
+    get:
+      tags:
+      - Companies
+      operationId: findById_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyDto"
+    put:
+      tags:
+      - Companies
+      operationId: update_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyDto"
+    delete:
+      tags:
+      - Companies
+      operationId: softDelete_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyDto"
+  /api/admin-users/{id}:
+    get:
+      tags:
+      - Admin Users
+      operationId: findById_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserDto"
+    put:
+      tags:
+      - Admin Users
+      operationId: update_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserDto"
+    delete:
+      tags:
+      - Admin Users
+      operationId: softDelete_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserDto"
+  /api/salesmen:
+    get:
+      tags:
+      - Salesmen
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SalesmanDto"
+    post:
+      tags:
+      - Salesmen
+      summary: Create salesman with linked user and company association
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesmanCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Salesman created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanDto"
+  /api/companies:
+    get:
+      tags:
+      - Companies
+      operationId: findAll_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompanyDto"
+    post:
+      tags:
+      - Companies
+      summary: Create company with linked user
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Company created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyDto"
+  /api/admin-users:
+    get:
+      tags:
+      - Admin Users
+      operationId: findAll_2
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUserDto"
+    post:
+      tags:
+      - Admin Users
+      summary: Create admin user with linked user
+      operationId: create_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Admin user created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserDto"
+components:
+  schemas:
+    SalesmanUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        middleName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        lastName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        accountNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        cifNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        idNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+    SalesmanDto:
+      type: object
+      properties:
+        salesmanId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        accountNumber:
+          type: string
+        cifNumber:
+          type: string
+        idNumber:
+          type: string
+        availableIncentiveAmount:
+          type: number
+        createdBy:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: integer
+          format: int64
+        updatedAt:
+          type: string
+          format: date-time
+    CompanyUpdateRequest:
+      type: object
+      properties:
+        registrationNumber:
+          type: string
+          maxLength: 100
+          minLength: 0
+        emailAddress:
+          type: string
+          maxLength: 150
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+      required:
+      - emailAddress
+      - mobileNumber
+      - registrationNumber
+    CompanyDto:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int64
+        emailAddress:
+          type: string
+        mobileNumber:
+          type: string
+        registrationNumber:
+          type: string
+        companyStatus:
+          type: string
+        companyType:
+          type: string
+        createdBy:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: integer
+          format: int64
+        updatedAt:
+          type: string
+          format: date-time
+    AdminUserUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        middleName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        lastName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        extensionNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+        emailAddress:
+          type: string
+          maxLength: 150
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+      required:
+      - emailAddress
+      - extensionNumber
+      - firstName
+      - lastName
+      - middleName
+      - mobileNumber
+    AdminUserDto:
+      type: object
+      properties:
+        adminUserId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        extensionNumber:
+          type: string
+        adminType:
+          type: string
+        adminStatus:
+          type: string
+        createdBy:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: integer
+          format: int64
+        updatedAt:
+          type: string
+          format: date-time
+    SalesmanCreateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        middleName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        lastName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        accountNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        cifNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        idNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        companyId:
+          type: integer
+          format: int64
+        emailAddress:
+          type: string
+          maxLength: 150
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+      required:
+      - companyId
+      - emailAddress
+      - mobileNumber
+    CompanyCreateRequest:
+      type: object
+      properties:
+        registrationNumber:
+          type: string
+          maxLength: 100
+          minLength: 0
+        emailAddress:
+          type: string
+          maxLength: 150
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+      required:
+      - emailAddress
+      - mobileNumber
+      - registrationNumber
+    AdminUserCreateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        middleName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        lastName:
+          type: string
+          maxLength: 100
+          minLength: 0
+        extensionNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+        emailAddress:
+          type: string
+          maxLength: 150
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+      required:
+      - emailAddress
+      - extensionNumber
+      - firstName
+      - lastName
+      - middleName
+      - mobileNumber

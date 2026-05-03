@@ -1,0 +1,96 @@
+package com.snb.ms.shared;
+
+import com.snb.ms.shared.UsersDto;
+import com.snb.ms.shared.UsersRequest;
+import com.snb.ms.shared.Users;
+import com.snb.ms.shared.UsersMapper;
+import com.snb.ms.shared.UsersRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class UsersService {
+
+    private final UsersRepository usersRepository;
+    private final UsersMapper usersMapper;
+
+    public List<UsersDto> findAll() {
+        log.debug("Fetching all users");
+        List<UsersDto> users = usersMapper.toDtoList(usersRepository.findAll());
+        log.info("Fetched {} users", users.size());
+        return users;
+    }
+
+    public Optional<UsersDto> findById(Long id) {
+        log.debug("Fetching user by id={}", id);
+        Optional<UsersDto> result = usersRepository.findById(id).map(usersMapper::toDto);
+        log.info("User lookup id={} found={}", id, result.isPresent());
+        return result;
+    }
+
+    public Optional<UsersDto> findByEmail(String email) {
+        log.debug("Fetching user by email={}", email);
+        Optional<UsersDto> result = usersRepository.findByEmailAddress(email).map(usersMapper::toDto);
+        log.info("User lookup email={} found={}", email, result.isPresent());
+        return result;
+    }
+
+    @Transactional
+    public UsersDto create(UsersRequest request) {
+        log.debug("Creating user email={}", request.getEmailAddress());
+        try {
+            Users users = usersMapper.toEntity(request);
+            users.setCreatedAt(LocalDateTime.now());
+            users.setDeletedFlag("N");
+            users.setAccountLockedFlag("N");
+            users.setFailedAttempts(0);
+            users.setVersionNumber(0L);
+            UsersDto created = usersMapper.toDto(usersRepository.save(users));
+            log.info("Created user id={} email={}", created.getUserId(), created.getEmailAddress());
+            return created;
+        } catch (RuntimeException ex) {
+            log.error("Failed to create user email={}", request.getEmailAddress(), ex);
+            throw ex;
+        }
+    }
+
+    @Transactional
+    public Optional<UsersDto> update(Long id, UsersRequest request) {
+        log.debug("Updating user id={}", id);
+        Optional<UsersDto> updated = usersRepository.findById(id).map(existing -> {
+            existing.setEmailAddress(request.getEmailAddress());
+            existing.setMobileNumber(request.getMobileNumber());
+            existing.setUserType(request.getUserType());
+            existing.setAccountStatus(request.getAccountStatus());
+            existing.setAccountLockedFlag(request.getAccountLockedFlag());
+            existing.setUpdatedBy(request.getUpdatedBy());
+            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
+            return usersMapper.toDto(usersRepository.save(existing));
+        });
+        log.info("User update id={} success={}", id, updated.isPresent());
+        return updated;
+    }
+
+    @Transactional
+    public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
+        log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
+        Optional<UsersDto> deleted = usersRepository.findById(id).map(existing -> {
+            existing.setDeletedFlag("Y");
+            existing.setDeletedAt(LocalDateTime.now());
+            existing.setUpdatedBy(deletedBy);
+            existing.setUpdatedAt(LocalDateTime.now());
+            return usersMapper.toDto(usersRepository.save(existing));
+        });
+        log.info("User soft-delete id={} success={}", id, deleted.isPresent());
+        return deleted;
+    }
+}
