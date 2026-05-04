@@ -5,6 +5,7 @@ import com.snb.ms.shared.UsersRequest;
 import com.snb.ms.shared.Users;
 import com.snb.ms.shared.UsersMapper;
 import com.snb.ms.shared.UsersRepository;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UsersService {
 
     private final UsersRepository usersRepository;
     private final UsersMapper usersMapper;
+    private final RequestContextAccessor contextAccessor;
 
     public List<UsersDto> findAll() {
         log.debug("Fetching all users");
@@ -47,8 +49,10 @@ public class UsersService {
     public UsersDto create(UsersRequest request) {
         log.debug("Creating user email={}", request.getEmailAddress());
         try {
+            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
             Users users = usersMapper.toEntity(request);
             users.setCreatedAt(LocalDateTime.now());
+            users.setCreatedBy(callerId);
             users.setDeletedFlag("N");
             users.setAccountLockedFlag("N");
             users.setFailedAttempts(0);
@@ -65,13 +69,14 @@ public class UsersService {
     @Transactional
     public Optional<UsersDto> update(Long id, UsersRequest request) {
         log.debug("Updating user id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<UsersDto> updated = usersRepository.findById(id).map(existing -> {
             existing.setEmailAddress(request.getEmailAddress());
             existing.setMobileNumber(request.getMobileNumber());
             existing.setUserType(request.getUserType());
             existing.setAccountStatus(request.getAccountStatus());
             existing.setAccountLockedFlag(request.getAccountLockedFlag());
-            existing.setUpdatedBy(request.getUpdatedBy());
+            existing.setUpdatedBy(callerId);
             existing.setUpdatedAt(LocalDateTime.now());
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return usersMapper.toDto(usersRepository.save(existing));
@@ -83,10 +88,11 @@ public class UsersService {
     @Transactional
     public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
         log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(deletedBy);
         Optional<UsersDto> deleted = usersRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
-            existing.setUpdatedBy(deletedBy);
+            existing.setUpdatedBy(callerId);
             existing.setUpdatedAt(LocalDateTime.now());
             return usersMapper.toDto(usersRepository.save(existing));
         });

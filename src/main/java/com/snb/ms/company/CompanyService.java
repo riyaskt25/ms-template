@@ -9,6 +9,7 @@ import com.snb.ms.shared.Users;
 import com.snb.ms.company.CompanyMapper;
 import com.snb.ms.company.CompanyRepository;
 import com.snb.ms.shared.UserProvisioningService;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
     private final UserProvisioningService userProvisioningService;
+    private final RequestContextAccessor contextAccessor;
 
     public List<CompanyDto> findAll() {
         log.debug("Fetching all companies");
@@ -53,9 +55,11 @@ public class CompanyService {
             userRequest.setAccountLockedFlag("N");
 
             Users user = userProvisioningService.createUser(userRequest);
+            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
             Company company = companyMapper.toEntity(request);
             company.setUser(user);
             company.setCreatedAt(LocalDateTime.now());
+            company.setCreatedBy(callerId);
             company.setDeletedFlag("N");
             company.setVersionNumber(0L);
             CompanyDto created = companyMapper.toDto(companyRepository.save(company));
@@ -70,6 +74,7 @@ public class CompanyService {
     @Transactional
     public Optional<CompanyDto> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<CompanyDto> updated = companyRepository.findById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
@@ -78,6 +83,7 @@ public class CompanyService {
                 user.setMobileNumber(request.getMobileNumber());
             }
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return companyMapper.toDto(companyRepository.save(existing));
         });
@@ -88,10 +94,12 @@ public class CompanyService {
     @Transactional
     public Optional<CompanyDto> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<CompanyDto> deleted = companyRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             return companyMapper.toDto(companyRepository.save(existing));
         });
         log.info("Company soft-delete id={} success={}", id, deleted.isPresent());

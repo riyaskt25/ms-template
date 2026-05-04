@@ -4,6 +4,7 @@ import com.snb.ms.shared.UsersRequest;
 import com.snb.ms.shared.Users;
 import com.snb.ms.shared.UsersMapper;
 import com.snb.ms.shared.UsersRepository;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,15 @@ public class UserProvisioningService {
 
     private final UsersRepository usersRepository;
     private final UsersMapper usersMapper;
+    private final RequestContextAccessor contextAccessor;
 
     public Users createUser(UsersRequest request) {
         log.debug("Provisioning user for userType={}", request.getUserType());
         try {
+            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
             Users user = usersMapper.toEntity(request);
             user.setCreatedAt(LocalDateTime.now());
+            user.setCreatedBy(callerId);
             user.setDeletedFlag("N");
             user.setAccountLockedFlag("N");
             user.setFailedAttempts(0);

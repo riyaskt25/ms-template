@@ -10,6 +10,7 @@ import com.snb.ms.salesman.SalesmanMapper;
 import com.snb.ms.salesman.SalesmanRepository;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.companysalesman.CompanySalesmanService;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class SalesmanService {
     private final SalesmanMapper salesmanMapper;
     private final UserProvisioningService userProvisioningService;
     private final CompanySalesmanService companySalesmanService;
+    private final RequestContextAccessor contextAccessor;
 
     public List<SalesmanDto> findAll() {
         log.debug("Fetching all salesmen");
@@ -56,9 +58,11 @@ public class SalesmanService {
             userRequest.setAccountLockedFlag("N");
 
             Users user = userProvisioningService.createUser(userRequest);
+            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
             Salesman salesman = salesmanMapper.toEntity(request);
             salesman.setUser(user);
             salesman.setCreatedAt(LocalDateTime.now());
+            salesman.setCreatedBy(callerId);
             salesman.setDeletedFlag("N");
             salesman.setVersionNumber(0L);
             salesman.setAvailableIncentiveAmount(BigDecimal.ZERO);
@@ -76,9 +80,11 @@ public class SalesmanService {
     @Transactional
     public Optional<SalesmanDto> update(Long id, SalesmanUpdateRequest request) {
         log.debug("Updating salesman id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<SalesmanDto> updated = salesmanRepository.findById(id).map(existing -> {
             salesmanMapper.updateEntity(request, existing);
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return salesmanMapper.toDto(salesmanRepository.save(existing));
         });
@@ -89,10 +95,12 @@ public class SalesmanService {
     @Transactional
     public Optional<SalesmanDto> softDelete(Long id) {
         log.debug("Soft-deleting salesman id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<SalesmanDto> deleted = salesmanRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             return salesmanMapper.toDto(salesmanRepository.save(existing));
         });
         log.info("Salesman soft-delete id={} success={}", id, deleted.isPresent());

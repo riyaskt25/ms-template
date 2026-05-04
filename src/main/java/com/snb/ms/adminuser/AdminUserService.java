@@ -9,6 +9,7 @@ import com.snb.ms.shared.Users;
 import com.snb.ms.adminuser.AdminUserMapper;
 import com.snb.ms.adminuser.AdminUserRepository;
 import com.snb.ms.shared.UserProvisioningService;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class AdminUserService {
     private final AdminUserRepository adminUserRepository;
     private final AdminUserMapper adminUserMapper;
     private final UserProvisioningService userProvisioningService;
+    private final RequestContextAccessor contextAccessor;
 
     public List<AdminUserDto> findAll() {
         log.debug("Fetching all admin users");
@@ -53,9 +55,11 @@ public class AdminUserService {
             userRequest.setAccountLockedFlag("N");
 
             Users user = userProvisioningService.createUser(userRequest);
+            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
             AdminUser adminUser = adminUserMapper.toEntity(request);
             adminUser.setUser(user);
             adminUser.setCreatedAt(LocalDateTime.now());
+            adminUser.setCreatedBy(callerId);
             adminUser.setDeletedFlag("N");
             adminUser.setVersionNumber(0L);
             AdminUserDto created = adminUserMapper.toDto(adminUserRepository.save(adminUser));
@@ -70,6 +74,7 @@ public class AdminUserService {
     @Transactional
     public Optional<AdminUserDto> update(Long id, AdminUserUpdateRequest request) {
         log.debug("Updating admin user id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<AdminUserDto> updated = adminUserRepository.findById(id).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
@@ -78,6 +83,7 @@ public class AdminUserService {
                 user.setMobileNumber(request.getMobileNumber());
             }
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
@@ -88,10 +94,12 @@ public class AdminUserService {
     @Transactional
     public Optional<AdminUserDto> softDelete(Long id) {
         log.debug("Soft-deleting admin user id={}", id);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
         Optional<AdminUserDto> deleted = adminUserRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedBy(callerId);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
         log.info("Admin user soft-delete id={} success={}", id, deleted.isPresent());
