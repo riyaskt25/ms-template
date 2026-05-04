@@ -2,14 +2,15 @@
   "info": {
     "name": "ms-template API",
     "_postman_id": "d21f7cc0-6ff9-45df-bf1e-500252f01f82",
-    "description": "Collection to test COMPANY, SALESMAN, and ADMIN_USERS APIs.",
+    "description": "Collection to test COMPANY, SALESMAN, ADMIN_USERS, and POSTS APIs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8080" },
     { "key": "companyId", "value": "1" },
     { "key": "salesmanId", "value": "1" },
-    { "key": "adminUserId", "value": "1" }
+    { "key": "adminUserId", "value": "1" },
+    { "key": "postId", "value": "1" }
   ],
   "item": [
     {
@@ -296,234 +297,39 @@
           }
         }
       ]
-    }
-  ]
-}
-
-  "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8080" },
-    { "key": "companyId", "value": "1" },
-    { "key": "salesmanId", "value": "1" },
-    { "key": "adminUserId", "value": "1" }
-  ],
-  "item": [
-    {
-      "name": "Company",
-      "item": [
-        {
-          "name": "Get All Companies",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/companies",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "companies"]
-            }
-          }
-        },
-        {
-          "name": "Get Company By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/companies/{{companyId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "companies", "{{companyId}}"]
-            }
-          }
-        },
-        {
-          "name": "Create Company",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"registrationNumber\": \"REG-NEW-1002\",\n  \"emailAddress\": \"company@snb.com\",\n  \"mobileNumber\": \"+971500000001\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/companies",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "companies"]
-            }
-          }
-        },
-        {
-          "name": "Update Company",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"registrationNumber\": \"REG-100001\",\n  \"emailAddress\": \"company-updated@snb.com\",\n  \"mobileNumber\": \"+971500000002\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/companies/{{companyId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "companies", "{{companyId}}"]
-            }
-          }
-        },
-        {
-          "name": "Soft Delete Company",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/companies/{{companyId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "companies", "{{companyId}}"]
-            }
-          }
-        }
-      ]
     },
     {
-      "name": "Salesman",
+      "name": "Posts",
       "item": [
         {
-          "name": "Get All Salesmen",
+          "name": "Get All Posts",
           "request": {
             "method": "GET",
+            "header": [
+              { "key": "X-Request-Id", "value": "req-016" },
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "X-Tenant-Id", "value": "SNB" }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/salesmen",
+              "raw": "{{baseUrl}}/api/posts",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "salesmen"]
+              "path": ["api", "posts"]
             }
           }
         },
         {
-          "name": "Get Salesman By Id",
+          "name": "Get Post By Id",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "salesmen", "{{salesmanId}}"]
-            }
-          }
-        },
-        {
-          "name": "Create Salesman",
-          "request": {
-            "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              { "key": "X-Request-Id", "value": "req-017" },
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "X-Tenant-Id", "value": "SNB" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Nabeel\",\n  \"middleName\": \"A\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACCT-NEW-9001\",\n  \"cifNumber\": \"CIF-NEW-9001\",\n  \"idNumber\": \"ID-NEW-9001\",\n  \"companyId\": 1,\n  \"emailAddress\": \"salesman@snb.com\",\n  \"mobileNumber\": \"+971500000003\"\n}"
-            },
             "url": {
-              "raw": "{{baseUrl}}/api/salesmen",
+              "raw": "{{baseUrl}}/api/posts/{{postId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "salesmen"]
-            }
-          }
-        },
-        {
-          "name": "Update Salesman",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Aamir\",\n  \"middleName\": \"K\",\n  \"lastName\": \"Rahman\",\n  \"accountNumber\": \"ACCT-200001\",\n  \"cifNumber\": \"CIF-300001\",\n  \"idNumber\": \"ID-400001\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "salesmen", "{{salesmanId}}"]
-            }
-          }
-        },
-        {
-          "name": "Soft Delete Salesman",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "salesmen", "{{salesmanId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Admin Users",
-      "item": [
-        {
-          "name": "Get All Admin Users",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/admin-users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin-users"]
-            }
-          }
-        },
-        {
-          "name": "Get Admin User By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin-users", "{{adminUserId}}"]
-            }
-          }
-        },
-        {
-          "name": "Create Admin User",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Helpdesk\",\n  \"middleName\": \"Core\",\n  \"lastName\": \"Agent\",\n  \"extensionNumber\": \"1011\",\n  \"emailAddress\": \"admin@snb.com\",\n  \"mobileNumber\": \"+971500000004\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/admin-users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin-users"]
-            }
-          }
-        },
-        {
-          "name": "Update Admin User",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"System\",\n  \"middleName\": \"Core\",\n  \"lastName\": \"Administrator\",\n  \"extensionNumber\": \"1001\",\n  \"emailAddress\": \"admin-updated@snb.com\",\n  \"mobileNumber\": \"+971500000005\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin-users", "{{adminUserId}}"]
-            }
-          }
-        },
-        {
-          "name": "Soft Delete Admin User",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin-users", "{{adminUserId}}"]
+              "path": ["api", "posts", "{{postId}}"]
             }
           }
         }

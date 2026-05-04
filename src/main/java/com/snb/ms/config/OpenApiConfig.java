@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "MS Template API",
                 version = "v1",
-                description = "API documentation for company, salesman, and admin user endpoints",
+                description = "API documentation for company, salesman, admin user, and posts endpoints",
                 contact = @Contact(name = "MS Template Team", email = "support@snb.com"),
                 license = @License(name = "Proprietary")
         ),
@@ -32,6 +32,6 @@ public class OpenApiConfig {
                 .info(new io.swagger.v3.oas.models.info.Info()
                         .title("MS Template API")
                         .version("v1")
-                        .description("API documentation for company, salesman, and admin user endpoints"));
+                                                .description("API documentation for company, salesman, admin user, and posts endpoints"));
     }
 }
