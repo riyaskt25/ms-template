@@ -1,6 +1,6 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanDto;
+import com.snb.ms.salesman.SalesmanResponse;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
 import com.snb.ms.salesman.Salesman;
@@ -14,9 +14,9 @@ import java.util.List;
 public interface SalesmanMapper {
 
     @Mapping(target = "errors", ignore = true)
-    SalesmanDto toDto(Salesman salesman);
+    SalesmanResponse toDto(Salesman salesman);
 
-    List<SalesmanDto> toDtoList(List<Salesman> salesmen);
+    List<SalesmanResponse> toDtoList(List<Salesman> salesmen);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "salesmanId", ignore = true)

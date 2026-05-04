@@ -21,9 +21,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-001" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/companies",
@@ -37,9 +37,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-002" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/companies/{{companyId}}",
@@ -54,13 +54,14 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-003" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"registrationNumber\": \"REG-NEW-1002\",\n  \"emailAddress\": \"company@snb.com\",\n  \"mobileNumber\": \"+971500000001\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company@snb.com\",\n  \"mobileNumber\": \"+971500000001\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/companies",
@@ -75,13 +76,14 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-004" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"registrationNumber\": \"REG-100001\",\n  \"emailAddress\": \"company-updated@snb.com\",\n  \"mobileNumber\": \"+971500000002\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"registrationNumber\": \"REG-2026-0001-UPD\",\n  \"emailAddress\": \"company-updated@snb.com\",\n  \"mobileNumber\": \"+971500000002\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/companies/{{companyId}}",
@@ -95,9 +97,9 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "X-Request-Id", "value": "req-005" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/companies/{{companyId}}",
@@ -116,9 +118,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-006" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/salesmen",
@@ -132,9 +134,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-007" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
@@ -149,13 +151,14 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-008" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Nabeel\",\n  \"middleName\": \"A\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACCT-NEW-9001\",\n  \"cifNumber\": \"CIF-NEW-9001\",\n  \"idNumber\": \"ID-NEW-9001\",\n  \"companyId\": 1,\n  \"emailAddress\": \"salesman@snb.com\",\n  \"mobileNumber\": \"+971500000003\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Nabeel\",\n  \"middleName\": \"A\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACCT-9001\",\n  \"cifNumber\": \"CIF-9001\",\n  \"idNumber\": \"784-1990-0000001-1\",\n  \"companyId\": {{companyId}},\n  \"emailAddress\": \"nabeel.khan@snb.com\",\n  \"mobileNumber\": \"+971500000003\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/salesmen",
@@ -170,13 +173,14 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-009" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Aamir\",\n  \"middleName\": \"K\",\n  \"lastName\": \"Rahman\",\n  \"accountNumber\": \"ACCT-200001\",\n  \"cifNumber\": \"CIF-300001\",\n  \"idNumber\": \"ID-400001\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Aamir\",\n  \"middleName\": \"K\",\n  \"lastName\": \"Rahman\",\n  \"accountNumber\": \"ACCT-9002\",\n  \"cifNumber\": \"CIF-9002\",\n  \"idNumber\": \"784-1990-0000002-1\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
@@ -190,9 +194,9 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "X-Request-Id", "value": "req-010" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/salesmen/{{salesmanId}}",
@@ -211,9 +215,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-011" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin-users",
@@ -227,9 +231,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-012" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
@@ -244,13 +248,14 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-013" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Helpdesk\",\n  \"middleName\": \"Core\",\n  \"lastName\": \"Agent\",\n  \"extensionNumber\": \"1011\",\n  \"emailAddress\": \"admin@snb.com\",\n  \"mobileNumber\": \"+971500000004\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"M\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1001\",\n  \"emailAddress\": \"sara.naseer@snb.com\",\n  \"mobileNumber\": \"+971500000004\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/admin-users",
@@ -265,13 +270,14 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Request-Id", "value": "req-014" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"System\",\n  \"middleName\": \"Core\",\n  \"lastName\": \"Administrator\",\n  \"extensionNumber\": \"1001\",\n  \"emailAddress\": \"admin-updated@snb.com\",\n  \"mobileNumber\": \"+971500000005\"\n}"
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"Mariam\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1002\",\n  \"emailAddress\": \"sara.updated@snb.com\",\n  \"mobileNumber\": \"+971500000005\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
@@ -285,9 +291,9 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "X-Request-Id", "value": "req-015" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin-users/{{adminUserId}}",
@@ -306,9 +312,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-016" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/posts",
@@ -322,9 +328,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Request-Id", "value": "req-017" },
-              { "key": "Accept-Language", "value": "en" },
-              { "key": "X-Tenant-Id", "value": "SNB" }
+              { "key": "X-Request-Id", "value": "{{X-Request-Id}}" },
+              { "key": "Accept-Language", "value": "{{Accept-Language}}" },
+              { "key": "X-Tenant-Id", "value": "{{X-Tenant-Id}}" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/posts/{{postId}}",

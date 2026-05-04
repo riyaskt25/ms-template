@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Salesman response payload")
-public class SalesmanDto extends BaseResponseDTO {
+public class SalesmanResponse extends BaseResponseDTO {
     @Schema(description = "Unique salesman identifier", example = "1")
     private Long salesmanId;
 

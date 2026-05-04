@@ -1,6 +1,6 @@
 package com.snb.ms.adminuser;
 
-import com.snb.ms.adminuser.AdminUserDto;
+import com.snb.ms.adminuser.AdminUserResponse;
 import com.snb.ms.adminuser.AdminUserCreateRequest;
 import com.snb.ms.adminuser.AdminUserUpdateRequest;
 import com.snb.ms.adminuser.AdminUser;
@@ -14,9 +14,9 @@ import java.util.List;
 public interface AdminUserMapper {
 
     @Mapping(target = "errors", ignore = true)
-    AdminUserDto toDto(AdminUser adminUser);
+    AdminUserResponse toDto(AdminUser adminUser);
 
-    List<AdminUserDto> toDtoList(List<AdminUser> adminUsers);
+    List<AdminUserResponse> toDtoList(List<AdminUser> adminUsers);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "adminUserId", ignore = true)

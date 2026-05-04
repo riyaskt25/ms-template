@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Company response payload")
-public class CompanyDto extends BaseResponseDTO {
+public class CompanyResponse extends BaseResponseDTO {
     @Schema(description = "Unique company identifier", example = "1")
     private Long companyId;
 

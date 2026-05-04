@@ -1,6 +1,6 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanDto;
+import com.snb.ms.salesman.SalesmanResponse;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
 import com.snb.ms.shared.UsersRequest;
@@ -32,22 +32,22 @@ public class SalesmanService {
     private final CompanySalesmanService companySalesmanService;
     private final RequestContextAccessor contextAccessor;
 
-    public List<SalesmanDto> findAll() {
+    public List<SalesmanResponse> findAll() {
         log.debug("Fetching all salesmen");
-        List<SalesmanDto> salesmen = salesmanMapper.toDtoList(salesmanRepository.findAll());
+        List<SalesmanResponse> salesmen = salesmanMapper.toDtoList(salesmanRepository.findAll());
         log.info("Fetched {} salesmen", salesmen.size());
         return salesmen;
     }
 
-    public Optional<SalesmanDto> findById(Long id) {
+    public Optional<SalesmanResponse> findById(Long id) {
         log.debug("Fetching salesman by id={}", id);
-        Optional<SalesmanDto> result = salesmanRepository.findById(id).map(salesmanMapper::toDto);
+        Optional<SalesmanResponse> result = salesmanRepository.findById(id).map(salesmanMapper::toDto);
         log.info("Salesman lookup id={} found={}", id, result.isPresent());
         return result;
     }
 
     @Transactional
-    public SalesmanDto create(SalesmanCreateRequest request) {
+    public SalesmanResponse create(SalesmanCreateRequest request) {
         log.debug("Creating salesman for companyId={}", request.getCompanyId());
         try {
             UsersRequest userRequest = new UsersRequest();
@@ -68,7 +68,7 @@ public class SalesmanService {
             salesman.setAvailableIncentiveAmount(BigDecimal.ZERO);
             Salesman savedSalesman = salesmanRepository.save(salesman);
             companySalesmanService.createAssociation(request.getCompanyId(), savedSalesman);
-            SalesmanDto created = salesmanMapper.toDto(savedSalesman);
+            SalesmanResponse created = salesmanMapper.toDto(savedSalesman);
             log.info("Created salesman id={} for companyId={}", created.getSalesmanId(), request.getCompanyId());
             return created;
         } catch (RuntimeException ex) {
@@ -78,10 +78,10 @@ public class SalesmanService {
     }
 
     @Transactional
-    public Optional<SalesmanDto> update(Long id, SalesmanUpdateRequest request) {
+    public Optional<SalesmanResponse> update(Long id, SalesmanUpdateRequest request) {
         log.debug("Updating salesman id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<SalesmanDto> updated = salesmanRepository.findById(id).map(existing -> {
+        Optional<SalesmanResponse> updated = salesmanRepository.findById(id).map(existing -> {
             salesmanMapper.updateEntity(request, existing);
             existing.setUpdatedAt(LocalDateTime.now());
             existing.setUpdatedBy(callerId);
@@ -93,10 +93,10 @@ public class SalesmanService {
     }
 
     @Transactional
-    public Optional<SalesmanDto> softDelete(Long id) {
+    public Optional<SalesmanResponse> softDelete(Long id) {
         log.debug("Soft-deleting salesman id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<SalesmanDto> deleted = salesmanRepository.findById(id).map(existing -> {
+        Optional<SalesmanResponse> deleted = salesmanRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());

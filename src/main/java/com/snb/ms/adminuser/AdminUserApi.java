@@ -35,7 +35,7 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "200",
             description = "Admin users fetched successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = AdminUserDto.class)))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = AdminUserResponse.class)))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -43,7 +43,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<AdminUserDto>> findAll();
+    ResponseEntity<List<AdminUserResponse>> findAll();
 
     @Operation(
         operationId = "getAdminUserById",
@@ -60,7 +60,7 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "200",
             description = "Admin user fetched successfully",
-            content = @Content(schema = @Schema(implementation = AdminUserDto.class))
+            content = @Content(schema = @Schema(implementation = AdminUserResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -74,7 +74,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserDto> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<AdminUserResponse> findById(@Positive(message = "id must be positive") Long id);
 
     @Operation(
         operationId = "createAdminUser",
@@ -101,7 +101,7 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "201",
             description = "Admin user created successfully",
-            content = @Content(schema = @Schema(implementation = AdminUserDto.class))
+            content = @Content(schema = @Schema(implementation = AdminUserResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -114,7 +114,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserDto> create(@Valid AdminUserCreateRequest request);
+    ResponseEntity<AdminUserResponse> create(@Valid AdminUserCreateRequest request);
 
     @Operation(
         operationId = "updateAdminUser",
@@ -142,7 +142,7 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "200",
             description = "Admin user updated successfully",
-            content = @Content(schema = @Schema(implementation = AdminUserDto.class))
+            content = @Content(schema = @Schema(implementation = AdminUserResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -156,7 +156,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserDto> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<AdminUserResponse> update(@Positive(message = "id must be positive") Long id,
                                         @Valid AdminUserUpdateRequest request);
 
     @Operation(
@@ -174,7 +174,7 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "200",
             description = "Admin user soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = AdminUserDto.class))
+            content = @Content(schema = @Schema(implementation = AdminUserResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -188,5 +188,5 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserDto> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<AdminUserResponse> softDelete(@Positive(message = "id must be positive") Long id);
 }

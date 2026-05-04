@@ -35,7 +35,7 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "200",
             description = "Salesmen fetched successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = SalesmanDto.class)))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = SalesmanResponse.class)))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -43,7 +43,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<SalesmanDto>> findAll();
+    ResponseEntity<List<SalesmanResponse>> findAll();
 
     @Operation(
         operationId = "getSalesmanById",
@@ -60,7 +60,7 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "200",
             description = "Salesman fetched successfully",
-            content = @Content(schema = @Schema(implementation = SalesmanDto.class))
+            content = @Content(schema = @Schema(implementation = SalesmanResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -74,7 +74,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanDto> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<SalesmanResponse> findById(@Positive(message = "id must be positive") Long id);
 
     @Operation(
         operationId = "createSalesman",
@@ -101,7 +101,7 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "201",
             description = "Salesman created successfully",
-            content = @Content(schema = @Schema(implementation = SalesmanDto.class))
+            content = @Content(schema = @Schema(implementation = SalesmanResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -119,7 +119,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanDto> create(@Valid SalesmanCreateRequest request);
+    ResponseEntity<SalesmanResponse> create(@Valid SalesmanCreateRequest request);
 
     @Operation(
         operationId = "updateSalesman",
@@ -147,7 +147,7 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "200",
             description = "Salesman updated successfully",
-            content = @Content(schema = @Schema(implementation = SalesmanDto.class))
+            content = @Content(schema = @Schema(implementation = SalesmanResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -161,7 +161,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanDto> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<SalesmanResponse> update(@Positive(message = "id must be positive") Long id,
                                        @Valid SalesmanUpdateRequest request);
 
     @Operation(
@@ -179,7 +179,7 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "200",
             description = "Salesman soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = SalesmanDto.class))
+            content = @Content(schema = @Schema(implementation = SalesmanResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -193,5 +193,5 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanDto> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<SalesmanResponse> softDelete(@Positive(message = "id must be positive") Long id);
 }

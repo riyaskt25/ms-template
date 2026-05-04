@@ -1,6 +1,6 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyDto;
+import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.shared.UsersRequest;
@@ -29,22 +29,22 @@ public class CompanyService {
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
 
-    public List<CompanyDto> findAll() {
+    public List<CompanyResponse> findAll() {
         log.debug("Fetching all companies");
-        List<CompanyDto> companies = companyMapper.toDtoList(companyRepository.findAll());
+        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAll());
         log.info("Fetched {} companies", companies.size());
         return companies;
     }
 
-    public Optional<CompanyDto> findById(Long id) {
+    public Optional<CompanyResponse> findById(Long id) {
         log.debug("Fetching company by id={}", id);
-        Optional<CompanyDto> result = companyRepository.findById(id).map(companyMapper::toDto);
+        Optional<CompanyResponse> result = companyRepository.findById(id).map(companyMapper::toDto);
         log.info("Company lookup id={} found={}", id, result.isPresent());
         return result;
     }
 
     @Transactional
-    public CompanyDto create(CompanyCreateRequest request) {
+    public CompanyResponse create(CompanyCreateRequest request) {
         log.debug("Creating company for registrationNumber={}", request.getRegistrationNumber());
         try {
             UsersRequest userRequest = new UsersRequest();
@@ -62,7 +62,7 @@ public class CompanyService {
             company.setCreatedBy(callerId);
             company.setDeletedFlag("N");
             company.setVersionNumber(0L);
-            CompanyDto created = companyMapper.toDto(companyRepository.save(company));
+            CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
             log.info("Created company id={} registrationNumber={}", created.getCompanyId(), request.getRegistrationNumber());
             return created;
         } catch (RuntimeException ex) {
@@ -72,10 +72,10 @@ public class CompanyService {
     }
 
     @Transactional
-    public Optional<CompanyDto> update(Long id, CompanyUpdateRequest request) {
+    public Optional<CompanyResponse> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<CompanyDto> updated = companyRepository.findById(id).map(existing -> {
+        Optional<CompanyResponse> updated = companyRepository.findById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -92,10 +92,10 @@ public class CompanyService {
     }
 
     @Transactional
-    public Optional<CompanyDto> softDelete(Long id) {
+    public Optional<CompanyResponse> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<CompanyDto> deleted = companyRepository.findById(id).map(existing -> {
+        Optional<CompanyResponse> deleted = companyRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());

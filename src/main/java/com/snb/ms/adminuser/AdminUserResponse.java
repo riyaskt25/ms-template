@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Admin user response payload")
-public class AdminUserDto extends BaseResponseDTO {
+public class AdminUserResponse extends BaseResponseDTO {
     @Schema(description = "Unique admin user identifier", example = "1")
     private Long adminUserId;
 

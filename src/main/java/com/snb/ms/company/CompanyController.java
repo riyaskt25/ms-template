@@ -1,6 +1,6 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyDto;
+import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import jakarta.validation.Valid;
@@ -27,18 +27,18 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<CompanyDto>> findAll() {
+    public ResponseEntity<List<CompanyResponse>> findAll() {
         log.debug("Received request to fetch all companies");
-        List<CompanyDto> companies = companyService.findAll();
+        List<CompanyResponse> companies = companyService.findAll();
         log.info("Fetched {} companies", companies.size());
         return ResponseEntity.ok(companies);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<CompanyResponse> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch company by id={}", id);
-        Optional<CompanyDto> result = companyService.findById(id);
+        Optional<CompanyResponse> result = companyService.findById(id);
         if (result.isPresent()) {
             log.info("Company found for id={}", id);
             return ResponseEntity.ok(result.get());
@@ -49,19 +49,19 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<CompanyDto> create(@Valid @RequestBody CompanyCreateRequest request) {
+    public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyCreateRequest request) {
         log.debug("Received request to create company registrationNumber={}", request.getRegistrationNumber());
-        CompanyDto created = companyService.create(request);
+        CompanyResponse created = companyService.create(request);
         log.info("Created company with id={}", created.getCompanyId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyDto> update(@PathVariable @Positive(message = "id must be positive") Long id,
+    public ResponseEntity<CompanyResponse> update(@PathVariable @Positive(message = "id must be positive") Long id,
                                              @Valid @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
-        Optional<CompanyDto> updated = companyService.update(id, request);
+        Optional<CompanyResponse> updated = companyService.update(id, request);
         if (updated.isPresent()) {
             log.info("Updated company id={}", id);
             return ResponseEntity.ok(updated.get());
@@ -72,9 +72,9 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<CompanyDto> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<CompanyResponse> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to soft-delete company id={}", id);
-        Optional<CompanyDto> deleted = companyService.softDelete(id);
+        Optional<CompanyResponse> deleted = companyService.softDelete(id);
         if (deleted.isPresent()) {
             log.info("Soft-deleted company id={}", id);
             return ResponseEntity.ok(deleted.get());

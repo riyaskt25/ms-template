@@ -1,6 +1,6 @@
 package com.snb.ms.adminuser;
 
-import com.snb.ms.adminuser.AdminUserDto;
+import com.snb.ms.adminuser.AdminUserResponse;
 import com.snb.ms.adminuser.AdminUserCreateRequest;
 import com.snb.ms.adminuser.AdminUserUpdateRequest;
 import com.snb.ms.shared.UsersRequest;
@@ -29,22 +29,22 @@ public class AdminUserService {
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
 
-    public List<AdminUserDto> findAll() {
+    public List<AdminUserResponse> findAll() {
         log.debug("Fetching all admin users");
-        List<AdminUserDto> adminUsers = adminUserMapper.toDtoList(adminUserRepository.findAll());
+        List<AdminUserResponse> adminUsers = adminUserMapper.toDtoList(adminUserRepository.findAll());
         log.info("Fetched {} admin users", adminUsers.size());
         return adminUsers;
     }
 
-    public Optional<AdminUserDto> findById(Long id) {
+    public Optional<AdminUserResponse> findById(Long id) {
         log.debug("Fetching admin user by id={}", id);
-        Optional<AdminUserDto> result = adminUserRepository.findById(id).map(adminUserMapper::toDto);
+        Optional<AdminUserResponse> result = adminUserRepository.findById(id).map(adminUserMapper::toDto);
         log.info("Admin user lookup id={} found={}", id, result.isPresent());
         return result;
     }
 
     @Transactional
-    public AdminUserDto create(AdminUserCreateRequest request) {
+    public AdminUserResponse create(AdminUserCreateRequest request) {
         log.debug("Creating admin user with extensionNumber={}", request.getExtensionNumber());
         try {
             UsersRequest userRequest = new UsersRequest();
@@ -62,7 +62,7 @@ public class AdminUserService {
             adminUser.setCreatedBy(callerId);
             adminUser.setDeletedFlag("N");
             adminUser.setVersionNumber(0L);
-            AdminUserDto created = adminUserMapper.toDto(adminUserRepository.save(adminUser));
+            AdminUserResponse created = adminUserMapper.toDto(adminUserRepository.save(adminUser));
             log.info("Created admin user id={} extensionNumber={}", created.getAdminUserId(), request.getExtensionNumber());
             return created;
         } catch (RuntimeException ex) {
@@ -72,10 +72,10 @@ public class AdminUserService {
     }
 
     @Transactional
-    public Optional<AdminUserDto> update(Long id, AdminUserUpdateRequest request) {
+    public Optional<AdminUserResponse> update(Long id, AdminUserUpdateRequest request) {
         log.debug("Updating admin user id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<AdminUserDto> updated = adminUserRepository.findById(id).map(existing -> {
+        Optional<AdminUserResponse> updated = adminUserRepository.findById(id).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -92,10 +92,10 @@ public class AdminUserService {
     }
 
     @Transactional
-    public Optional<AdminUserDto> softDelete(Long id) {
+    public Optional<AdminUserResponse> softDelete(Long id) {
         log.debug("Soft-deleting admin user id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<AdminUserDto> deleted = adminUserRepository.findById(id).map(existing -> {
+        Optional<AdminUserResponse> deleted = adminUserRepository.findById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());

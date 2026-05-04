@@ -35,7 +35,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "200",
             description = "Companies fetched successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CompanyDto.class)))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CompanyResponse.class)))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -43,7 +43,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<CompanyDto>> findAll();
+    ResponseEntity<List<CompanyResponse>> findAll();
 
     @Operation(
         operationId = "getCompanyById",
@@ -60,7 +60,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "200",
             description = "Company fetched successfully",
-            content = @Content(schema = @Schema(implementation = CompanyDto.class))
+            content = @Content(schema = @Schema(implementation = CompanyResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -74,7 +74,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyDto> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<CompanyResponse> findById(@Positive(message = "id must be positive") Long id);
 
     @Operation(
         operationId = "createCompany",
@@ -101,7 +101,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "201",
             description = "Company created successfully",
-            content = @Content(schema = @Schema(implementation = CompanyDto.class))
+            content = @Content(schema = @Schema(implementation = CompanyResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -119,7 +119,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyDto> create(@Valid CompanyCreateRequest request);
+    ResponseEntity<CompanyResponse> create(@Valid CompanyCreateRequest request);
 
     @Operation(
         operationId = "updateCompany",
@@ -147,7 +147,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "200",
             description = "Company updated successfully",
-            content = @Content(schema = @Schema(implementation = CompanyDto.class))
+            content = @Content(schema = @Schema(implementation = CompanyResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -161,7 +161,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyDto> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<CompanyResponse> update(@Positive(message = "id must be positive") Long id,
                                       @Valid CompanyUpdateRequest request);
 
     @Operation(
@@ -179,7 +179,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "200",
             description = "Company soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = CompanyDto.class))
+            content = @Content(schema = @Schema(implementation = CompanyResponse.class))
         ),
         @ApiResponse(
             responseCode = "400",
@@ -193,5 +193,5 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyDto> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<CompanyResponse> softDelete(@Positive(message = "id must be positive") Long id);
 }

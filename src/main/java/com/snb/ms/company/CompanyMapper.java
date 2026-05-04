@@ -1,6 +1,6 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyDto;
+import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.company.Company;
@@ -16,9 +16,9 @@ public interface CompanyMapper {
     @Mapping(target = "errors", ignore = true)
     @Mapping(source = "user.emailAddress", target = "emailAddress")
     @Mapping(source = "user.mobileNumber", target = "mobileNumber")
-    CompanyDto toDto(Company company);
+    CompanyResponse toDto(Company company);
 
-    List<CompanyDto> toDtoList(List<Company> companies);
+    List<CompanyResponse> toDtoList(List<Company> companies);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "companyId", ignore = true)

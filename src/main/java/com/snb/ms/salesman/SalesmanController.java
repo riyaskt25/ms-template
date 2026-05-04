@@ -1,6 +1,6 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanDto;
+import com.snb.ms.salesman.SalesmanResponse;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
 import jakarta.validation.Valid;
@@ -27,18 +27,18 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<SalesmanDto>> findAll() {
+    public ResponseEntity<List<SalesmanResponse>> findAll() {
         log.debug("Received request to fetch all salesmen");
-        List<SalesmanDto> salesmen = salesmanService.findAll();
+        List<SalesmanResponse> salesmen = salesmanService.findAll();
         log.info("Fetched {} salesmen", salesmen.size());
         return ResponseEntity.ok(salesmen);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<SalesmanDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<SalesmanResponse> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
-        Optional<SalesmanDto> result = salesmanService.findById(id);
+        Optional<SalesmanResponse> result = salesmanService.findById(id);
         if (result.isPresent()) {
             log.info("Salesman found for id={}", id);
             return ResponseEntity.ok(result.get());
@@ -49,19 +49,19 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<SalesmanDto> create(@Valid @RequestBody SalesmanCreateRequest request) {
+    public ResponseEntity<SalesmanResponse> create(@Valid @RequestBody SalesmanCreateRequest request) {
         log.debug("Received request to create salesman for companyId={}", request.getCompanyId());
-        SalesmanDto created = salesmanService.create(request);
+        SalesmanResponse created = salesmanService.create(request);
         log.info("Created salesman with id={}", created.getSalesmanId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SalesmanDto> update(@PathVariable @Positive(message = "id must be positive") Long id,
+    public ResponseEntity<SalesmanResponse> update(@PathVariable @Positive(message = "id must be positive") Long id,
                                               @Valid @RequestBody SalesmanUpdateRequest request) {
         log.debug("Received request to update salesman id={}", id);
-        Optional<SalesmanDto> updated = salesmanService.update(id, request);
+        Optional<SalesmanResponse> updated = salesmanService.update(id, request);
         if (updated.isPresent()) {
             log.info("Updated salesman id={}", id);
             return ResponseEntity.ok(updated.get());
@@ -72,9 +72,9 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<SalesmanDto> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
-        Optional<SalesmanDto> deleted = salesmanService.softDelete(id);
+        Optional<SalesmanResponse> deleted = salesmanService.softDelete(id);
         if (deleted.isPresent()) {
             log.info("Soft-deleted salesman id={}", id);
             return ResponseEntity.ok(deleted.get());
