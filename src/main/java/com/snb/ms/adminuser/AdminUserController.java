@@ -3,9 +3,6 @@ package com.snb.ms.adminuser;
 import com.snb.ms.adminuser.AdminUserDto;
 import com.snb.ms.adminuser.AdminUserCreateRequest;
 import com.snb.ms.adminuser.AdminUserUpdateRequest;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import com.snb.ms.adminuser.AdminUserService;
@@ -23,12 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/admin-users")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Admin Users", description = "Operations for admin user resources")
 @Slf4j
-public class AdminUserController {
+public class AdminUserController implements AdminUserApi {
 
     private final AdminUserService adminUserService;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<AdminUserDto>> findAll() {
         log.debug("Received request to fetch all admin users");
@@ -37,6 +34,7 @@ public class AdminUserController {
         return ResponseEntity.ok(adminUsers);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<AdminUserDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch admin user by id={}", id);
@@ -49,9 +47,8 @@ public class AdminUserController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @PostMapping
-    @Operation(summary = "Create admin user with linked user")
-    @ApiResponse(responseCode = "201", description = "Admin user created successfully")
     public ResponseEntity<AdminUserDto> create(@Valid @RequestBody AdminUserCreateRequest request) {
         log.debug("Received request to create admin user extensionNumber={}", request.getExtensionNumber());
         AdminUserDto created = adminUserService.create(request);
@@ -59,6 +56,7 @@ public class AdminUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<AdminUserDto> update(@PathVariable @Positive(message = "id must be positive") Long id,
                                                @Valid @RequestBody AdminUserUpdateRequest request) {
@@ -72,6 +70,7 @@ public class AdminUserController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<AdminUserDto> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to soft-delete admin user id={}", id);

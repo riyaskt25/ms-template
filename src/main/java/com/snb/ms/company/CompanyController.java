@@ -3,9 +3,6 @@ package com.snb.ms.company;
 import com.snb.ms.company.CompanyDto;
 import com.snb.ms.company.CompanyCreateRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import com.snb.ms.company.CompanyService;
@@ -23,12 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/companies")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Companies", description = "Operations for company resources")
 @Slf4j
-public class CompanyController {
+public class CompanyController implements CompanyApi {
 
     private final CompanyService companyService;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<CompanyDto>> findAll() {
         log.debug("Received request to fetch all companies");
@@ -37,6 +34,7 @@ public class CompanyController {
         return ResponseEntity.ok(companies);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch company by id={}", id);
@@ -49,9 +47,8 @@ public class CompanyController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @PostMapping
-    @Operation(summary = "Create company with linked user")
-    @ApiResponse(responseCode = "201", description = "Company created successfully")
     public ResponseEntity<CompanyDto> create(@Valid @RequestBody CompanyCreateRequest request) {
         log.debug("Received request to create company registrationNumber={}", request.getRegistrationNumber());
         CompanyDto created = companyService.create(request);
@@ -59,6 +56,7 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<CompanyDto> update(@PathVariable @Positive(message = "id must be positive") Long id,
                                              @Valid @RequestBody CompanyUpdateRequest request) {
@@ -72,6 +70,7 @@ public class CompanyController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<CompanyDto> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to soft-delete company id={}", id);

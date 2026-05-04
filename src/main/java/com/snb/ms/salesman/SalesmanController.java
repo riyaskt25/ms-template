@@ -3,9 +3,6 @@ package com.snb.ms.salesman;
 import com.snb.ms.salesman.SalesmanDto;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import com.snb.ms.salesman.SalesmanService;
@@ -23,12 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/salesmen")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Salesmen", description = "Operations for salesman resources")
 @Slf4j
-public class SalesmanController {
+public class SalesmanController implements SalesmanApi {
 
     private final SalesmanService salesmanService;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<SalesmanDto>> findAll() {
         log.debug("Received request to fetch all salesmen");
@@ -37,6 +34,7 @@ public class SalesmanController {
         return ResponseEntity.ok(salesmen);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<SalesmanDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
@@ -49,9 +47,8 @@ public class SalesmanController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @PostMapping
-    @Operation(summary = "Create salesman with linked user and company association")
-    @ApiResponse(responseCode = "201", description = "Salesman created successfully")
     public ResponseEntity<SalesmanDto> create(@Valid @RequestBody SalesmanCreateRequest request) {
         log.debug("Received request to create salesman for companyId={}", request.getCompanyId());
         SalesmanDto created = salesmanService.create(request);
@@ -59,6 +56,7 @@ public class SalesmanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<SalesmanDto> update(@PathVariable @Positive(message = "id must be positive") Long id,
                                               @Valid @RequestBody SalesmanUpdateRequest request) {
@@ -72,6 +70,7 @@ public class SalesmanController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<SalesmanDto> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);

@@ -1,8 +1,5 @@
 package com.snb.ms.posts;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +17,13 @@ import java.util.Optional;
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Posts", description = "Operations for external posts resource consumption")
 @Slf4j
-public class PostsController {
+public class PostsController implements PostsApi {
 
     private final PostsService postsService;
 
+    @Override
     @GetMapping
-    @Operation(summary = "Fetch all posts from JSONPlaceholder")
-    @ApiResponse(responseCode = "200", description = "Posts fetched successfully")
     public ResponseEntity<List<PostDto>> findAll() {
         log.debug("Received request to fetch all posts");
         List<PostDto> posts = postsService.findAll();
@@ -36,10 +31,8 @@ public class PostsController {
         return ResponseEntity.ok(posts);
     }
 
+    @Override
     @GetMapping("/{id}")
-    @Operation(summary = "Fetch a post by id from JSONPlaceholder")
-    @ApiResponse(responseCode = "200", description = "Post fetched successfully")
-    @ApiResponse(responseCode = "404", description = "Post not found")
     public ResponseEntity<PostDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
         log.debug("Received request to fetch post by id={}", id);
         Optional<PostDto> post = postsService.findById(id);
