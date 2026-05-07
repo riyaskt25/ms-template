@@ -40,3 +40,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+compileJava {
+	options.compilerArgs += [
+		'-Amapstruct.unmappedTargetPolicy=IGNORE',
+		'-Amapstruct.unmappedSourcePolicy=IGNORE'
+	]
+}

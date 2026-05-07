@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.Locale;
 import java.util.UUID;
 
-@Component
+@Component("appRequestContextFilter")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestContextFilter extends OncePerRequestFilter {
 
