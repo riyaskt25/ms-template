@@ -74,7 +74,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyResponse> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<CompanyResponse> findById(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "createCompany",
@@ -161,7 +161,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyResponse> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<CompanyResponse> update(@Positive(message = "{validation.common.id.positive}") Long id,
                                       @Valid CompanyUpdateRequest request);
 
     @Operation(
@@ -193,5 +193,5 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<CompanyResponse> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<CompanyResponse> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

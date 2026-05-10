@@ -76,5 +76,5 @@ public interface PostsApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<PostDto> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<PostDto> findById(@Positive(message = "{validation.common.id.positive}") Long id);
 }

@@ -74,7 +74,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<SalesmanResponse> findById(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "createSalesman",
@@ -161,7 +161,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<SalesmanResponse> update(@Positive(message = "{validation.common.id.positive}") Long id,
                                        @Valid SalesmanUpdateRequest request);
 
     @Operation(
@@ -193,5 +193,5 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<SalesmanResponse> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

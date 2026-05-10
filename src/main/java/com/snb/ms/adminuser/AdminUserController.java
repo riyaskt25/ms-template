@@ -4,8 +4,6 @@ import com.snb.ms.adminuser.AdminUserResponse;
 import com.snb.ms.adminuser.AdminUserCreateRequest;
 import com.snb.ms.adminuser.AdminUserUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import com.snb.ms.adminuser.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<AdminUserResponse> findById(@PathVariable Long id) {
         log.debug("Received request to fetch admin user by id={}", id);
         AdminUserResponse result = adminUserService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
@@ -47,7 +45,7 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<AdminUserResponse> create(@Valid @RequestBody AdminUserCreateRequest request) {
+    public ResponseEntity<AdminUserResponse> create(@RequestBody AdminUserCreateRequest request) {
         log.debug("Received request to create admin user extensionNumber={}", request.getExtensionNumber());
         AdminUserResponse created = adminUserService.create(request);
         log.info("Created admin user with id={}", created.getAdminUserId());
@@ -56,8 +54,8 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> update(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id,
-                                               @Valid @RequestBody AdminUserUpdateRequest request) {
+    public ResponseEntity<AdminUserResponse> update(@PathVariable Long id,
+                                               @RequestBody AdminUserUpdateRequest request) {
         log.debug("Received request to update admin user id={}", id);
         AdminUserResponse updated = adminUserService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
@@ -67,7 +65,7 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> softDelete(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<AdminUserResponse> softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete admin user id={}", id);
         AdminUserResponse deleted = adminUserService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));

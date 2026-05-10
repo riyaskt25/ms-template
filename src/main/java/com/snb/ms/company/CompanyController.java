@@ -4,8 +4,6 @@ import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import com.snb.ms.company.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyResponse> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<CompanyResponse> findById(@PathVariable Long id) {
         log.debug("Received request to fetch company by id={}", id);
         CompanyResponse result = companyService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
@@ -47,7 +45,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyCreateRequest request) {
+    public ResponseEntity<CompanyResponse> create(@RequestBody CompanyCreateRequest request) {
         log.debug("Received request to create company registrationNumber={}", request.getRegistrationNumber());
         CompanyResponse created = companyService.create(request);
         log.info("Created company with id={}", created.getCompanyId());
@@ -56,8 +54,8 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyResponse> update(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id,
-                                             @Valid @RequestBody CompanyUpdateRequest request) {
+    public ResponseEntity<CompanyResponse> update(@PathVariable Long id,
+                                             @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
         CompanyResponse updated = companyService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
@@ -67,7 +65,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<CompanyResponse> softDelete(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<CompanyResponse> softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
         CompanyResponse deleted = companyService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));

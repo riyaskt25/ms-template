@@ -74,7 +74,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> findById(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<AdminUserResponse> findById(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "createAdminUser",
@@ -156,7 +156,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> update(@Positive(message = "id must be positive") Long id,
+    ResponseEntity<AdminUserResponse> update(@Positive(message = "{validation.common.id.positive}") Long id,
                                         @Valid AdminUserUpdateRequest request);
 
     @Operation(
@@ -188,5 +188,5 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> softDelete(@Positive(message = "id must be positive") Long id);
+    ResponseEntity<AdminUserResponse> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

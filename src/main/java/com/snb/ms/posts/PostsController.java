@@ -1,7 +1,6 @@
 package com.snb.ms.posts;
 
 import com.snb.ms.exception.ResourceNotFoundException;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ public class PostsController implements PostsApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         log.debug("Received request to fetch post by id={}", id);
         PostDto post = postsService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("postId=" + id));

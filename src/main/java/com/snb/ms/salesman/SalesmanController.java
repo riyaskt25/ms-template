@@ -4,8 +4,6 @@ import com.snb.ms.salesman.SalesmanResponse;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import com.snb.ms.salesman.SalesmanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<SalesmanResponse> findById(@PathVariable Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
         SalesmanResponse result = salesmanService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
@@ -47,7 +45,7 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<SalesmanResponse> create(@Valid @RequestBody SalesmanCreateRequest request) {
+    public ResponseEntity<SalesmanResponse> create(@RequestBody SalesmanCreateRequest request) {
         log.debug("Received request to create salesman for companyId={}", request.getCompanyId());
         SalesmanResponse created = salesmanService.create(request);
         log.info("Created salesman with id={}", created.getSalesmanId());
@@ -56,8 +54,8 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> update(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id,
-                                              @Valid @RequestBody SalesmanUpdateRequest request) {
+    public ResponseEntity<SalesmanResponse> update(@PathVariable Long id,
+                                              @RequestBody SalesmanUpdateRequest request) {
         log.debug("Received request to update salesman id={}", id);
         SalesmanResponse updated = salesmanService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
@@ -67,7 +65,7 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
+    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
         SalesmanResponse deleted = salesmanService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
