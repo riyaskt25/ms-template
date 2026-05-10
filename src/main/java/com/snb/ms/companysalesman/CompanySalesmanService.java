@@ -29,6 +29,7 @@ public class CompanySalesmanService {
     private final SalesmanRepository salesmanRepository;
     private final CompanySalesmanMapper companySalesmanMapper;
 
+    @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findAll() {
         log.debug("Fetching all company-salesman associations");
         List<CompanySalesmanDto> associations = companySalesmanMapper.toDtoList(companySalesmanRepository.findAll());
@@ -36,6 +37,7 @@ public class CompanySalesmanService {
         return associations;
     }
 
+    @Transactional(readOnly = true)
     public Optional<CompanySalesmanDto> findById(Long id) {
         log.debug("Fetching company-salesman association by id={}", id);
         Optional<CompanySalesmanDto> result = companySalesmanRepository.findById(id).map(companySalesmanMapper::toDto);
@@ -43,6 +45,7 @@ public class CompanySalesmanService {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findByCompanyId(Long companyId) {
         log.debug("Fetching company-salesman associations by companyId={}", companyId);
         List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findByCompany_CompanyId(companyId));
@@ -50,6 +53,7 @@ public class CompanySalesmanService {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findBySalesmanId(Long salesmanId) {
         log.debug("Fetching company-salesman associations by salesmanId={}", salesmanId);
         List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findBySalesman_SalesmanId(salesmanId));

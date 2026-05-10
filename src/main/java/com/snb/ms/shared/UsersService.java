@@ -24,6 +24,7 @@ public class UsersService {
     private final UsersMapper usersMapper;
     private final RequestContextAccessor contextAccessor;
 
+    @Transactional(readOnly = true)
     public List<UsersDto> findAll() {
         log.debug("Fetching all users");
         List<UsersDto> users = usersMapper.toDtoList(usersRepository.findAll());
@@ -31,6 +32,7 @@ public class UsersService {
         return users;
     }
 
+    @Transactional(readOnly = true)
     public Optional<UsersDto> findById(Long id) {
         log.debug("Fetching user by id={}", id);
         Optional<UsersDto> result = usersRepository.findById(id).map(usersMapper::toDto);
@@ -38,6 +40,7 @@ public class UsersService {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public Optional<UsersDto> findByEmail(String email) {
         log.debug("Fetching user by email={}", email);
         Optional<UsersDto> result = usersRepository.findByEmailAddress(email).map(usersMapper::toDto);

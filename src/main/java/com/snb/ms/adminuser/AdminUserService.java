@@ -29,16 +29,18 @@ public class AdminUserService {
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
 
+    @Transactional(readOnly = true)
     public List<AdminUserResponse> findAll() {
         log.debug("Fetching all admin users");
-        List<AdminUserResponse> adminUsers = adminUserMapper.toDtoList(adminUserRepository.findAll());
+        List<AdminUserResponse> adminUsers = adminUserMapper.toDtoList(adminUserRepository.findAllWithUser());
         log.info("Fetched {} admin users", adminUsers.size());
         return adminUsers;
     }
 
+    @Transactional(readOnly = true)
     public Optional<AdminUserResponse> findById(Long id) {
         log.debug("Fetching admin user by id={}", id);
-        Optional<AdminUserResponse> result = adminUserRepository.findById(id).map(adminUserMapper::toDto);
+        Optional<AdminUserResponse> result = adminUserRepository.findByIdWithUser(id).map(adminUserMapper::toDto);
         log.info("Admin user lookup id={} found={}", id, result.isPresent());
         return result;
     }

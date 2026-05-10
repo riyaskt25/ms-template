@@ -8,6 +8,7 @@ import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class UserProvisioningService {
     private final UsersMapper usersMapper;
     private final RequestContextAccessor contextAccessor;
 
+    @Transactional
     public Users createUser(UsersRequest request) {
         log.debug("Provisioning user for userType={}", request.getUserType());
         try {

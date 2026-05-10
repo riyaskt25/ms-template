@@ -29,16 +29,18 @@ public class CompanyService {
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
 
+    @Transactional(readOnly = true)
     public List<CompanyResponse> findAll() {
         log.debug("Fetching all companies");
-        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAll());
+        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAllWithUser());
         log.info("Fetched {} companies", companies.size());
         return companies;
     }
 
+    @Transactional(readOnly = true)
     public Optional<CompanyResponse> findById(Long id) {
         log.debug("Fetching company by id={}", id);
-        Optional<CompanyResponse> result = companyRepository.findById(id).map(companyMapper::toDto);
+        Optional<CompanyResponse> result = companyRepository.findByIdWithUser(id).map(companyMapper::toDto);
         log.info("Company lookup id={} found={}", id, result.isPresent());
         return result;
     }

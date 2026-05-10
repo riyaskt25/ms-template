@@ -32,16 +32,18 @@ public class SalesmanService {
     private final CompanySalesmanService companySalesmanService;
     private final RequestContextAccessor contextAccessor;
 
+    @Transactional(readOnly = true)
     public List<SalesmanResponse> findAll() {
         log.debug("Fetching all salesmen");
-        List<SalesmanResponse> salesmen = salesmanMapper.toDtoList(salesmanRepository.findAll());
+        List<SalesmanResponse> salesmen = salesmanMapper.toDtoList(salesmanRepository.findAllWithUser());
         log.info("Fetched {} salesmen", salesmen.size());
         return salesmen;
     }
 
+    @Transactional(readOnly = true)
     public Optional<SalesmanResponse> findById(Long id) {
         log.debug("Fetching salesman by id={}", id);
-        Optional<SalesmanResponse> result = salesmanRepository.findById(id).map(salesmanMapper::toDto);
+        Optional<SalesmanResponse> result = salesmanRepository.findByIdWithUser(id).map(salesmanMapper::toDto);
         log.info("Salesman lookup id={} found={}", id, result.isPresent());
         return result;
     }
