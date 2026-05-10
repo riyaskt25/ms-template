@@ -4,7 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -18,15 +20,20 @@ import java.util.UUID;
 
 @Component("appRequestContextFilter")
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Slf4j
 public class RequestContextFilter extends OncePerRequestFilter {
 
     public static final String REQUEST_ID_HEADER = "X-Request-Id";
     public static final String TENANT_ID_HEADER = "X-Tenant-Id";
 
+    @Value("${app.logging.request-boundary-enabled:false}")
+    private boolean requestBoundaryEnabled;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        long startedAt = System.currentTimeMillis();
         String requestId = resolveRequestId(request);
         String userId = resolveUserId(request.getUserPrincipal());
         String language = resolveLanguage(request.getLocale());
@@ -44,8 +51,22 @@ public class RequestContextFilter extends OncePerRequestFilter {
         putMdc(context);
 
         try {
+            if (requestBoundaryEnabled && log.isDebugEnabled()) {
+                log.debug("---------------------------------------------------------------------------------------");
+                log.debug("Incoming request method={} uri={} requestId={}", request.getMethod(), request.getRequestURI(), requestId);
+            }
             filterChain.doFilter(request, response);
         } finally {
+            if (requestBoundaryEnabled && log.isDebugEnabled()) {
+                long durationMs = System.currentTimeMillis() - startedAt;
+                log.debug("Completed request method={} uri={} status={} durationMs={} requestId={}",
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    response.getStatus(),
+                    durationMs,
+                    requestId);
+                log.debug("---------------------------------------------------------------------------------------");
+            }
             RequestContextHolder.clear();
             MDC.remove("requestId");
             MDC.remove("userId");

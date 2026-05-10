@@ -40,3 +40,7 @@ logging:
   level:
     com.snb.ms: DEBUG
     org.springframework.web: INFO
+
+app:
+  logging:
+    request-boundary-enabled: true
