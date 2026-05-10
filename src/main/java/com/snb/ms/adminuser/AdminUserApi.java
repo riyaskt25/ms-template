@@ -43,7 +43,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<AdminUserResponse>> findAll();
+    List<AdminUserResponse> findAll();
 
     @Operation(
         operationId = "getAdminUserById",
@@ -74,7 +74,7 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    AdminUserResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "createAdminUser",
@@ -156,8 +156,8 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> update(@Positive(message = "{validation.common.id.positive}") Long id,
-                                        @Valid AdminUserUpdateRequest request);
+    AdminUserResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
+                            @Valid AdminUserUpdateRequest request);
 
     @Operation(
         operationId = "softDeleteAdminUser",
@@ -188,5 +188,5 @@ public interface AdminUserApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<AdminUserResponse> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    AdminUserResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

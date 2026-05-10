@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin-users")
@@ -26,21 +25,21 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<AdminUserResponse>> findAll() {
+    public List<AdminUserResponse> findAll() {
         log.debug("Received request to fetch all admin users");
         List<AdminUserResponse> adminUsers = adminUserService.findAll();
         log.info("Fetched {} admin users", adminUsers.size());
-        return ResponseEntity.ok(adminUsers);
+        return adminUsers;
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> findById(@PathVariable Long id) {
+    public AdminUserResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch admin user by id={}", id);
         AdminUserResponse result = adminUserService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
         log.info("Admin user found for id={}", id);
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @Override
@@ -54,22 +53,22 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> update(@PathVariable Long id,
-                                               @RequestBody AdminUserUpdateRequest request) {
+    public AdminUserResponse update(@PathVariable Long id,
+                                    @RequestBody AdminUserUpdateRequest request) {
         log.debug("Received request to update admin user id={}", id);
         AdminUserResponse updated = adminUserService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
         log.info("Updated admin user id={}", id);
-        return ResponseEntity.ok(updated);
+        return updated;
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> softDelete(@PathVariable Long id) {
+    public AdminUserResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete admin user id={}", id);
         AdminUserResponse deleted = adminUserService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
         log.info("Soft-deleted admin user id={}", id);
-        return ResponseEntity.ok(deleted);
+        return deleted;
     }
 }

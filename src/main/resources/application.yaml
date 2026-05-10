@@ -35,6 +35,8 @@ springdoc:
     path: /swagger-ui.html
 
 logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%X{requestId}] [%X{tenantId}] [%X{userId}] [%X{language}] %logger{36} - %msg%n"
   level:
     com.snb.ms: DEBUG
     org.springframework.web: INFO

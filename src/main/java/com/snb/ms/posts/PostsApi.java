@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 @Tag(name = "Posts", description = "Operations for external posts resource consumption")
@@ -45,7 +43,7 @@ public interface PostsApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<PostDto>> findAll();
+    List<PostDto> findAll();
 
     @Operation(
         operationId = "getExternalPostById",
@@ -76,5 +74,5 @@ public interface PostsApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<PostDto> findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    PostDto findById(@Positive(message = "{validation.common.id.positive}") Long id);
 }

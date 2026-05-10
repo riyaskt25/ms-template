@@ -22,7 +22,7 @@ public class Company extends BaseEntity {
     @Column(name = "COMPANY_ID")
     private Long companyId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false, unique = true)
     private Users user;
 

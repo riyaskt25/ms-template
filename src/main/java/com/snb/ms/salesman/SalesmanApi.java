@@ -43,7 +43,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<List<SalesmanResponse>> findAll();
+    List<SalesmanResponse> findAll();
 
     @Operation(
         operationId = "getSalesmanById",
@@ -74,7 +74,7 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    SalesmanResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "createSalesman",
@@ -161,8 +161,8 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> update(@Positive(message = "{validation.common.id.positive}") Long id,
-                                       @Valid SalesmanUpdateRequest request);
+    SalesmanResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
+                           @Valid SalesmanUpdateRequest request);
 
     @Operation(
         operationId = "softDeleteSalesman",
@@ -193,5 +193,5 @@ public interface SalesmanApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    ResponseEntity<SalesmanResponse> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    SalesmanResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

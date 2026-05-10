@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -26,21 +25,21 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<CompanyResponse>> findAll() {
+    public List<CompanyResponse> findAll() {
         log.debug("Received request to fetch all companies");
         List<CompanyResponse> companies = companyService.findAll();
         log.info("Fetched {} companies", companies.size());
-        return ResponseEntity.ok(companies);
+        return companies;
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyResponse> findById(@PathVariable Long id) {
+    public CompanyResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch company by id={}", id);
         CompanyResponse result = companyService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
         log.info("Company found for id={}", id);
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @Override
@@ -54,22 +53,22 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyResponse> update(@PathVariable Long id,
-                                             @RequestBody CompanyUpdateRequest request) {
+    public CompanyResponse update(@PathVariable Long id,
+                                  @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
         CompanyResponse updated = companyService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
         log.info("Updated company id={}", id);
-        return ResponseEntity.ok(updated);
+        return updated;
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<CompanyResponse> softDelete(@PathVariable Long id) {
+    public CompanyResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
         CompanyResponse deleted = companyService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
         log.info("Soft-deleted company id={}", id);
-        return ResponseEntity.ok(deleted);
+        return deleted;
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/salesmen")
@@ -26,21 +25,21 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<SalesmanResponse>> findAll() {
+    public List<SalesmanResponse> findAll() {
         log.debug("Received request to fetch all salesmen");
         List<SalesmanResponse> salesmen = salesmanService.findAll();
         log.info("Fetched {} salesmen", salesmen.size());
-        return ResponseEntity.ok(salesmen);
+        return salesmen;
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> findById(@PathVariable Long id) {
+    public SalesmanResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
         SalesmanResponse result = salesmanService.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
         log.info("Salesman found for id={}", id);
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @Override
@@ -54,22 +53,22 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> update(@PathVariable Long id,
-                                              @RequestBody SalesmanUpdateRequest request) {
+    public SalesmanResponse update(@PathVariable Long id,
+                                   @RequestBody SalesmanUpdateRequest request) {
         log.debug("Received request to update salesman id={}", id);
         SalesmanResponse updated = salesmanService.update(id, request)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
         log.info("Updated salesman id={}", id);
-        return ResponseEntity.ok(updated);
+        return updated;
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable Long id) {
+    public SalesmanResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
         SalesmanResponse deleted = salesmanService.softDelete(id)
             .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
         log.info("Soft-deleted salesman id={}", id);
-        return ResponseEntity.ok(deleted);
+        return deleted;
     }
 }
