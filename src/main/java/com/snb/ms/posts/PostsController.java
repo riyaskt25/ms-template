@@ -1,5 +1,6 @@
 package com.snb.ms.posts;
 
+import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +34,11 @@ public class PostsController implements PostsApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<PostDto> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
         log.debug("Received request to fetch post by id={}", id);
-        Optional<PostDto> post = postsService.findById(id);
-        if (post.isPresent()) {
-            log.info("Post found for id={}", id);
-            return ResponseEntity.ok(post.get());
-        }
-        log.info("Post not found for id={}", id);
-        return ResponseEntity.notFound().build();
+        PostDto post = postsService.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("postId=" + id));
+        log.info("Post found for id={}", id);
+        return ResponseEntity.ok(post);
     }
 }

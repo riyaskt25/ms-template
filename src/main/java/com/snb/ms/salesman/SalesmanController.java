@@ -3,6 +3,7 @@ package com.snb.ms.salesman;
 import com.snb.ms.salesman.SalesmanResponse;
 import com.snb.ms.salesman.SalesmanCreateRequest;
 import com.snb.ms.salesman.SalesmanUpdateRequest;
+import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import com.snb.ms.salesman.SalesmanService;
@@ -36,15 +37,12 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<SalesmanResponse> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
-        Optional<SalesmanResponse> result = salesmanService.findById(id);
-        if (result.isPresent()) {
-            log.info("Salesman found for id={}", id);
-            return ResponseEntity.ok(result.get());
-        }
-        log.info("Salesman not found for id={}", id);
-        return ResponseEntity.notFound().build();
+        SalesmanResponse result = salesmanService.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+        log.info("Salesman found for id={}", id);
+        return ResponseEntity.ok(result);
     }
 
     @Override
@@ -58,28 +56,22 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> update(@PathVariable @Positive(message = "id must be positive") Long id,
+    public ResponseEntity<SalesmanResponse> update(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id,
                                               @Valid @RequestBody SalesmanUpdateRequest request) {
         log.debug("Received request to update salesman id={}", id);
-        Optional<SalesmanResponse> updated = salesmanService.update(id, request);
-        if (updated.isPresent()) {
-            log.info("Updated salesman id={}", id);
-            return ResponseEntity.ok(updated.get());
-        }
-        log.info("Salesman not found for update id={}", id);
-        return ResponseEntity.notFound().build();
+        SalesmanResponse updated = salesmanService.update(id, request)
+            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+        log.info("Updated salesman id={}", id);
+        return ResponseEntity.ok(updated);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<SalesmanResponse> softDelete(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
-        Optional<SalesmanResponse> deleted = salesmanService.softDelete(id);
-        if (deleted.isPresent()) {
-            log.info("Soft-deleted salesman id={}", id);
-            return ResponseEntity.ok(deleted.get());
-        }
-        log.info("Salesman not found for soft-delete id={}", id);
-        return ResponseEntity.notFound().build();
+        SalesmanResponse deleted = salesmanService.softDelete(id)
+            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+        log.info("Soft-deleted salesman id={}", id);
+        return ResponseEntity.ok(deleted);
     }
 }

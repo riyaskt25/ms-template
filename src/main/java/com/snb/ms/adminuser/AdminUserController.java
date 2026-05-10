@@ -3,6 +3,7 @@ package com.snb.ms.adminuser;
 import com.snb.ms.adminuser.AdminUserResponse;
 import com.snb.ms.adminuser.AdminUserCreateRequest;
 import com.snb.ms.adminuser.AdminUserUpdateRequest;
+import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import com.snb.ms.adminuser.AdminUserService;
@@ -36,15 +37,12 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> findById(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<AdminUserResponse> findById(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
         log.debug("Received request to fetch admin user by id={}", id);
-        Optional<AdminUserResponse> result = adminUserService.findById(id);
-        if (result.isPresent()) {
-            log.info("Admin user found for id={}", id);
-            return ResponseEntity.ok(result.get());
-        }
-        log.info("Admin user not found for id={}", id);
-        return ResponseEntity.notFound().build();
+        AdminUserResponse result = adminUserService.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+        log.info("Admin user found for id={}", id);
+        return ResponseEntity.ok(result);
     }
 
     @Override
@@ -58,28 +56,22 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> update(@PathVariable @Positive(message = "id must be positive") Long id,
+    public ResponseEntity<AdminUserResponse> update(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id,
                                                @Valid @RequestBody AdminUserUpdateRequest request) {
         log.debug("Received request to update admin user id={}", id);
-        Optional<AdminUserResponse> updated = adminUserService.update(id, request);
-        if (updated.isPresent()) {
-            log.info("Updated admin user id={}", id);
-            return ResponseEntity.ok(updated.get());
-        }
-        log.info("Admin user not found for update id={}", id);
-        return ResponseEntity.notFound().build();
+        AdminUserResponse updated = adminUserService.update(id, request)
+            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+        log.info("Updated admin user id={}", id);
+        return ResponseEntity.ok(updated);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<AdminUserResponse> softDelete(@PathVariable @Positive(message = "id must be positive") Long id) {
+    public ResponseEntity<AdminUserResponse> softDelete(@PathVariable @Positive(message = "{validation.common.id.positive}") Long id) {
         log.debug("Received request to soft-delete admin user id={}", id);
-        Optional<AdminUserResponse> deleted = adminUserService.softDelete(id);
-        if (deleted.isPresent()) {
-            log.info("Soft-deleted admin user id={}", id);
-            return ResponseEntity.ok(deleted.get());
-        }
-        log.info("Admin user not found for soft-delete id={}", id);
-        return ResponseEntity.notFound().build();
+        AdminUserResponse deleted = adminUserService.softDelete(id)
+            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+        log.info("Soft-deleted admin user id={}", id);
+        return ResponseEntity.ok(deleted);
     }
 }

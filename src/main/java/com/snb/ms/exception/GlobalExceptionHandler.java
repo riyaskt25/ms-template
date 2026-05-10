@@ -2,6 +2,7 @@ package com.snb.ms.exception;
 
 import com.snb.ms.shared.BaseResponseDTO;
 import com.snb.ms.shared.ErrorInfo;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -43,6 +44,21 @@ public class GlobalExceptionHandler {
         List<ErrorInfo> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(this::toErrorInfo)
                 .toList();
+        BaseResponseDTO response = new BaseResponseDTO(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<BaseResponseDTO> handleConstraintViolation(ConstraintViolationException ex) {
+        log.error("Constraint validation failed with {} errors", ex.getConstraintViolations().size(), ex);
+        List<ErrorInfo> errors = ex.getConstraintViolations().stream()
+            .map(violation -> new ErrorInfo(
+                "VALIDATION_ERROR",
+                violation.getPropertyPath().toString().toUpperCase().replace('.', '_') + "_INVALID",
+                violation.getMessage(),
+                "Rejected value: " + violation.getInvalidValue()
+            ))
+            .toList();
         BaseResponseDTO response = new BaseResponseDTO(errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
