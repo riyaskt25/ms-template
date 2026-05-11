@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<BaseResponseDTO> handleDataIntegrity(DataIntegrityViolationException ex) {
         log.error("Data integrity violation", ex);
-        return buildResponse(ErrorCodeEnum.DATA_INTEGRITY_VIOLATION, ex.getMostSpecificCause().getMessage());
+        return buildResponse(ErrorCodeEnum.DATA_INTEGRITY_VIOLATION, resolveDataIntegrityDescription(ex));
     }
 
     @ExceptionHandler(Exception.class)
@@ -88,6 +88,32 @@ public class GlobalExceptionHandler {
         ErrorInfo error = new ErrorInfo(errorCode.getType(), errorCode.name(), message, description);
         BaseResponseDTO response = new BaseResponseDTO(List.of(error));
         return ResponseEntity.status(errorCode.getStatus()).body(response);
+    }
+
+    private String resolveDataIntegrityDescription(DataIntegrityViolationException ex) {
+        Locale locale = LocaleContextHolder.getLocale();
+        String raw = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage();
+        String normalized = raw == null ? "" : raw.toLowerCase(Locale.ROOT);
+
+        if (normalized.contains("uk_users_email") || normalized.contains("users(email_address")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.email", null, "A user with this email already exists.", locale);
+        }
+        if (normalized.contains("uk_users_mobile") || normalized.contains("users(mobile_number")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.mobile", null, "A user with this mobile number already exists.", locale);
+        }
+        if (normalized.contains("uk_company_reg") || normalized.contains("company(registration_number")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.registrationNumber", null, "A company with this registration number already exists.", locale);
+        }
+        if (normalized.contains("uk_salesman_acc") || normalized.contains("salesman(account_number")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.accountNumber", null, "A salesman with this account number already exists.", locale);
+        }
+        if (normalized.contains("uk_salesman_cif") || normalized.contains("salesman(cif_number")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.cifNumber", null, "A salesman with this CIF number already exists.", locale);
+        }
+        if (normalized.contains("uk_salesman_id") || normalized.contains("salesman(id_number")) {
+            return messageSource.getMessage("error.data.integrity.duplicate.idNumber", null, "A salesman with this ID number already exists.", locale);
+        }
+        return messageSource.getMessage("error.data.integrity.generic", null, "Duplicate or conflicting data was found.", locale);
     }
 
     private ErrorInfo toErrorInfo(FieldError fieldError) {
