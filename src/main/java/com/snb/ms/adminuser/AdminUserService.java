@@ -48,29 +48,24 @@ public class AdminUserService {
     @Transactional
     public AdminUserResponse create(AdminUserCreateRequest request) {
         log.debug("Creating admin user with extensionNumber={}", request.getExtensionNumber());
-        try {
-            UsersRequest userRequest = new UsersRequest();
-            userRequest.setEmailAddress(request.getEmailAddress());
-            userRequest.setMobileNumber(request.getMobileNumber());
-            userRequest.setUserType("ADMIN_USER");
-            userRequest.setAccountStatus("ACTIVE");
-            userRequest.setAccountLockedFlag("N");
+        UsersRequest userRequest = new UsersRequest();
+        userRequest.setEmailAddress(request.getEmailAddress());
+        userRequest.setMobileNumber(request.getMobileNumber());
+        userRequest.setUserType("ADMIN_USER");
+        userRequest.setAccountStatus("ACTIVE");
+        userRequest.setAccountLockedFlag("N");
 
-            Users user = userProvisioningService.createUser(userRequest);
-            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-            AdminUser adminUser = adminUserMapper.toEntity(request);
-            adminUser.setUser(user);
-            adminUser.setCreatedAt(LocalDateTime.now());
-            adminUser.setCreatedBy(callerId);
-            adminUser.setDeletedFlag("N");
-            adminUser.setVersionNumber(0L);
-            AdminUserResponse created = adminUserMapper.toDto(adminUserRepository.save(adminUser));
-            log.info("Created admin user id={} extensionNumber={}", created.getAdminUserId(), request.getExtensionNumber());
-            return created;
-        } catch (RuntimeException ex) {
-            log.error("Failed to create admin user extensionNumber={}", request.getExtensionNumber(), ex);
-            throw ex;
-        }
+        Users user = userProvisioningService.createUser(userRequest);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        AdminUser adminUser = adminUserMapper.toEntity(request);
+        adminUser.setUser(user);
+        adminUser.setCreatedAt(LocalDateTime.now());
+        adminUser.setCreatedBy(callerId);
+        adminUser.setDeletedFlag("N");
+        adminUser.setVersionNumber(0L);
+        AdminUserResponse created = adminUserMapper.toDto(adminUserRepository.save(adminUser));
+        log.info("Created admin user id={} extensionNumber={}", created.getAdminUserId(), request.getExtensionNumber());
+        return created;
     }
 
     @Transactional

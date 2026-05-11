@@ -51,22 +51,17 @@ public class UsersService {
     @Transactional
     public UsersDto create(UsersRequest request) {
         log.debug("Creating user email={}", request.getEmailAddress());
-        try {
-            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-            Users users = usersMapper.toEntity(request);
-            users.setCreatedAt(LocalDateTime.now());
-            users.setCreatedBy(callerId);
-            users.setDeletedFlag("N");
-            users.setAccountLockedFlag("N");
-            users.setFailedAttempts(0);
-            users.setVersionNumber(0L);
-            UsersDto created = usersMapper.toDto(usersRepository.save(users));
-            log.info("Created user id={} email={}", created.getUserId(), created.getEmailAddress());
-            return created;
-        } catch (RuntimeException ex) {
-            log.error("Failed to create user email={}", request.getEmailAddress(), ex);
-            throw ex;
-        }
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Users users = usersMapper.toEntity(request);
+        users.setCreatedAt(LocalDateTime.now());
+        users.setCreatedBy(callerId);
+        users.setDeletedFlag("N");
+        users.setAccountLockedFlag("N");
+        users.setFailedAttempts(0);
+        users.setVersionNumber(0L);
+        UsersDto created = usersMapper.toDto(usersRepository.save(users));
+        log.info("Created user id={} email={}", created.getUserId(), created.getEmailAddress());
+        return created;
     }
 
     @Transactional

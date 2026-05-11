@@ -51,32 +51,27 @@ public class SalesmanService {
     @Transactional
     public SalesmanResponse create(SalesmanCreateRequest request) {
         log.debug("Creating salesman for companyId={}", request.getCompanyId());
-        try {
-            UsersRequest userRequest = new UsersRequest();
-            userRequest.setEmailAddress(request.getEmailAddress());
-            userRequest.setMobileNumber(request.getMobileNumber());
-            userRequest.setUserType("SALESMAN");
-            userRequest.setAccountStatus("ACTIVE");
-            userRequest.setAccountLockedFlag("N");
+        UsersRequest userRequest = new UsersRequest();
+        userRequest.setEmailAddress(request.getEmailAddress());
+        userRequest.setMobileNumber(request.getMobileNumber());
+        userRequest.setUserType("SALESMAN");
+        userRequest.setAccountStatus("ACTIVE");
+        userRequest.setAccountLockedFlag("N");
 
-            Users user = userProvisioningService.createUser(userRequest);
-            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-            Salesman salesman = salesmanMapper.toEntity(request);
-            salesman.setUser(user);
-            salesman.setCreatedAt(LocalDateTime.now());
-            salesman.setCreatedBy(callerId);
-            salesman.setDeletedFlag("N");
-            salesman.setVersionNumber(0L);
-            salesman.setAvailableIncentiveAmount(BigDecimal.ZERO);
-            Salesman savedSalesman = salesmanRepository.save(salesman);
-            companySalesmanService.createAssociation(request.getCompanyId(), savedSalesman);
-            SalesmanResponse created = salesmanMapper.toDto(savedSalesman);
-            log.info("Created salesman id={} for companyId={}", created.getSalesmanId(), request.getCompanyId());
-            return created;
-        } catch (RuntimeException ex) {
-            log.error("Failed to create salesman for companyId={}", request.getCompanyId(), ex);
-            throw ex;
-        }
+        Users user = userProvisioningService.createUser(userRequest);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Salesman salesman = salesmanMapper.toEntity(request);
+        salesman.setUser(user);
+        salesman.setCreatedAt(LocalDateTime.now());
+        salesman.setCreatedBy(callerId);
+        salesman.setDeletedFlag("N");
+        salesman.setVersionNumber(0L);
+        salesman.setAvailableIncentiveAmount(BigDecimal.ZERO);
+        Salesman savedSalesman = salesmanRepository.save(salesman);
+        companySalesmanService.createAssociation(request.getCompanyId(), savedSalesman);
+        SalesmanResponse created = salesmanMapper.toDto(savedSalesman);
+        log.info("Created salesman id={} for companyId={}", created.getSalesmanId(), request.getCompanyId());
+        return created;
     }
 
     @Transactional

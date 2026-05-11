@@ -48,30 +48,25 @@ public class CompanyService {
     @Transactional
     public CompanyResponse create(CompanyCreateRequest request) {
         log.debug("Creating company for registrationNumber={}", request.getRegistrationNumber());
-        try {
-            UsersRequest userRequest = new UsersRequest();
-            userRequest.setEmailAddress(request.getEmailAddress());
-            userRequest.setMobileNumber(request.getMobileNumber());
-            userRequest.setUserType("COMPANY");
-            userRequest.setAccountStatus("ACTIVE");
-            userRequest.setAccountLockedFlag("N");
+        UsersRequest userRequest = new UsersRequest();
+        userRequest.setEmailAddress(request.getEmailAddress());
+        userRequest.setMobileNumber(request.getMobileNumber());
+        userRequest.setUserType("COMPANY");
+        userRequest.setAccountStatus("ACTIVE");
+        userRequest.setAccountLockedFlag("N");
 
-            Users user = userProvisioningService.createUser(userRequest);
-            Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-            Company company = companyMapper.toEntity(request);
-            company.setUser(user);
-            company.setCreatedAt(LocalDateTime.now());
-            company.setCreatedBy(callerId);
-            company.setCompanyStatus("PENDING");
-            company.setDeletedFlag("N");
-            company.setVersionNumber(0L);
-            CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
-            log.info("Created company id={} registrationNumber={}", created.getCompanyId(), request.getRegistrationNumber());
-            return created;
-        } catch (RuntimeException ex) {
-            log.error("Failed to create company registrationNumber={}", request.getRegistrationNumber(), ex);
-            throw ex;
-        }
+        Users user = userProvisioningService.createUser(userRequest);
+        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Company company = companyMapper.toEntity(request);
+        company.setUser(user);
+        company.setCreatedAt(LocalDateTime.now());
+        company.setCreatedBy(callerId);
+        company.setCompanyStatus("PENDING");
+        company.setDeletedFlag("N");
+        company.setVersionNumber(0L);
+        CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
+        log.info("Created company id={} registrationNumber={}", created.getCompanyId(), request.getRegistrationNumber());
+        return created;
     }
 
     @Transactional

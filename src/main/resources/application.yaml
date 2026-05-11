@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -36,10 +36,15 @@ springdoc:
 
 logging:
   pattern:
-    console: "%d{HH:mm:ss.SSS} %-5level [%X{requestId}] [%X{tenantId}] [%X{userId}] [%X{language}] %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
   level:
     com.snb.ms: DEBUG
     org.springframework.web: INFO
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: ERROR
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: ERROR
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
 
 app:
   logging:

@@ -71,7 +71,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<BaseResponseDTO> handleDataIntegrity(DataIntegrityViolationException ex) {
-        log.error("Data integrity violation", ex);
+        log.warn("Data integrity violation");
+        log.debug("Data integrity root cause", ex);
         return buildResponse(ErrorCodeEnum.DATA_INTEGRITY_VIOLATION, resolveDataIntegrityDescription(ex));
     }
 
