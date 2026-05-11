@@ -113,7 +113,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company.updated@example.com\",\n  \"mobileNumber\": \"+971555010102\"\n}"
                                                                }
                                                   }
                                   },
@@ -217,7 +217,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company@example.com\",\n  \"mobileNumber\": \"+971555010101\"\n}"
                                                                }
                                                   }
                                   }

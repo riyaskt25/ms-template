@@ -62,6 +62,7 @@ public class CompanyService {
             company.setUser(user);
             company.setCreatedAt(LocalDateTime.now());
             company.setCreatedBy(callerId);
+            company.setCompanyStatus("PENDING");
             company.setDeletedFlag("N");
             company.setVersionNumber(0L);
             CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
