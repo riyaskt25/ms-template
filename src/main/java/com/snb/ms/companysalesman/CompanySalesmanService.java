@@ -32,7 +32,7 @@ public class CompanySalesmanService {
     @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findAll() {
         log.debug("Fetching all company-salesman associations");
-        List<CompanySalesmanDto> associations = companySalesmanMapper.toDtoList(companySalesmanRepository.findAll());
+        List<CompanySalesmanDto> associations = companySalesmanMapper.toDtoList(companySalesmanRepository.findAllActive());
         log.info("Fetched {} company-salesman associations", associations.size());
         return associations;
     }
@@ -40,7 +40,7 @@ public class CompanySalesmanService {
     @Transactional(readOnly = true)
     public Optional<CompanySalesmanDto> findById(Long id) {
         log.debug("Fetching company-salesman association by id={}", id);
-        Optional<CompanySalesmanDto> result = companySalesmanRepository.findById(id).map(companySalesmanMapper::toDto);
+        Optional<CompanySalesmanDto> result = companySalesmanRepository.findActiveById(id).map(companySalesmanMapper::toDto);
         log.info("Company-salesman association lookup id={} found={}", id, result.isPresent());
         return result;
     }
@@ -48,7 +48,7 @@ public class CompanySalesmanService {
     @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findByCompanyId(Long companyId) {
         log.debug("Fetching company-salesman associations by companyId={}", companyId);
-        List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findByCompany_CompanyId(companyId));
+        List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findByActiveCompanyId(companyId));
         log.info("Fetched {} associations for companyId={}", result.size(), companyId);
         return result;
     }
@@ -56,7 +56,7 @@ public class CompanySalesmanService {
     @Transactional(readOnly = true)
     public List<CompanySalesmanDto> findBySalesmanId(Long salesmanId) {
         log.debug("Fetching company-salesman associations by salesmanId={}", salesmanId);
-        List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findBySalesman_SalesmanId(salesmanId));
+        List<CompanySalesmanDto> result = companySalesmanMapper.toDtoList(companySalesmanRepository.findByActiveSalesmanId(salesmanId));
         log.info("Fetched {} associations for salesmanId={}", result.size(), salesmanId);
         return result;
     }
@@ -64,7 +64,7 @@ public class CompanySalesmanService {
     @Transactional
     public void createAssociation(Long companyId, Salesman salesman) {
         log.debug("Creating company-salesman association companyId={} salesmanId={}", companyId, salesman.getSalesmanId());
-        Company company = companyRepository.findById(companyId)
+        Company company = companyRepository.findActiveById(companyId)
             .orElseThrow(() -> {
                 log.error("Company not found while creating association companyId={}", companyId);
                 return new ResourceNotFoundException("Company not found: " + companyId);
@@ -84,12 +84,12 @@ public class CompanySalesmanService {
     @Transactional
     public CompanySalesmanDto create(Long companyId, Long salesmanId, CompanySalesmanRequest request) {
         log.debug("Creating company-salesman record companyId={} salesmanId={}", companyId, salesmanId);
-        Company company = companyRepository.findById(companyId)
+        Company company = companyRepository.findActiveById(companyId)
             .orElseThrow(() -> {
                 log.error("Company not found for company-salesman create companyId={}", companyId);
                 return new ResourceNotFoundException("Company not found: " + companyId);
             });
-        Salesman salesman = salesmanRepository.findById(salesmanId)
+        Salesman salesman = salesmanRepository.findActiveById(salesmanId)
             .orElseThrow(() -> {
                 log.error("Salesman not found for company-salesman create salesmanId={}", salesmanId);
                 return new ResourceNotFoundException("Salesman not found: " + salesmanId);
@@ -105,7 +105,7 @@ public class CompanySalesmanService {
     @Transactional
     public Optional<CompanySalesmanDto> update(Long id, CompanySalesmanRequest request) {
         log.debug("Updating company-salesman association id={}", id);
-        Optional<CompanySalesmanDto> updated = companySalesmanRepository.findById(id).map(existing -> {
+        Optional<CompanySalesmanDto> updated = companySalesmanRepository.findActiveById(id).map(existing -> {
             companySalesmanMapper.updateEntity(request, existing);
             return companySalesmanMapper.toDto(companySalesmanRepository.save(existing));
         });

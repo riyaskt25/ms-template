@@ -32,7 +32,7 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public List<CompanyResponse> findAll() {
         log.debug("Fetching all companies");
-        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAllWithUser());
+        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAllActiveWithUser());
         log.info("Fetched {} companies", companies.size());
         return companies;
     }
@@ -40,7 +40,7 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public Optional<CompanyResponse> findById(Long id) {
         log.debug("Fetching company by id={}", id);
-        Optional<CompanyResponse> result = companyRepository.findByIdWithUser(id).map(companyMapper::toDto);
+        Optional<CompanyResponse> result = companyRepository.findActiveById(id).map(companyMapper::toDto);
         log.info("Company lookup id={} found={}", id, result.isPresent());
         return result;
     }
@@ -78,7 +78,7 @@ public class CompanyService {
     public Optional<CompanyResponse> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<CompanyResponse> updated = companyRepository.findById(id).map(existing -> {
+        Optional<CompanyResponse> updated = companyRepository.findActiveById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -98,7 +98,7 @@ public class CompanyService {
     public Optional<CompanyResponse> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<CompanyResponse> deleted = companyRepository.findById(id).map(existing -> {
+        Optional<CompanyResponse> deleted = companyRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());

@@ -2,6 +2,8 @@ package com.snb.ms.companysalesman;
 
 import com.snb.ms.companysalesman.CompanySalesman;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,9 +12,18 @@ import java.util.Optional;
 @Repository
 public interface CompanySalesmanRepository extends JpaRepository<CompanySalesman, Long> {
 
-    List<CompanySalesman> findByCompany_CompanyId(Long companyId);
+    @Query("SELECT cs FROM CompanySalesman cs JOIN cs.company c JOIN cs.salesman s WHERE c.deletedFlag = 'N' AND s.deletedFlag = 'N'")
+    List<CompanySalesman> findAllActive();
 
-    List<CompanySalesman> findBySalesman_SalesmanId(Long salesmanId);
+    @Query("SELECT cs FROM CompanySalesman cs JOIN cs.company c JOIN cs.salesman s WHERE cs.companySalesmanId = :id AND c.deletedFlag = 'N' AND s.deletedFlag = 'N'")
+    Optional<CompanySalesman> findActiveById(@Param("id") Long id);
 
-    Optional<CompanySalesman> findByCompany_CompanyIdAndSalesman_SalesmanId(Long companyId, Long salesmanId);
+    @Query("SELECT cs FROM CompanySalesman cs JOIN cs.company c JOIN cs.salesman s WHERE c.companyId = :companyId AND c.deletedFlag = 'N' AND s.deletedFlag = 'N'")
+    List<CompanySalesman> findByActiveCompanyId(@Param("companyId") Long companyId);
+
+    @Query("SELECT cs FROM CompanySalesman cs JOIN cs.company c JOIN cs.salesman s WHERE s.salesmanId = :salesmanId AND c.deletedFlag = 'N' AND s.deletedFlag = 'N'")
+    List<CompanySalesman> findByActiveSalesmanId(@Param("salesmanId") Long salesmanId);
+
+    @Query("SELECT cs FROM CompanySalesman cs JOIN cs.company c JOIN cs.salesman s WHERE c.companyId = :companyId AND s.salesmanId = :salesmanId AND c.deletedFlag = 'N' AND s.deletedFlag = 'N'")
+    Optional<CompanySalesman> findByActiveCompanyIdAndActiveSalesmanId(@Param("companyId") Long companyId, @Param("salesmanId") Long salesmanId);
 }

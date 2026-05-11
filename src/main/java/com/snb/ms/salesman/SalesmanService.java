@@ -83,7 +83,7 @@ public class SalesmanService {
     public Optional<SalesmanResponse> update(Long id, SalesmanUpdateRequest request) {
         log.debug("Updating salesman id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<SalesmanResponse> updated = salesmanRepository.findById(id).map(existing -> {
+        Optional<SalesmanResponse> updated = salesmanRepository.findByIdWithUser(id).map(existing -> {
             salesmanMapper.updateEntity(request, existing);
             existing.setUpdatedAt(LocalDateTime.now());
             existing.setUpdatedBy(callerId);
@@ -98,7 +98,7 @@ public class SalesmanService {
     public Optional<SalesmanResponse> softDelete(Long id) {
         log.debug("Soft-deleting salesman id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<SalesmanResponse> deleted = salesmanRepository.findById(id).map(existing -> {
+        Optional<SalesmanResponse> deleted = salesmanRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());

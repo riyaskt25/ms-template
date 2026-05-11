@@ -27,7 +27,7 @@ public class UsersService {
     @Transactional(readOnly = true)
     public List<UsersDto> findAll() {
         log.debug("Fetching all users");
-        List<UsersDto> users = usersMapper.toDtoList(usersRepository.findAll());
+        List<UsersDto> users = usersMapper.toDtoList(usersRepository.findAllActive());
         log.info("Fetched {} users", users.size());
         return users;
     }
@@ -35,7 +35,7 @@ public class UsersService {
     @Transactional(readOnly = true)
     public Optional<UsersDto> findById(Long id) {
         log.debug("Fetching user by id={}", id);
-        Optional<UsersDto> result = usersRepository.findById(id).map(usersMapper::toDto);
+        Optional<UsersDto> result = usersRepository.findActiveById(id).map(usersMapper::toDto);
         log.info("User lookup id={} found={}", id, result.isPresent());
         return result;
     }
@@ -43,7 +43,7 @@ public class UsersService {
     @Transactional(readOnly = true)
     public Optional<UsersDto> findByEmail(String email) {
         log.debug("Fetching user by email={}", email);
-        Optional<UsersDto> result = usersRepository.findByEmailAddress(email).map(usersMapper::toDto);
+        Optional<UsersDto> result = usersRepository.findActiveByEmailAddress(email).map(usersMapper::toDto);
         log.info("User lookup email={} found={}", email, result.isPresent());
         return result;
     }
@@ -73,7 +73,7 @@ public class UsersService {
     public Optional<UsersDto> update(Long id, UsersRequest request) {
         log.debug("Updating user id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<UsersDto> updated = usersRepository.findById(id).map(existing -> {
+        Optional<UsersDto> updated = usersRepository.findActiveById(id).map(existing -> {
             existing.setEmailAddress(request.getEmailAddress());
             existing.setMobileNumber(request.getMobileNumber());
             existing.setUserType(request.getUserType());
@@ -92,7 +92,7 @@ public class UsersService {
     public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
         log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(deletedBy);
-        Optional<UsersDto> deleted = usersRepository.findById(id).map(existing -> {
+        Optional<UsersDto> deleted = usersRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedBy(callerId);

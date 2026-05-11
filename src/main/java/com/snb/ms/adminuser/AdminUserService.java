@@ -77,7 +77,7 @@ public class AdminUserService {
     public Optional<AdminUserResponse> update(Long id, AdminUserUpdateRequest request) {
         log.debug("Updating admin user id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<AdminUserResponse> updated = adminUserRepository.findById(id).map(existing -> {
+        Optional<AdminUserResponse> updated = adminUserRepository.findByIdWithUser(id).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -97,7 +97,7 @@ public class AdminUserService {
     public Optional<AdminUserResponse> softDelete(Long id) {
         log.debug("Soft-deleting admin user id={}", id);
         Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
-        Optional<AdminUserResponse> deleted = adminUserRepository.findById(id).map(existing -> {
+        Optional<AdminUserResponse> deleted = adminUserRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());
             existing.setUpdatedAt(LocalDateTime.now());
