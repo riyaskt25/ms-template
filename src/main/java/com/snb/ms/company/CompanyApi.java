@@ -67,11 +67,27 @@ public interface CompanyApi {
             description = "Invalid company id supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Company not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Company not found",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CompanyNotFound",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=999\"\n    }\n  ]\n}"
+                )
+            )
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "InternalServerError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Unexpected internal server error\",\n      \"description\": null\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
@@ -154,7 +170,11 @@ public interface CompanyApi {
             description = "Validation failed or invalid id",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Company not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Company not found",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
@@ -186,7 +206,11 @@ public interface CompanyApi {
             description = "Invalid company id supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Company not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Company not found",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",

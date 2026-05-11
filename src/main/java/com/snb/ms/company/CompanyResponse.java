@@ -1,4 +1,5 @@
 package com.snb.ms.company;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(value = {"errors"})
 @Schema(description = "Company response payload")
 public class CompanyResponse extends BaseResponseDTO {
     @Schema(description = "Unique company identifier", example = "1")

@@ -37,7 +37,7 @@ public class CompanyController implements CompanyApi {
     public CompanyResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch company by id={}", id);
         CompanyResponse result = companyService.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Company not found for id=" + id));
         log.info("Company found for id={}", id);
         return result;
     }
