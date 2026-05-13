@@ -56,12 +56,13 @@ public class CompanyService {
         userRequest.setAccountLockedFlag("N");
 
         Users user = userProvisioningService.createUser(userRequest);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Company company = companyMapper.toEntity(request);
         company.setUser(user);
         company.setCreatedAt(LocalDateTime.now());
         company.setCreatedBy(callerId);
         company.setCompanyStatus("PENDING");
+        company.setCompanyType("DEALER");
         company.setDeletedFlag("N");
         company.setVersionNumber(0L);
         CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
@@ -72,7 +73,7 @@ public class CompanyService {
     @Transactional
     public Optional<CompanyResponse> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<CompanyResponse> updated = companyRepository.findActiveById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
@@ -92,7 +93,7 @@ public class CompanyService {
     @Transactional
     public Optional<CompanyResponse> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<CompanyResponse> deleted = companyRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());

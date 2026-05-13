@@ -25,6 +25,7 @@ public class RequestContextFilter extends OncePerRequestFilter {
 
     public static final String REQUEST_ID_HEADER = "X-Request-Id";
     public static final String TENANT_ID_HEADER = "X-Tenant-Id";
+    public static final String USER_ID_HEADER = "USER_ID";
 
     @Value("${app.logging.request-boundary-enabled:false}")
     private boolean requestBoundaryEnabled;
@@ -38,12 +39,14 @@ public class RequestContextFilter extends OncePerRequestFilter {
         String userId = resolveUserId(request.getUserPrincipal());
         String language = resolveLanguage(request.getLocale());
         String tenantId = resolveHeader(request, TENANT_ID_HEADER);
+        String headerUserId = resolveHeader(request, USER_ID_HEADER);
 
         RequestContext context = RequestContext.builder()
             .requestId(requestId)
             .userId(userId)
             .language(language)
             .tenantId(tenantId)
+            .headerUserId(headerUserId)
             .build();
 
         RequestContextHolder.set(context);

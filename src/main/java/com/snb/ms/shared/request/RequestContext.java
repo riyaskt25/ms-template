@@ -11,4 +11,5 @@ public class RequestContext {
     private final String userId;
     private final String language;
     private final String tenantId;
+    private final String headerUserId;
 }

@@ -56,7 +56,7 @@ public class AdminUserService {
         userRequest.setAccountLockedFlag("N");
 
         Users user = userProvisioningService.createUser(userRequest);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         AdminUser adminUser = adminUserMapper.toEntity(request);
         adminUser.setUser(user);
         adminUser.setCreatedAt(LocalDateTime.now());
@@ -71,7 +71,7 @@ public class AdminUserService {
     @Transactional
     public Optional<AdminUserResponse> update(Long id, AdminUserUpdateRequest request) {
         log.debug("Updating admin user id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<AdminUserResponse> updated = adminUserRepository.findByIdWithUser(id).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
@@ -91,7 +91,7 @@ public class AdminUserService {
     @Transactional
     public Optional<AdminUserResponse> softDelete(Long id) {
         log.debug("Soft-deleting admin user id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<AdminUserResponse> deleted = adminUserRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());

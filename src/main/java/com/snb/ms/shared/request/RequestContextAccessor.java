@@ -28,12 +28,11 @@ public class RequestContextAccessor {
     }
 
     /**
-     * Parses the current userId as a Long.
-     * Returns empty if userId is null, "anonymous", or non-numeric.
-     * Once Spring Security is added, the principal name will be a numeric user id.
+        * Returns the USER_ID from the USER_ID request header.
+     * Returns empty if the header is not present or not numeric.
      */
-    public Optional<Long> currentUserIdAsLong() {
-        return currentUserId().flatMap(uid -> {
+    public Optional<Long> headerUserIdAsLong() {
+        return current().map(RequestContext::getHeaderUserId).flatMap(uid -> {
             try {
                 return Optional.of(Long.parseLong(uid));
             } catch (NumberFormatException e) {

@@ -51,7 +51,7 @@ public class UsersService {
     @Transactional
     public UsersDto create(UsersRequest request) {
         log.debug("Creating user email={}", request.getEmailAddress());
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Users users = usersMapper.toEntity(request);
         users.setCreatedAt(LocalDateTime.now());
         users.setCreatedBy(callerId);
@@ -67,7 +67,7 @@ public class UsersService {
     @Transactional
     public Optional<UsersDto> update(Long id, UsersRequest request) {
         log.debug("Updating user id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<UsersDto> updated = usersRepository.findActiveById(id).map(existing -> {
             existing.setEmailAddress(request.getEmailAddress());
             existing.setMobileNumber(request.getMobileNumber());
@@ -86,7 +86,7 @@ public class UsersService {
     @Transactional
     public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
         log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(deletedBy);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(deletedBy);
         Optional<UsersDto> deleted = usersRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());

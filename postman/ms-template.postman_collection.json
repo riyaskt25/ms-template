@@ -26,12 +26,28 @@
                          "value":  "1"
                      },
                      {
+                         "key":  "companyRegistrationNumber",
+                         "value":  "REG-2026-0001"
+                     },
+                     {
+                         "key":  "companyEmailAddress",
+                         "value":  "company@example.com"
+                     },
+                     {
+                         "key":  "companyMobileNumber",
+                         "value":  "+971555010101"
+                     },
+                     {
                          "key":  "X-Request-Id",
                          "value":  "req-local-001"
                      },
                      {
                          "key":  "X-Tenant-Id",
                          "value":  "SNB"
+                     },
+                     {
+                         "key":  "USER_ID",
+                         "value":  "1"
                      },
                      {
                          "key":  "Accept-Language",
@@ -58,6 +74,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -93,6 +113,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -113,7 +137,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company.updated@example.com\",\n  \"mobileNumber\": \"+971555010102\"\n}"
+                                                                   "raw":  "{\r\n    \"registrationNumber\": \"{{companyRegistrationNumber}}\",\r\n    \"emailAddress\": \"{{companyEmailAddress}}\",\r\n    \"mobileNumber\": \"{{companyMobileNumber}}\"\r\n}"
                                                                }
                                                   }
                                   },
@@ -133,6 +157,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -164,6 +192,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -198,6 +230,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -217,7 +253,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company@example.com\",\n  \"mobileNumber\": \"+971555010101\"\n}"
+                                                                   "raw":  "{\r\n    \"registrationNumber\": \"{{companyRegistrationNumber}}\",\r\n    \"emailAddress\": \"{{companyEmailAddress}}\",\r\n    \"mobileNumber\": \"{{companyMobileNumber}}\"\r\n}"
                                                                }
                                                   }
                                   }
@@ -242,6 +278,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -277,6 +317,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -297,7 +341,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\r\n    \"firstName\": \"John\",\r\n    \"middleName\": \"A\",\r\n    \"lastName\": \"Doe\",\r\n    \"accountNumber\": \"ACC-001\",\r\n    \"cifNumber\": \"CIF-001\",\r\n    \"idNumber\": \"ID-001\"\r\n}"
                                                                }
                                                   }
                                   },
@@ -317,6 +361,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -348,6 +396,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -382,6 +434,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -401,7 +457,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\r\n    \"firstName\": \"John\",\r\n    \"middleName\": \"A\",\r\n    \"lastName\": \"Doe\",\r\n    \"accountNumber\": \"ACC-001\",\r\n    \"cifNumber\": \"CIF-001\",\r\n    \"idNumber\": \"ID-001\",\r\n    \"companyId\": {{companyId}},\r\n    \"emailAddress\": \"salesman@example.com\",\r\n    \"mobileNumber\": \"+971555020202\"\r\n}"
                                                                }
                                                   }
                                   }
@@ -426,6 +482,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -461,6 +521,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -481,7 +545,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\r\n    \"firstName\": \"Admin\",\r\n    \"middleName\": \"M\",\r\n    \"lastName\": \"User\",\r\n    \"extensionNumber\": \"101\",\r\n    \"emailAddress\": \"admin.updated@example.com\",\r\n    \"mobileNumber\": \"+971555030304\"\r\n}"
                                                                }
                                                   }
                                   },
@@ -501,6 +565,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -532,6 +600,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -566,6 +638,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -585,7 +661,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{}"
+                                                                   "raw":  "{\r\n    \"firstName\": \"Admin\",\r\n    \"middleName\": \"M\",\r\n    \"lastName\": \"User\",\r\n    \"extensionNumber\": \"101\",\r\n    \"emailAddress\": \"admin@example.com\",\r\n    \"mobileNumber\": \"+971555030303\"\r\n}"
                                                                }
                                                   }
                                   }
@@ -610,6 +686,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {
@@ -640,6 +720,10 @@
                                                                      {
                                                                          "key":  "X-Tenant-Id",
                                                                          "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
                                                                      }
                                                                  ],
                                                       "url":  {

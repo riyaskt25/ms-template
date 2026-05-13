@@ -24,7 +24,7 @@ public class UserProvisioningService {
     @Transactional
     public Users createUser(UsersRequest request) {
         log.debug("Provisioning user for userType={}", request.getUserType());
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Users user = usersMapper.toEntity(request);
         user.setCreatedAt(LocalDateTime.now());
         user.setCreatedBy(callerId);

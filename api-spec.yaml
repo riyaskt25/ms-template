@@ -55,6 +55,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -80,6 +81,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       responses:
         "200":
           description: OK
@@ -119,6 +121,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -144,6 +147,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       responses:
         "200":
           description: OK
@@ -183,6 +187,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -208,6 +213,7 @@ paths:
           type: integer
           format: int64
           exclusiveMinimum: 0
+      - $ref: '#/components/parameters/UserIdHeader'
       responses:
         "200":
           description: OK
@@ -234,6 +240,8 @@ paths:
       - Salesmen
       summary: Create salesman with linked user and company association
       operationId: create
+      parameters:
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -266,6 +274,8 @@ paths:
       - Companies
       summary: Create company with linked user
       operationId: create_1
+      parameters:
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -298,6 +308,8 @@ paths:
       - Admin Users
       summary: Create admin user with linked user
       operationId: create_2
+      parameters:
+      - $ref: '#/components/parameters/UserIdHeader'
       requestBody:
         content:
           application/json:
@@ -348,6 +360,15 @@ paths:
         "404":
           description: Not Found
 components:
+  parameters:
+    UserIdHeader:
+      name: USER_ID
+      in: header
+      required: true
+      description: Caller user id used for audit fields like createdBy and updatedBy.
+      schema:
+        type: integer
+        format: int64
   schemas:
     SalesmanUpdateRequest:
       type: object

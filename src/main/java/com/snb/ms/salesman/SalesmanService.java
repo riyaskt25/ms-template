@@ -59,7 +59,7 @@ public class SalesmanService {
         userRequest.setAccountLockedFlag("N");
 
         Users user = userProvisioningService.createUser(userRequest);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Salesman salesman = salesmanMapper.toEntity(request);
         salesman.setUser(user);
         salesman.setCreatedAt(LocalDateTime.now());
@@ -77,7 +77,7 @@ public class SalesmanService {
     @Transactional
     public Optional<SalesmanResponse> update(Long id, SalesmanUpdateRequest request) {
         log.debug("Updating salesman id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<SalesmanResponse> updated = salesmanRepository.findByIdWithUser(id).map(existing -> {
             salesmanMapper.updateEntity(request, existing);
             existing.setUpdatedAt(LocalDateTime.now());
@@ -92,7 +92,7 @@ public class SalesmanService {
     @Transactional
     public Optional<SalesmanResponse> softDelete(Long id) {
         log.debug("Soft-deleting salesman id={}", id);
-        Long callerId = contextAccessor.currentUserIdAsLong().orElse(null);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         Optional<SalesmanResponse> deleted = salesmanRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(LocalDateTime.now());

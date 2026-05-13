@@ -106,6 +106,77 @@ function Get-IdVariableName {
     return "id"
 }
 
+function Get-BodyTemplateRaw {
+        param($op)
+
+        $bodyTemplates = @{
+                "POST /api/companies" = @"
+{
+    "registrationNumber": "{{companyRegistrationNumber}}",
+    "emailAddress": "{{companyEmailAddress}}",
+    "mobileNumber": "{{companyMobileNumber}}"
+}
+"@
+                "PUT /api/companies/{id}" = @"
+{
+    "registrationNumber": "{{companyRegistrationNumber}}",
+    "emailAddress": "{{companyEmailAddress}}",
+    "mobileNumber": "{{companyMobileNumber}}"
+}
+"@
+                "POST /api/salesmen" = @"
+{
+    "firstName": "John",
+    "middleName": "A",
+    "lastName": "Doe",
+    "accountNumber": "ACC-001",
+    "cifNumber": "CIF-001",
+    "idNumber": "ID-001",
+    "companyId": {{companyId}},
+    "emailAddress": "salesman@example.com",
+    "mobileNumber": "+971555020202"
+}
+"@
+                "PUT /api/salesmen/{id}" = @"
+{
+    "firstName": "John",
+    "middleName": "A",
+    "lastName": "Doe",
+    "accountNumber": "ACC-001",
+    "cifNumber": "CIF-001",
+    "idNumber": "ID-001"
+}
+"@
+                "POST /api/admin-users" = @"
+{
+    "firstName": "Admin",
+    "middleName": "M",
+    "lastName": "User",
+    "extensionNumber": "101",
+    "emailAddress": "admin@example.com",
+    "mobileNumber": "+971555030303"
+}
+"@
+                "PUT /api/admin-users/{id}" = @"
+{
+    "firstName": "Admin",
+    "middleName": "M",
+    "lastName": "User",
+    "extensionNumber": "101",
+    "emailAddress": "admin.updated@example.com",
+    "mobileNumber": "+971555030304"
+}
+"@
+        }
+
+        $templateKey = "$($op.method) $($op.path)"
+        if ($bodyTemplates.ContainsKey($templateKey)) {
+                return $bodyTemplates[$templateKey].Trim()
+        }
+
+        return "{}"
+}
+
 function Build-RequestObject {
     param($op)
 
@@ -129,7 +200,8 @@ function Build-RequestObject {
     $headers = @(
         [ordered]@{ key = "X-Request-Id"; value = "{{X-Request-Id}}" },
         [ordered]@{ key = "Accept-Language"; value = "{{Accept-Language}}" },
-        [ordered]@{ key = "X-Tenant-Id"; value = "{{X-Tenant-Id}}" }
+        [ordered]@{ key = "X-Tenant-Id"; value = "{{X-Tenant-Id}}" },
+        [ordered]@{ key = "USER_ID"; value = "{{USER_ID}}" }
     )
 
     if ($op.hasBody) {
@@ -152,7 +224,7 @@ function Build-RequestObject {
             options = [ordered]@{
                 raw = [ordered]@{ language = "json" }
             }
-            raw = "{}"
+            raw = Get-BodyTemplateRaw -op $op
         }
     }
 
@@ -209,8 +281,12 @@ $collection = [ordered]@{
         [ordered]@{ key = "salesmanId"; value = "1" },
         [ordered]@{ key = "adminUserId"; value = "1" },
         [ordered]@{ key = "postId"; value = "1" },
+        [ordered]@{ key = "companyRegistrationNumber"; value = "REG-2026-0001" },
+        [ordered]@{ key = "companyEmailAddress"; value = "company@example.com" },
+        [ordered]@{ key = "companyMobileNumber"; value = "+971555010101" },
         [ordered]@{ key = "X-Request-Id"; value = "req-local-001" },
         [ordered]@{ key = "X-Tenant-Id"; value = "SNB" },
+        [ordered]@{ key = "USER_ID"; value = "1" },
         [ordered]@{ key = "Accept-Language"; value = "en" }
     )
     item = $folderItems

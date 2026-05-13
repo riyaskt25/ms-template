@@ -43,8 +43,8 @@ logging:
     org.hibernate.engine.jdbc.spi.SqlExceptionHelper: ERROR
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: ERROR
     org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-    org.hibernate.orm.jdbc.extract: TRACE
+    org.hibernate.orm.jdbc.bind: WARN  # Parameter bindings
+    org.hibernate.orm.jdbc.extract: WARN  # Extracted result values
 
 app:
   logging:
