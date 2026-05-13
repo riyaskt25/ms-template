@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<BaseResponseDTO> handleResourceNotFound(ResourceNotFoundException ex) {
         log.error("Resource not found: {}", ex.getMessage(), ex);
-        return buildResponse(ex.getErrorCode(), ex.getDescription());
+        return buildResponse(ex.getErrorCode(), resolveResourceNotFoundDescription(ex));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
                 "VALIDATION_ERROR",
                 violation.getPropertyPath().toString().toUpperCase().replace('.', '_') + "_INVALID",
                 violation.getMessage(),
-                "Rejected value: " + violation.getInvalidValue()
+                rejectedValueDescription(violation.getInvalidValue())
             ))
             .toList();
         BaseResponseDTO response = new BaseResponseDTO(errors);
@@ -117,12 +117,41 @@ public class GlobalExceptionHandler {
         return messageSource.getMessage("error.data.integrity.generic", null, "Duplicate or conflicting data was found.", locale);
     }
 
+    private String resolveResourceNotFoundDescription(ResourceNotFoundException ex) {
+        if (ex.getDescriptionKey() == null) {
+            return ex.getDescription();
+        }
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(ex.getDescriptionKey(), ex.getDescriptionArgs(), ex.getDescription(), locale);
+    }
+
     private ErrorInfo toErrorInfo(FieldError fieldError) {
         return new ErrorInfo(
                 "VALIDATION_ERROR",
                 fieldError.getField().toUpperCase() + "_INVALID",
-                fieldError.getDefaultMessage() == null ? fieldError.getField() + " is invalid" : fieldError.getDefaultMessage(),
-                "Rejected value: " + fieldError.getRejectedValue()
+                fieldError.getDefaultMessage() == null ? localizedInvalidFieldMessage(fieldError.getField()) : fieldError.getDefaultMessage(),
+                rejectedValueDescription(fieldError.getRejectedValue())
+        );
+    }
+
+    private String localizedInvalidFieldMessage(String fieldName) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(
+            "error.validation.field.invalid",
+            new Object[]{fieldName},
+            fieldName + " is invalid",
+            locale
+        );
+    }
+
+    private String rejectedValueDescription(Object rejectedValue) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(
+            "error.validation.rejected.value",
+            new Object[]{rejectedValue},
+            "Rejected value: " + rejectedValue,
+            locale
         );
     }
 }

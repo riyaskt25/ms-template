@@ -37,7 +37,7 @@ public class SalesmanController implements SalesmanApi {
     public SalesmanResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch salesman by id={}", id);
         SalesmanResponse result = salesmanService.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.salesmanById(id));
         log.info("Salesman found for id={}", id);
         return result;
     }
@@ -57,7 +57,7 @@ public class SalesmanController implements SalesmanApi {
                                    @RequestBody SalesmanUpdateRequest request) {
         log.debug("Received request to update salesman id={}", id);
         SalesmanResponse updated = salesmanService.update(id, request)
-            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.salesmanById(id));
         log.info("Updated salesman id={}", id);
         return updated;
     }
@@ -67,7 +67,7 @@ public class SalesmanController implements SalesmanApi {
     public SalesmanResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
         SalesmanResponse deleted = salesmanService.softDelete(id)
-            .orElseThrow(() -> new ResourceNotFoundException("salesmanId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.salesmanById(id));
         log.info("Soft-deleted salesman id={}", id);
         return deleted;
     }

@@ -37,7 +37,7 @@ public class CompanyController implements CompanyApi {
     public CompanyResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch company by id={}", id);
         CompanyResponse result = companyService.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Company not found for id=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Company found for id={}", id);
         return result;
     }
@@ -57,7 +57,7 @@ public class CompanyController implements CompanyApi {
                                   @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
         CompanyResponse updated = companyService.update(id, request)
-            .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Updated company id={}", id);
         return updated;
     }
@@ -67,7 +67,7 @@ public class CompanyController implements CompanyApi {
     public CompanyResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
         CompanyResponse deleted = companyService.softDelete(id)
-            .orElseThrow(() -> new ResourceNotFoundException("companyId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Soft-deleted company id={}", id);
         return deleted;
     }

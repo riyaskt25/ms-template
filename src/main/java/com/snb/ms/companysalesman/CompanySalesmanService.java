@@ -67,7 +67,7 @@ public class CompanySalesmanService {
         Company company = companyRepository.findActiveById(companyId)
             .orElseThrow(() -> {
                 log.error("Company not found while creating association companyId={}", companyId);
-                return new ResourceNotFoundException("Company not found: " + companyId);
+                return ResourceNotFoundException.companyById(companyId);
             });
 
         CompanySalesman entity = CompanySalesman.builder()
@@ -87,12 +87,12 @@ public class CompanySalesmanService {
         Company company = companyRepository.findActiveById(companyId)
             .orElseThrow(() -> {
                 log.error("Company not found for company-salesman create companyId={}", companyId);
-                return new ResourceNotFoundException("Company not found: " + companyId);
+                return ResourceNotFoundException.companyById(companyId);
             });
         Salesman salesman = salesmanRepository.findActiveById(salesmanId)
             .orElseThrow(() -> {
                 log.error("Salesman not found for company-salesman create salesmanId={}", salesmanId);
-                return new ResourceNotFoundException("Salesman not found: " + salesmanId);
+                return ResourceNotFoundException.salesmanById(salesmanId);
             });
         CompanySalesman entity = companySalesmanMapper.toEntity(request);
         entity.setCompany(company);

@@ -34,7 +34,7 @@ public class PostsController implements PostsApi {
     public PostDto findById(@PathVariable Long id) {
         log.debug("Received request to fetch post by id={}", id);
         PostDto post = postsService.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("postId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.postById(id));
         log.info("Post found for id={}", id);
         return post;
     }

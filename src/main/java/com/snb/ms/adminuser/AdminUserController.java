@@ -37,7 +37,7 @@ public class AdminUserController implements AdminUserApi {
     public AdminUserResponse findById(@PathVariable Long id) {
         log.debug("Received request to fetch admin user by id={}", id);
         AdminUserResponse result = adminUserService.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
         log.info("Admin user found for id={}", id);
         return result;
     }
@@ -57,7 +57,7 @@ public class AdminUserController implements AdminUserApi {
                                     @RequestBody AdminUserUpdateRequest request) {
         log.debug("Received request to update admin user id={}", id);
         AdminUserResponse updated = adminUserService.update(id, request)
-            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
         log.info("Updated admin user id={}", id);
         return updated;
     }
@@ -67,7 +67,7 @@ public class AdminUserController implements AdminUserApi {
     public AdminUserResponse softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete admin user id={}", id);
         AdminUserResponse deleted = adminUserService.softDelete(id)
-            .orElseThrow(() -> new ResourceNotFoundException("adminUserId=" + id));
+            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
         log.info("Soft-deleted admin user id={}", id);
         return deleted;
     }
