@@ -2,7 +2,10 @@ package com.snb.ms.company;
 
 import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
+import com.snb.ms.company.CompanyStatus;
+import com.snb.ms.company.CompanyStatusDecisionRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
+import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.shared.UsersRequest;
 import com.snb.ms.company.Company;
 import com.snb.ms.shared.Users;
@@ -61,7 +64,7 @@ public class CompanyService {
         company.setUser(user);
         company.setCreatedAt(LocalDateTime.now());
         company.setCreatedBy(callerId);
-        company.setCompanyStatus("PENDING");
+        company.setCompanyStatus(CompanyStatus.PENDING.name());
         company.setCompanyType("DEALER");
         company.setDeletedFlag("N");
         company.setVersionNumber(0L);
@@ -74,14 +77,18 @@ public class CompanyService {
     public Optional<CompanyResponse> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
         Optional<CompanyResponse> updated = companyRepository.findActiveById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
                 user.setEmailAddress(request.getEmailAddress());
                 user.setMobileNumber(request.getMobileNumber());
+                user.setUpdatedAt(now);
+                user.setUpdatedBy(callerId);
+                user.setVersionNumber((user.getVersionNumber() == null ? 0L : user.getVersionNumber()) + 1);
             }
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return companyMapper.toDto(companyRepository.save(existing));
@@ -94,14 +101,60 @@ public class CompanyService {
     public Optional<CompanyResponse> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
         Optional<CompanyResponse> deleted = companyRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
-            existing.setDeletedAt(LocalDateTime.now());
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setDeletedAt(now);
+            existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
             return companyMapper.toDto(companyRepository.save(existing));
         });
         log.info("Company soft-delete id={} success={}", id, deleted.isPresent());
         return deleted;
+    }
+
+    @Transactional
+    public Optional<CompanyResponse> decideStatus(Long id, CompanyStatusDecisionRequest request) {
+        log.debug("Applying status decision for company id={} targetStatus={}", id, request.getStatus());
+        CompanyStatus targetStatus = CompanyStatus.fromValue(request.getStatus())
+            .orElseThrow(() -> BusinessValidationException.invalidCompanyStatusValue(request.getStatus()));
+
+        if (targetStatus == CompanyStatus.PENDING) {
+            throw BusinessValidationException.invalidCompanyStatusValue(request.getStatus());
+        }
+
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
+        Optional<CompanyResponse> decided = companyRepository.findActiveById(id).map(existing -> {
+            CompanyStatus currentStatus = CompanyStatus.fromValue(existing.getCompanyStatus())
+                .orElseThrow(() -> BusinessValidationException.invalidCompanyStatusTransition(existing.getCompanyStatus(), targetStatus.name()));
+
+            if (currentStatus != CompanyStatus.PENDING) {
+                throw BusinessValidationException.invalidCompanyStatusTransition(currentStatus.name(), targetStatus.name());
+            }
+
+            existing.setCompanyStatus(targetStatus.name());
+            Users user = existing.getUser();
+            if (user != null) {
+                if (targetStatus == CompanyStatus.ACTIVE) {
+                    user.setAccountStatus(CompanyStatus.ACTIVE.name());
+                    user.setAccountLockedFlag("N");
+                } else {
+                    user.setAccountStatus(CompanyStatus.REJECTED.name());
+                    user.setAccountLockedFlag("Y");
+                }
+                user.setUpdatedAt(now);
+                user.setUpdatedBy(callerId);
+                user.setVersionNumber((user.getVersionNumber() == null ? 0L : user.getVersionNumber()) + 1);
+            }
+            existing.setUpdatedAt(now);
+            existing.setUpdatedBy(callerId);
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
+            return companyMapper.toDto(companyRepository.save(existing));
+        });
+
+        log.info("Company status decision id={} success={}", id, decided.isPresent());
+        return decided;
     }
 }

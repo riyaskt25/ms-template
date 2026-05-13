@@ -32,6 +32,12 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getErrorCode(), resolveResourceNotFoundDescription(ex));
     }
 
+    @ExceptionHandler(BusinessValidationException.class)
+    public ResponseEntity<BaseResponseDTO> handleBusinessValidation(BusinessValidationException ex) {
+        log.error("Business validation failed: {}", ex.getMessage(), ex);
+        return buildResponse(ex.getErrorCode(), resolveBusinessValidationDescription(ex));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<BaseResponseDTO> handleIllegalArgument(IllegalArgumentException ex) {
         log.error("Invalid argument: {}", ex.getMessage(), ex);
@@ -118,6 +124,15 @@ public class GlobalExceptionHandler {
     }
 
     private String resolveResourceNotFoundDescription(ResourceNotFoundException ex) {
+        if (ex.getDescriptionKey() == null) {
+            return ex.getDescription();
+        }
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(ex.getDescriptionKey(), ex.getDescriptionArgs(), ex.getDescription(), locale);
+    }
+
+    private String resolveBusinessValidationDescription(BusinessValidationException ex) {
         if (ex.getDescriptionKey() == null) {
             return ex.getDescription();
         }

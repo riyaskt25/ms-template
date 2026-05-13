@@ -218,4 +218,51 @@ public interface CompanyApi {
         )
     })
     CompanyResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+
+    @Operation(
+        operationId = "decideCompanyStatus",
+        summary = "Decide company status",
+        description = "Allows administrator to decide a pending company as ACTIVE or REJECTED."
+    )
+    @Parameters({
+        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
+        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
+        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
+        @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
+    })
+    @RequestBody(
+        required = true,
+        description = "Status decision payload",
+        content = @Content(
+            schema = @Schema(implementation = CompanyStatusDecisionRequest.class),
+            examples = @ExampleObject(
+                name = "DecideCompanyStatus",
+                value = "{\n  \"status\": \"ACTIVE\"\n}"
+            )
+        )
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Company status updated successfully",
+            content = @Content(schema = @Schema(implementation = CompanyResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid status value or transition",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Company not found",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        )
+    })
+    CompanyResponse decideStatus(@Positive(message = "{validation.common.id.positive}") Long id,
+                                 @Valid CompanyStatusDecisionRequest request);
 }

@@ -2,9 +2,11 @@ package com.snb.ms.company;
 
 import com.snb.ms.company.CompanyResponse;
 import com.snb.ms.company.CompanyCreateRequest;
+import com.snb.ms.company.CompanyStatusDecisionRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.company.CompanyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -70,5 +72,16 @@ public class CompanyController implements CompanyApi {
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Soft-deleted company id={}", id);
         return deleted;
+    }
+
+    @Override
+    @PatchMapping("/{id}/status")
+    public CompanyResponse decideStatus(@PathVariable Long id,
+                                        @Valid @RequestBody CompanyStatusDecisionRequest request) {
+        log.debug("Received status decision for company id={} targetStatus={}", id, request.getStatus());
+        CompanyResponse updated = companyService.decideStatus(id, request)
+            .orElseThrow(() -> ResourceNotFoundException.companyById(id));
+        log.info("Updated company status id={} to={}", id, updated.getCompanyStatus());
+        return updated;
     }
 }

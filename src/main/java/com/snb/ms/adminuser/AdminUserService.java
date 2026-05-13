@@ -72,14 +72,18 @@ public class AdminUserService {
     public Optional<AdminUserResponse> update(Long id, AdminUserUpdateRequest request) {
         log.debug("Updating admin user id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
         Optional<AdminUserResponse> updated = adminUserRepository.findByIdWithUser(id).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
                 user.setEmailAddress(request.getEmailAddress());
                 user.setMobileNumber(request.getMobileNumber());
+                user.setUpdatedAt(now);
+                user.setUpdatedBy(callerId);
+                user.setVersionNumber((user.getVersionNumber() == null ? 0L : user.getVersionNumber()) + 1);
             }
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
@@ -92,11 +96,13 @@ public class AdminUserService {
     public Optional<AdminUserResponse> softDelete(Long id) {
         log.debug("Soft-deleting admin user id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
         Optional<AdminUserResponse> deleted = adminUserRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
-            existing.setDeletedAt(LocalDateTime.now());
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setDeletedAt(now);
+            existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
         log.info("Admin user soft-delete id={} success={}", id, deleted.isPresent());

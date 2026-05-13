@@ -87,11 +87,13 @@ public class UsersService {
     public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
         log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(deletedBy);
+        LocalDateTime now = LocalDateTime.now();
         Optional<UsersDto> deleted = usersRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
-            existing.setDeletedAt(LocalDateTime.now());
+            existing.setDeletedAt(now);
             existing.setUpdatedBy(callerId);
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setUpdatedAt(now);
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
             return usersMapper.toDto(usersRepository.save(existing));
         });
         log.info("User soft-delete id={} success={}", id, deleted.isPresent());

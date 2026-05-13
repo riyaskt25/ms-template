@@ -93,11 +93,13 @@ public class SalesmanService {
     public Optional<SalesmanResponse> softDelete(Long id) {
         log.debug("Soft-deleting salesman id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
         Optional<SalesmanResponse> deleted = salesmanRepository.findByIdWithUser(id).map(existing -> {
             existing.setDeletedFlag("Y");
-            existing.setDeletedAt(LocalDateTime.now());
-            existing.setUpdatedAt(LocalDateTime.now());
+            existing.setDeletedAt(now);
+            existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
+            existing.setVersionNumber(existing.getVersionNumber() + 1);
             return salesmanMapper.toDto(salesmanRepository.save(existing));
         });
         log.info("Salesman soft-delete id={} success={}", id, deleted.isPresent());
