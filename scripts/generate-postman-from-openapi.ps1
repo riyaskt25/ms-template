@@ -124,6 +124,11 @@ function Get-BodyTemplateRaw {
     "mobileNumber": "{{companyMobileNumber}}"
 }
 "@
+                "PATCH /api/companies/{id}/status" = @"
+{
+    "status": "{{companyDecisionStatus}}"
+}
+"@
                 "POST /api/salesmen" = @"
 {
     "firstName": "John",
@@ -284,6 +289,7 @@ $collection = [ordered]@{
         [ordered]@{ key = "companyRegistrationNumber"; value = "REG-2026-0001" },
         [ordered]@{ key = "companyEmailAddress"; value = "company@example.com" },
         [ordered]@{ key = "companyMobileNumber"; value = "+971555010101" },
+        [ordered]@{ key = "companyDecisionStatus"; value = "ACTIVE" },
         [ordered]@{ key = "X-Request-Id"; value = "req-local-001" },
         [ordered]@{ key = "X-Tenant-Id"; value = "SNB" },
         [ordered]@{ key = "USER_ID"; value = "1" },

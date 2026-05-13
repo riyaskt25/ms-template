@@ -38,6 +38,10 @@
                          "value":  "+971555010101"
                      },
                      {
+                         "key":  "companyDecisionStatus",
+                         "value":  "ACTIVE"
+                     },
+                     {
                          "key":  "X-Request-Id",
                          "value":  "req-local-001"
                      },
@@ -174,6 +178,55 @@
                                                                                "{{companyId}}"
                                                                            ]
                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "decideStatus",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Request-Id",
+                                                                         "value":  "{{X-Request-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Accept-Language",
+                                                                         "value":  "{{Accept-Language}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Tenant-Id",
+                                                                         "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}/status",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "companies",
+                                                                               "{{id}}",
+                                                                               "status"
+                                                                           ]
+                                                              },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               },
+                                                                   "raw":  "{\r\n    \"status\": \"{{companyDecisionStatus}}\"\r\n}"
+                                                               }
                                                   }
                                   },
                                   {
