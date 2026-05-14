@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import com.snb.ms.shared.PaginatedResponseDTO;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Companies", description = "Operations for company resources")
@@ -44,7 +44,7 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "200",
             description = "Companies fetched successfully",
-            content = @Content(schema = @Schema(implementation = Page.class))
+            content = @Content(schema = @Schema(implementation = CompanyPageResponse.class))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -52,7 +52,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    Page<CompanyResponse> findAll(@Valid @ParameterObject CompanyListQuery query);
+    PaginatedResponseDTO<CompanyResponse> findAll(@Valid @ParameterObject CompanyListQuery query);
 
     @Operation(
         operationId = "getCompanyById",

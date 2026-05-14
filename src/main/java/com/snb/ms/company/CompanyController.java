@@ -6,7 +6,9 @@ import com.snb.ms.company.CompanyStatusDecisionRequest;
 import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.company.CompanyService;
+import com.snb.ms.shared.PaginatedResponseDTO;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,18 +29,18 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping
-    public Page<CompanyResponse> findAll(@Valid @ModelAttribute CompanyListQuery query) {
+    public PaginatedResponseDTO<CompanyResponse> findAll(@Valid @ModelAttribute CompanyListQuery query) {
         log.debug("Received request to fetch companies: page={}, size={}, sortBy={}, sortDirection={}, includeSalesmen={}",
             query.getPage(), query.getSize(), query.getSortBy(), query.getSortDirection(), query.getIncludeSalesmen());
         Page<CompanyResponse> companies = companyService.findAll(query);
         log.info("Fetched companies: page={}, size={}, returned={}, total={}",
             companies.getNumber(), companies.getSize(), companies.getNumberOfElements(), companies.getTotalElements());
-        return companies;
+        return PaginatedResponseDTO.fromPage(companies);
     }
 
     @Override
     @GetMapping("/{id}")
-    public CompanyResponse findById(@PathVariable Long id) {
+    public CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
         log.debug("Received request to fetch company by id={}", id);
         CompanyResponse result = companyService.findById(id)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
@@ -57,7 +59,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PutMapping("/{id}")
-    public CompanyResponse update(@PathVariable Long id,
+    public CompanyResponse update(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
                                   @Valid @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
         CompanyResponse updated = companyService.update(id, request)
@@ -68,7 +70,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public CompanyResponse softDelete(@PathVariable Long id) {
+    public CompanyResponse softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
         CompanyResponse deleted = companyService.softDelete(id)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
@@ -78,7 +80,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PatchMapping("/{id}/status")
-    public CompanyResponse decideStatus(@PathVariable Long id,
+    public CompanyResponse decideStatus(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
                                         @Valid @RequestBody CompanyStatusDecisionRequest request) {
         log.debug("Received status decision for company id={} targetStatus={}", id, request.getStatus());
         CompanyResponse updated = companyService.decideStatus(id, request)

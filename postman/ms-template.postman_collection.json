@@ -252,13 +252,55 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies",
+                                                                  "raw":  "{{baseUrl}}/api/companies?page=0&size=10&sortBy=companyId&sortDirection=ASC&registrationNumber=&companyStatus=&companyType=&emailAddress=&mobileNumber=&includeSalesmen=true",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "companies"
+                                                                           ],
+                                                                  "query":  [
+                                                                               {
+                                                                                   "key":  "page",
+                                                                                   "value":  "0"
+                                                                               },
+                                                                               {
+                                                                                   "key":  "size",
+                                                                                   "value":  "10"
+                                                                               },
+                                                                               {
+                                                                                   "key":  "sortBy",
+                                                                                   "value":  "companyId"
+                                                                               },
+                                                                               {
+                                                                                   "key":  "sortDirection",
+                                                                                   "value":  "ASC"
+                                                                               },
+                                                                               {
+                                                                                   "key":  "registrationNumber",
+                                                                                   "value":  ""
+                                                                               },
+                                                                               {
+                                                                                   "key":  "companyStatus",
+                                                                                   "value":  ""
+                                                                               },
+                                                                               {
+                                                                                   "key":  "companyType",
+                                                                                   "value":  ""
+                                                                               },
+                                                                               {
+                                                                                   "key":  "emailAddress",
+                                                                                   "value":  ""
+                                                                               },
+                                                                               {
+                                                                                   "key":  "mobileNumber",
+                                                                                   "value":  ""
+                                                                               },
+                                                                               {
+                                                                                   "key":  "includeSalesmen",
+                                                                                   "value":  "true"
+                                                                               }
                                                                            ]
                                                               }
                                                   }
