@@ -1,11 +1,6 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyResponse;
-import com.snb.ms.company.CompanyCreateRequest;
-import com.snb.ms.company.CompanyStatusDecisionRequest;
-import com.snb.ms.company.CompanyUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
-import com.snb.ms.company.CompanyService;
 import com.snb.ms.shared.PaginatedResponseDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

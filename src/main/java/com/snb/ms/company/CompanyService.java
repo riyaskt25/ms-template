@@ -41,18 +41,6 @@ import java.util.Optional;
 @Slf4j
 public class CompanyService {
 
-    // Whitelist public sort fields to safe entity paths.
-    private static final Map<String, String> ALLOWED_SORTS = Map.of(
-        "companyId", "companyId",
-        "registrationNumber", "registrationNumber",
-        "companyStatus", "companyStatus",
-        "companyType", "companyType",
-        "emailAddress", "user.emailAddress",
-        "mobileNumber", "user.mobileNumber",
-        "createdAt", "createdAt",
-        "updatedAt", "updatedAt"
-    );
-
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
     private final UserProvisioningService userProvisioningService;
@@ -99,21 +87,7 @@ public class CompanyService {
         Map<Long, List<com.snb.ms.salesman.SalesmanResponse>> salesmenByCompanyId = new HashMap<>();
         for (CompanySalesman cs : companySalesmen) {
             Long companyId = cs.getCompany().getCompanyId();
-            com.snb.ms.salesman.SalesmanResponse salesmanResponse = new com.snb.ms.salesman.SalesmanResponse();
-            com.snb.ms.salesman.Salesman salesman = cs.getSalesman();
-            salesmanResponse.setSalesmanId(salesman.getSalesmanId());
-            salesmanResponse.setFirstName(salesman.getFirstName());
-            salesmanResponse.setMiddleName(salesman.getMiddleName());
-            salesmanResponse.setLastName(salesman.getLastName());
-            salesmanResponse.setAccountNumber(salesman.getAccountNumber());
-            salesmanResponse.setCifNumber(salesman.getCifNumber());
-            salesmanResponse.setIdNumber(salesman.getIdNumber());
-            salesmanResponse.setAvailableIncentiveAmount(salesman.getAvailableIncentiveAmount());
-            salesmanResponse.setCreatedBy(salesman.getCreatedBy());
-            salesmanResponse.setCreatedAt(salesman.getCreatedAt());
-            salesmanResponse.setUpdatedBy(salesman.getUpdatedBy());
-            salesmanResponse.setUpdatedAt(salesman.getUpdatedAt());
-
+            com.snb.ms.salesman.SalesmanResponse salesmanResponse = SalesmanMapper.toResponse(cs.getSalesman());
             salesmenByCompanyId.computeIfAbsent(companyId, k -> new ArrayList<>()).add(salesmanResponse);
         }
 

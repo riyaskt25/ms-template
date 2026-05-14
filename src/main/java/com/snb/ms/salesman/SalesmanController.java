@@ -1,10 +1,6 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanResponse;
-import com.snb.ms.salesman.SalesmanCreateRequest;
-import com.snb.ms.salesman.SalesmanUpdateRequest;
 import com.snb.ms.exception.ResourceNotFoundException;
-import com.snb.ms.salesman.SalesmanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,14 +1,9 @@
 package com.snb.ms.companysalesman;
 
-import com.snb.ms.companysalesman.CompanySalesmanDto;
-import com.snb.ms.companysalesman.CompanySalesmanRequest;
 import com.snb.ms.company.Company;
-import com.snb.ms.companysalesman.CompanySalesman;
 import com.snb.ms.salesman.Salesman;
 import com.snb.ms.exception.ResourceNotFoundException;
-import com.snb.ms.companysalesman.CompanySalesmanMapper;
 import com.snb.ms.company.CompanyRepository;
-import com.snb.ms.companysalesman.CompanySalesmanRepository;
 import com.snb.ms.salesman.SalesmanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

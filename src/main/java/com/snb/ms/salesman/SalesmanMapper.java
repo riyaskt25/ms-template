@@ -1,9 +1,5 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanResponse;
-import com.snb.ms.salesman.SalesmanCreateRequest;
-import com.snb.ms.salesman.SalesmanUpdateRequest;
-import com.snb.ms.salesman.Salesman;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

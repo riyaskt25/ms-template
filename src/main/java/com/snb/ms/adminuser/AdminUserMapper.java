@@ -1,9 +1,5 @@
 package com.snb.ms.adminuser;
 
-import com.snb.ms.adminuser.AdminUserResponse;
-import com.snb.ms.adminuser.AdminUserCreateRequest;
-import com.snb.ms.adminuser.AdminUserUpdateRequest;
-import com.snb.ms.adminuser.AdminUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

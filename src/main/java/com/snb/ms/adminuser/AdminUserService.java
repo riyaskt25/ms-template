@@ -1,13 +1,7 @@
 package com.snb.ms.adminuser;
 
-import com.snb.ms.adminuser.AdminUserResponse;
-import com.snb.ms.adminuser.AdminUserCreateRequest;
-import com.snb.ms.adminuser.AdminUserUpdateRequest;
 import com.snb.ms.shared.UsersRequest;
-import com.snb.ms.adminuser.AdminUser;
 import com.snb.ms.shared.Users;
-import com.snb.ms.adminuser.AdminUserMapper;
-import com.snb.ms.adminuser.AdminUserRepository;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,5 @@
 package com.snb.ms.shared;
 
-import com.snb.ms.shared.UsersDto;
-import com.snb.ms.shared.UsersRequest;
-import com.snb.ms.shared.Users;
-import com.snb.ms.shared.UsersMapper;
-import com.snb.ms.shared.UsersRepository;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,7 @@
 package com.snb.ms.salesman;
 
-import com.snb.ms.salesman.SalesmanResponse;
-import com.snb.ms.salesman.SalesmanCreateRequest;
-import com.snb.ms.salesman.SalesmanUpdateRequest;
 import com.snb.ms.shared.UsersRequest;
-import com.snb.ms.salesman.Salesman;
 import com.snb.ms.shared.Users;
-import com.snb.ms.salesman.SalesmanMapper;
-import com.snb.ms.salesman.SalesmanRepository;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.companysalesman.CompanySalesmanService;
 import com.snb.ms.shared.request.RequestContextAccessor;
