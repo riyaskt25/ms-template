@@ -287,16 +287,83 @@ paths:
     get:
       tags:
       - Companies
+      summary: List companies with pagination, sorting, and filtering
+      description: Returns active company records with pagination, sorting, and optional filtering.
       operationId: findAll_1
+      parameters:
+      - name: page
+        in: query
+        description: Zero-based page index
+        schema:
+          type: integer
+          format: int32
+          default: 0
+        example: 0
+      - name: size
+        in: query
+        description: Page size (max 200)
+        schema:
+          type: integer
+          format: int32
+          default: 10
+        example: 20
+      - name: sortBy
+        in: query
+        description: Sort fields (comma-separated)
+        schema:
+          type: string
+        example: "companyId,registrationNumber"
+      - name: sortDirection
+        in: query
+        description: Sort directions (single value for all or comma-separated per field)
+        schema:
+          type: string
+          default: ASC
+        example: "DESC,ASC"
+      - name: includeSalesmen
+        in: query
+        description: Set true to include associated salesmen in each company
+        schema:
+          type: boolean
+          default: false
+        example: true
+      - name: registrationNumber
+        in: query
+        description: Optional registration number contains filter
+        schema:
+          type: string
+        example: "REG-2026"
+      - name: companyStatus
+        in: query
+        description: Optional company status contains filter
+        schema:
+          type: string
+        example: "ACTIVE"
+      - name: companyType
+        in: query
+        description: Optional company type contains filter
+        schema:
+          type: string
+        example: "DEALER"
+      - name: emailAddress
+        in: query
+        description: Optional email contains filter
+        schema:
+          type: string
+        example: "company@example.com"
+      - name: mobileNumber
+        in: query
+        description: Optional mobile contains filter
+        schema:
+          type: string
+        example: "+971555"
       responses:
         "200":
-          description: OK
+          description: Companies fetched successfully
           content:
             '*/*':
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CompanyDto"
+                $ref: "#/components/schemas/CompanyPageResponse"
     post:
       tags:
       - Companies
@@ -686,3 +753,78 @@ components:
           type: string
         body:
           type: string
+    PaginationMeta:
+      type: object
+      description: Pagination metadata
+      properties:
+        page:
+          type: integer
+          format: int32
+          description: Zero-based page index
+          example: 0
+        size:
+          type: integer
+          format: int32
+          description: Requested page size
+          example: 10
+        numberOfElements:
+          type: integer
+          format: int32
+          description: Number of elements in current page
+          example: 7
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of matching elements
+          example: 57
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of pages
+          example: 6
+        first:
+          type: boolean
+          description: Whether this page is the first page
+          example: true
+        last:
+          type: boolean
+          description: Whether this page is the last page
+          example: false
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+          example: true
+        hasPrevious:
+          type: boolean
+          description: Whether there is a previous page
+          example: false
+        sorted:
+          type: boolean
+          description: Whether results are sorted
+          example: false
+        sortFields:
+          type: array
+          description: List of sort fields and directions
+          items:
+            type: string
+          example: ["companyId,ASC"]
+    PaginatedResponseDTO:
+      type: object
+      description: Standard paginated response wrapper
+      properties:
+        data:
+          type: array
+          description: List of items in the current page
+          items: {}
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+    CompanyPageResponse:
+      allOf:
+      - $ref: "#/components/schemas/PaginatedResponseDTO"
+      - type: object
+        properties:
+          data:
+            type: array
+            description: List of companies in the current page
+            items:
+              $ref: "#/components/schemas/CompanyDto"

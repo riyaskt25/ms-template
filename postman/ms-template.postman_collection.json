@@ -85,14 +85,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/{{companyId}}",
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "companies",
-                                                                               "{{companyId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -124,14 +124,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/{{companyId}}",
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "companies",
-                                                                               "{{companyId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               },
                                                       "body":  {
@@ -168,14 +168,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/{{companyId}}",
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "companies",
-                                                                               "{{companyId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -252,7 +252,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies?page=0&size=10&sortBy=companyId&sortDirection=ASC&registrationNumber=&companyStatus=&companyType=&emailAddress=&mobileNumber=&includeSalesmen=true",
+                                                                  "raw":  "{{baseUrl}}/api/companies?page=0\u0026size=20\u0026sortBy=companyId,registrationNumber\u0026sortDirection=DESC,ASC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -261,47 +261,57 @@
                                                                                "companies"
                                                                            ],
                                                                   "query":  [
-                                                                               {
-                                                                                   "key":  "page",
-                                                                                   "value":  "0"
-                                                                               },
-                                                                               {
-                                                                                   "key":  "size",
-                                                                                   "value":  "10"
-                                                                               },
-                                                                               {
-                                                                                   "key":  "sortBy",
-                                                                                   "value":  "companyId"
-                                                                               },
-                                                                               {
-                                                                                   "key":  "sortDirection",
-                                                                                   "value":  "ASC"
-                                                                               },
-                                                                               {
-                                                                                   "key":  "registrationNumber",
-                                                                                   "value":  ""
-                                                                               },
-                                                                               {
-                                                                                   "key":  "companyStatus",
-                                                                                   "value":  ""
-                                                                               },
-                                                                               {
-                                                                                   "key":  "companyType",
-                                                                                   "value":  ""
-                                                                               },
-                                                                               {
-                                                                                   "key":  "emailAddress",
-                                                                                   "value":  ""
-                                                                               },
-                                                                               {
-                                                                                   "key":  "mobileNumber",
-                                                                                   "value":  ""
-                                                                               },
-                                                                               {
-                                                                                   "key":  "includeSalesmen",
-                                                                                   "value":  "true"
-                                                                               }
-                                                                           ]
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0",
+                                                                                    "description":  "Zero-based page index"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "20",
+                                                                                    "description":  "Page size (max 200)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortBy",
+                                                                                    "value":  "companyId,registrationNumber",
+                                                                                    "description":  "Sort fields (comma-separated)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortDirection",
+                                                                                    "value":  "DESC,ASC",
+                                                                                    "description":  "Sort directions (single value for all or comma-separated per field)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "includeSalesmen",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "registrationNumber",
+                                                                                    "value":  "REG-2026",
+                                                                                    "description":  "Optional registration number contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyStatus",
+                                                                                    "value":  "ACTIVE",
+                                                                                    "description":  "Optional company status contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyType",
+                                                                                    "value":  "DEALER",
+                                                                                    "description":  "Optional company type contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "emailAddress",
+                                                                                    "value":  "company@example.com",
+                                                                                    "description":  "Optional email contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "mobileNumber",
+                                                                                    "value":  "+971555",
+                                                                                    "description":  "Optional mobile contains filter"
+                                                                                }
+                                                                            ]
                                                               }
                                                   }
                                   },
@@ -380,14 +390,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{salesmanId}}",
+                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "salesmen",
-                                                                               "{{salesmanId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -419,14 +429,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{salesmanId}}",
+                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "salesmen",
-                                                                               "{{salesmanId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               },
                                                       "body":  {
@@ -463,14 +473,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{salesmanId}}",
+                                                                  "raw":  "{{baseUrl}}/api/salesmen/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "salesmen",
-                                                                               "{{salesmanId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -584,14 +594,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{adminUserId}}",
+                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "admin-users",
-                                                                               "{{adminUserId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -623,14 +633,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{adminUserId}}",
+                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "admin-users",
-                                                                               "{{adminUserId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               },
                                                       "body":  {
@@ -667,14 +677,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{adminUserId}}",
+                                                                  "raw":  "{{baseUrl}}/api/admin-users/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "admin-users",
-                                                                               "{{adminUserId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }
@@ -822,14 +832,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/posts/{{postId}}",
+                                                                  "raw":  "{{baseUrl}}/api/posts/{{id}}",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
                                                                                "posts",
-                                                                               "{{postId}}"
+                                                                               "{{id}}"
                                                                            ]
                                                               }
                                                   }

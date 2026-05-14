@@ -14,6 +14,7 @@ import com.snb.ms.company.CompanyRepository;
 import com.snb.ms.shared.constants.ListQueryDefaults;
 import com.snb.ms.companysalesman.CompanySalesmanRepository;
 import com.snb.ms.companysalesman.CompanySalesman;
+import com.snb.ms.salesman.SalesmanMapper;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import jakarta.persistence.criteria.Join;
@@ -55,6 +56,7 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
+    private final SalesmanMapper salesmanMapper;
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
     private final CompanySalesmanRepository companySalesmanRepository;
@@ -95,26 +97,12 @@ public class CompanyService {
         // Bulk fetch salesmen for all companies in this page
         List<CompanySalesman> companySalesmen = companySalesmanRepository.findActiveByCompanyIds(companyIds);
 
-        // Group by company ID for efficient mapping
-        Map<Long, List<com.snb.ms.salesman.SalesmanResponse>> salesmenByCompanyId = new HashMap<>();
-        for (CompanySalesman cs : companySalesmen) {
-            Long companyId = cs.getCompany().getCompanyId();
-            com.snb.ms.salesman.Salesman salesman = cs.getSalesman();
-            com.snb.ms.salesman.SalesmanResponse salesmanResponse = new com.snb.ms.salesman.SalesmanResponse();
-            salesmanResponse.setSalesmanId(salesman.getSalesmanId());
-            salesmanResponse.setFirstName(salesman.getFirstName());
-            salesmanResponse.setMiddleName(salesman.getMiddleName());
-            salesmanResponse.setLastName(salesman.getLastName());
-            salesmanResponse.setAccountNumber(salesman.getAccountNumber());
-            salesmanResponse.setCifNumber(salesman.getCifNumber());
-            salesmanResponse.setIdNumber(salesman.getIdNumber());
-            salesmanResponse.setAvailableIncentiveAmount(salesman.getAvailableIncentiveAmount());
-            salesmanResponse.setCreatedBy(salesman.getCreatedBy());
-            salesmanResponse.setCreatedAt(salesman.getCreatedAt());
-            salesmanResponse.setUpdatedBy(salesman.getUpdatedBy());
-            salesmanResponse.setUpdatedAt(salesman.getUpdatedAt());
-            salesmenByCompanyId.computeIfAbsent(companyId, k -> new ArrayList<>()).add(salesmanResponse);
-        }
+        // Group by company ID and map salesmen to responses using mapper
+        Map<Long, List<com.snb.ms.salesman.SalesmanResponse>> salesmenByCompanyId = companySalesmen.stream()
+            .collect(Collectors.groupingBy(
+                cs -> cs.getCompany().getCompanyId(),
+                Collectors.mapping(cs -> salesmanMapper.toDto(cs.getSalesman()), Collectors.toList())
+            ));
 
         // Attach salesmen to each company response
         for (CompanyResponse company : companiesPage.getContent()) {

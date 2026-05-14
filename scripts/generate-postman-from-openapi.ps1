@@ -15,6 +15,9 @@ $inPaths = $false
 $currentPath = $null
 $currentOp = $null
 $expectingTagItem = $false
+$inParameters = $false
+$inCurrentParameter = $false
+$currentParameter = $null
 $operations = New-Object System.Collections.Generic.List[object]
 
 function Add-CurrentOperation {
@@ -49,6 +52,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
         Add-CurrentOperation -opRef ([ref]$currentOp) -ops $operations
         $currentPath = $Matches[1]
         $expectingTagItem = $false
+        $inParameters = $false
         continue
     }
 
@@ -60,8 +64,10 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
             tag = $null
             operationId = $null
             hasBody = $false
+            parameters = @()
         }
         $expectingTagItem = $false
+        $inParameters = $false
         continue
     }
 
@@ -71,6 +77,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
     if ($line -match '^      tags:\s*$') {
         $expectingTagItem = $true
+        $inParameters = $false
         continue
     }
 
@@ -82,20 +89,107 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
     if ($line -match '^      operationId:\s*(.+?)\s*$') {
         $currentOp.operationId = $Matches[1]
+        $inParameters = $false
         continue
+    }
+
+    if ($line -match '^      parameters:\s*$') {
+        $inParameters = $true
+        continue
+    }
+
+    if ($inParameters -and $line -match '^      - name:\s*(.+?)\s*$') {
+        # Save previous parameter if exists
+        if ($null -ne $currentParameter -and $currentParameter.name) {
+            $currentOp.parameters += @($currentParameter)
+        }
+        $currentParameter = [ordered]@{
+            name = $Matches[1]
+            in = $null
+            type = "string"
+            description = $null
+            default = $null
+            example = $null
+            required = $false
+        }
+        continue
+    }
+
+    if ($inParameters -and $null -ne $currentParameter) {
+        if ($line -match '^\s+in:\s*(.+?)\s*$') {
+            $currentParameter.in = $Matches[1]
+            continue
+        }
+        if ($line -match '^\s+description:\s*(.+?)\s*$') {
+            $currentParameter.description = $Matches[1]
+            continue
+        }
+        if ($line -match '^\s+required:\s*(true|false)\s*$') {
+            $currentParameter.required = ($Matches[1] -eq "true")
+            continue
+        }
+        if ($line -match '^\s+example:\s*(.+?)\s*$') {
+            $currentParameter.example = $Matches[1]
+            continue
+        }
+        if ($line -match '^\s+default:\s*(.+?)\s*$') {
+            $currentParameter.default = $Matches[1]
+            continue
+        }
+        if ($line -match '^\s+schema:\s*$') {
+            # Look ahead for schema type
+            if ($i + 1 -lt $lines.Count -and $lines[$i + 1] -match '^\s+type:\s*(.+?)\s*$') {
+                $schemaMatch = $lines[$i + 1] -match '^\s+type:\s*(.+?)\s*$'
+                if ($schemaMatch) {
+                    $currentParameter.type = $Matches[1]
+                }
+            }
+            continue
+        }
+        if ($line -match '^      - name:|^      requestBody:|^      responses:' -or $line -match '^    [a-z]+:') {
+            if ($currentParameter.name) {
+                $currentOp.parameters += @($currentParameter)
+            }
+            $currentParameter = $null
+            if ($line -match '^      requestBody:\s*$') {
+                $currentOp.hasBody = $true
+            }
+            if ($line -match '^      responses:') {
+                $inParameters = $false
+            }
+            continue
+        }
     }
 
     if ($line -match '^      requestBody:\s*$') {
         $currentOp.hasBody = $true
+        $inParameters = $false
+        continue
+    }
+
+    if ($line -match '^      responses:') {
+        $inParameters = $false
         continue
     }
 
     if ($line -notmatch '^      ') {
         $expectingTagItem = $false
+        if ($null -ne $currentParameter) {
+            if ($currentParameter.name) {
+                $currentOp.parameters += @($currentParameter)
+            }
+            $currentParameter = $null
+        }
     }
 }
 
 Add-CurrentOperation -opRef ([ref]$currentOp) -ops $operations
+if ($null -ne $currentParameter -and $currentParameter.name) {
+    if ($null -eq $currentOp.parameters) {
+        $currentOp.parameters = @()
+    }
+    $currentOp.parameters += @($currentParameter)
+}
 
 function Get-IdVariableName {
     param([string]$path)
@@ -187,12 +281,47 @@ function Build-RequestObject {
 
     $rawPath = $op.path
     $pathSegments = @()
+    $queryParams = @()
 
+    # Separate path and query parameters
+    $pathParams = @()
+    $headerParams = @()
+    
+    if ($null -ne $op.parameters -and $op.parameters.Count -gt 0) {
+        foreach ($param in $op.parameters) {
+            if ($param.in -eq "path") {
+                $pathParams += $param
+            }
+            elseif ($param.in -eq "query") {
+                $queryParams += $param
+            }
+            elseif ($param.in -eq "header") {
+                $headerParams += $param
+            }
+        }
+    }
+
+    # Build path segments
     foreach ($segment in ($rawPath -split '/')) {
         if ([string]::IsNullOrWhiteSpace($segment)) { continue }
-        if ($segment -eq "{id}") {
-            $varName = Get-IdVariableName -path $rawPath
-            $pathSegments += "{{${varName}}}"
+        if ($segment -match '^\{.*\}$') {
+            # Extract parameter name from {id} or {paramName}
+            $paramName = $segment -replace '^\{|\}$', ''
+            # Check if this is in path parameters
+            $pathParam = $pathParams | Where-Object { $_.name -eq $paramName }
+            if ($null -ne $pathParam) {
+                $pathSegments += "{{$paramName}}"
+            }
+            else {
+                # Fallback: use variable name mapping
+                if ($paramName -eq "id") {
+                    $varName = Get-IdVariableName -path $rawPath
+                    $pathSegments += "{{${varName}}}"
+                }
+                else {
+                    $pathSegments += "{{$paramName}}"
+                }
+            }
         }
         else {
             $pathSegments += $segment
@@ -209,18 +338,59 @@ function Build-RequestObject {
         [ordered]@{ key = "USER_ID"; value = "{{USER_ID}}" }
     )
 
+    # Add custom header parameters
+    foreach ($headerParam in $headerParams) {
+        if ($headerParam.name -ne "USER_ID" -and $headerParam.name -ne "X-Request-Id" -and 
+            $headerParam.name -ne "Accept-Language" -and $headerParam.name -ne "X-Tenant-Id") {
+            $headers += [ordered]@{ key = $headerParam.name; value = "{{$($headerParam.name)}}" }
+        }
+    }
+
     if ($op.hasBody) {
         $headers = @([ordered]@{ key = "Content-Type"; value = "application/json" }) + $headers
+    }
+
+    $url = [ordered]@{
+        raw = $rawUrl
+        host = @("{{baseUrl}}")
+        path = $pathSegments
+    }
+
+    # Build query array
+    if ($queryParams.Count -gt 0) {
+        $queryArray = @()
+        foreach ($qParam in $queryParams) {
+            $value = if ($null -ne $qParam.example) {
+                $qParam.example
+            }
+            elseif ($null -ne $qParam.default) {
+                $qParam.default
+            }
+            else {
+                ""
+            }
+            
+            # Remove quotes if present
+            $value = $value.Trim('"').Trim("'")
+            
+            $queryArray += [ordered]@{
+                key = $qParam.name
+                value = $value
+                description = $qParam.description
+            }
+        }
+        if ($queryArray.Count -gt 0) {
+            $url.query = $queryArray
+            # Update raw URL to include query string
+            $queryString = ($queryArray | ForEach-Object { "$($_.key)=$($_.value)" }) -join '&'
+            $url.raw = "$rawUrl`?$queryString"
+        }
     }
 
     $request = [ordered]@{
         method = $op.method
         header = $headers
-        url = [ordered]@{
-            raw = $rawUrl
-            host = @("{{baseUrl}}")
-            path = $pathSegments
-        }
+        url = $url
     }
 
     if ($op.hasBody) {
