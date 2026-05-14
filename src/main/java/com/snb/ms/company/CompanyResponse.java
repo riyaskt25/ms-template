@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,4 +43,7 @@ public class CompanyResponse extends BaseResponseDTO {
 
     @Schema(description = "Last update timestamp in ISO-8601 format", example = "2026-05-04T11:20:45")
     private LocalDateTime updatedAt;
+
+    @Schema(description = "Associated salesmen (only when includeSalesmen=true is requested)")
+    private List<com.snb.ms.salesman.SalesmanResponse> salesmen;
 }

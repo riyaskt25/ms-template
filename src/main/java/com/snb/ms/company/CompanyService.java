@@ -11,14 +11,28 @@ import com.snb.ms.company.Company;
 import com.snb.ms.shared.Users;
 import com.snb.ms.company.CompanyMapper;
 import com.snb.ms.company.CompanyRepository;
+import com.snb.ms.shared.constants.ListQueryDefaults;
+import com.snb.ms.companysalesman.CompanySalesmanRepository;
+import com.snb.ms.companysalesman.CompanySalesman;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,17 +41,184 @@ import java.util.Optional;
 @Slf4j
 public class CompanyService {
 
+    // Whitelist public sort fields to safe entity paths.
+    private static final Map<String, String> ALLOWED_SORTS = Map.of(
+        "companyId", "companyId",
+        "registrationNumber", "registrationNumber",
+        "companyStatus", "companyStatus",
+        "companyType", "companyType",
+        "emailAddress", "user.emailAddress",
+        "mobileNumber", "user.mobileNumber",
+        "createdAt", "createdAt",
+        "updatedAt", "updatedAt"
+    );
+
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
     private final UserProvisioningService userProvisioningService;
     private final RequestContextAccessor contextAccessor;
+    private final CompanySalesmanRepository companySalesmanRepository;
 
     @Transactional(readOnly = true)
-    public List<CompanyResponse> findAll() {
-        log.debug("Fetching all companies");
-        List<CompanyResponse> companies = companyMapper.toDtoList(companyRepository.findAllActiveWithUser());
-        log.info("Fetched {} companies", companies.size());
+    public Page<CompanyResponse> findAll(CompanyListQuery query) {
+        Pageable pageable = buildPageable(query.getPage(), query.getSize(), query.getSortBy(), query.getSortDirection());
+        Specification<Company> specification = buildSpecification(
+            query.getRegistrationNumber(),
+            query.getCompanyStatus(),
+            query.getCompanyType(),
+            query.getEmailAddress(),
+            query.getMobileNumber()
+        );
+
+        Page<Company> companiesPage = companyRepository.findAll(specification, pageable);
+        Page<CompanyResponse> companies = companiesPage.map(companyMapper::toDto);
+
+        // Two-step loading: enrich only when includeSalesmen=true.
+        if (Boolean.TRUE.equals(query.getIncludeSalesmen())) {
+            enrichWithSalesmen(companies);
+        }
+
+        log.info("Fetched companies: page={}, size={}, returned={}, total={}",
+            companies.getNumber(), companies.getSize(), companies.getNumberOfElements(), companies.getTotalElements());
         return companies;
+    }
+
+    private void enrichWithSalesmen(Page<CompanyResponse> companiesPage) {
+        List<Long> companyIds = companiesPage.getContent().stream()
+            .map(CompanyResponse::getCompanyId)
+            .collect(Collectors.toList());
+
+        if (companyIds.isEmpty()) {
+            return;
+        }
+
+        // Bulk fetch salesmen for all companies in this page
+        List<CompanySalesman> companySalesmen = companySalesmanRepository.findActiveByCompanyIds(companyIds);
+
+        // Group by company ID for efficient mapping
+        Map<Long, List<com.snb.ms.salesman.SalesmanResponse>> salesmenByCompanyId = new HashMap<>();
+        for (CompanySalesman cs : companySalesmen) {
+            Long companyId = cs.getCompany().getCompanyId();
+            com.snb.ms.salesman.SalesmanResponse salesmanResponse = new com.snb.ms.salesman.SalesmanResponse();
+            com.snb.ms.salesman.Salesman salesman = cs.getSalesman();
+            salesmanResponse.setSalesmanId(salesman.getSalesmanId());
+            salesmanResponse.setFirstName(salesman.getFirstName());
+            salesmanResponse.setMiddleName(salesman.getMiddleName());
+            salesmanResponse.setLastName(salesman.getLastName());
+            salesmanResponse.setAccountNumber(salesman.getAccountNumber());
+            salesmanResponse.setCifNumber(salesman.getCifNumber());
+            salesmanResponse.setIdNumber(salesman.getIdNumber());
+            salesmanResponse.setAvailableIncentiveAmount(salesman.getAvailableIncentiveAmount());
+            salesmanResponse.setCreatedBy(salesman.getCreatedBy());
+            salesmanResponse.setCreatedAt(salesman.getCreatedAt());
+            salesmanResponse.setUpdatedBy(salesman.getUpdatedBy());
+            salesmanResponse.setUpdatedAt(salesman.getUpdatedAt());
+
+            salesmenByCompanyId.computeIfAbsent(companyId, k -> new ArrayList<>()).add(salesmanResponse);
+        }
+
+        // Attach salesmen to each company response
+        for (CompanyResponse company : companiesPage.getContent()) {
+            company.setSalesmen(salesmenByCompanyId.getOrDefault(company.getCompanyId(), List.of()));
+        }
+    }
+
+    private Pageable buildPageable(Integer page, Integer size, String sortBy, String sortDirection) {
+        int effectivePage = page == null ? ListQueryDefaults.DEFAULT_PAGE : Math.max(page, ListQueryDefaults.DEFAULT_PAGE);
+        int requestedSize = size == null ? ListQueryDefaults.DEFAULT_SIZE : size;
+        int effectiveSize = Math.min(Math.max(requestedSize, 1), ListQueryDefaults.MAX_PAGE_SIZE);
+
+        Sort sort = buildSort(sortBy, sortDirection);
+        return PageRequest.of(effectivePage, effectiveSize, sort);
+    }
+
+    private Sort buildSort(String sortBy, String sortDirection) {
+        List<String> fields = splitCsv(sortBy);
+        List<String> directions = splitCsv(sortDirection);
+        boolean singleDirection = directions.size() == 1;
+
+        List<Sort.Order> orders = new ArrayList<>();
+        for (int i = 0; i < fields.size(); i++) {
+            String requestedField = fields.get(i);
+            String mappedField = ALLOWED_SORTS.get(requestedField);
+            if (mappedField == null) {
+                continue;
+            }
+
+            String requestedDirection = directions.isEmpty()
+                ? "ASC"
+                : (singleDirection ? directions.get(0) : directions.get(Math.min(i, directions.size() - 1)));
+
+            Sort.Direction direction = "DESC".equalsIgnoreCase(requestedDirection)
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+            orders.add(new Sort.Order(direction, mappedField));
+        }
+
+        if (orders.isEmpty()) {
+            return Sort.by(Sort.Order.asc("companyId"));
+        }
+        return Sort.by(orders);
+    }
+
+    private List<String> splitCsv(String raw) {
+        if (raw == null || raw.trim().isEmpty()) {
+            return List.of();
+        }
+
+        List<String> values = new ArrayList<>();
+        for (String item : raw.split(",")) {
+            String trimmed = item.trim();
+            if (!trimmed.isEmpty()) {
+                values.add(trimmed);
+            }
+        }
+        return values;
+    }
+
+    private Specification<Company> buildSpecification(String registrationNumber,
+                                                      String companyStatus,
+                                                      String companyType,
+                                                      String emailAddress,
+                                                      String mobileNumber) {
+        Specification<Company> specification = activeOnly();
+        specification = specification.and(likeCompanyField("registrationNumber", registrationNumber));
+        specification = specification.and(likeCompanyField("companyStatus", companyStatus));
+        specification = specification.and(likeCompanyField("companyType", companyType));
+        specification = specification.and(likeUserField("emailAddress", emailAddress));
+        specification = specification.and(likeUserField("mobileNumber", mobileNumber));
+        return specification;
+    }
+
+    private Specification<Company> activeOnly() {
+        return (root, query, cb) -> cb.equal(root.get("deletedFlag"), "N");
+    }
+
+    private Specification<Company> likeCompanyField(String fieldName, String value) {
+        if (isBlank(value)) {
+            return null;
+        }
+        String normalized = normalizeLikeValue(value);
+        return (root, query, cb) -> cb.like(cb.lower(root.get(fieldName)), normalized);
+    }
+
+    private Specification<Company> likeUserField(String fieldName, String value) {
+        if (isBlank(value)) {
+            return null;
+        }
+        String normalized = normalizeLikeValue(value);
+        return (root, query, cb) -> {
+            Join<Object, Object> userJoin = root.join("user", JoinType.INNER);
+            return cb.like(cb.lower(userJoin.get(fieldName)), normalized);
+        };
+    }
+
+    private String normalizeLikeValue(String value) {
+        return "%" + value.trim().toLowerCase() + "%";
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     @Transactional(readOnly = true)

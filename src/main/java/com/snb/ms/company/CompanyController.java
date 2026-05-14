@@ -9,12 +9,12 @@ import com.snb.ms.company.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -27,10 +27,12 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping
-    public List<CompanyResponse> findAll() {
-        log.debug("Received request to fetch all companies");
-        List<CompanyResponse> companies = companyService.findAll();
-        log.info("Fetched {} companies", companies.size());
+    public Page<CompanyResponse> findAll(@Valid @ModelAttribute CompanyListQuery query) {
+        log.debug("Received request to fetch companies: page={}, size={}, sortBy={}, sortDirection={}, includeSalesmen={}",
+            query.getPage(), query.getSize(), query.getSortBy(), query.getSortDirection(), query.getIncludeSalesmen());
+        Page<CompanyResponse> companies = companyService.findAll(query);
+        log.info("Fetched companies: page={}, size={}, returned={}, total={}",
+            companies.getNumber(), companies.getSize(), companies.getNumberOfElements(), companies.getTotalElements());
         return companies;
     }
 
@@ -46,7 +48,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<CompanyResponse> create(@RequestBody CompanyCreateRequest request) {
+    public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyCreateRequest request) {
         log.debug("Received request to create company registrationNumber={}", request.getRegistrationNumber());
         CompanyResponse created = companyService.create(request);
         log.info("Created company with id={}", created.getCompanyId());
@@ -56,7 +58,7 @@ public class CompanyController implements CompanyApi {
     @Override
     @PutMapping("/{id}")
     public CompanyResponse update(@PathVariable Long id,
-                                  @RequestBody CompanyUpdateRequest request) {
+                                  @Valid @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
         CompanyResponse updated = companyService.update(id, request)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));

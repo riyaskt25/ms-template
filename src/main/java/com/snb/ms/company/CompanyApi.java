@@ -4,7 +4,6 @@ import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,9 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Tag(name = "Companies", description = "Operations for company resources")
 public interface CompanyApi {
@@ -24,18 +23,28 @@ public interface CompanyApi {
     @Operation(
         operationId = "getAllCompanies",
         summary = "List companies",
-        description = "Returns all active company records managed by this service."
+        description = "Returns active company records with pagination, sorting, and optional filtering."
     )
     @Parameters({
         @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
         @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
+        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
+        @Parameter(name = "page", description = "Zero-based page index", example = "0"),
+        @Parameter(name = "size", description = "Page size (max 200)", example = "20"),
+        @Parameter(name = "sortBy", description = "Sort fields (comma-separated)", example = "companyId,registrationNumber"),
+        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "DESC,ASC"),
+        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", example = "true"),
+        @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
+        @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
+        @Parameter(name = "companyType", description = "Optional company type contains filter", example = "DEALER"),
+        @Parameter(name = "emailAddress", description = "Optional email contains filter", example = "company@example.com"),
+        @Parameter(name = "mobileNumber", description = "Optional mobile contains filter", example = "+971555")
     })
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
             description = "Companies fetched successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CompanyResponse.class)))
+            content = @Content(schema = @Schema(implementation = Page.class))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -43,7 +52,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    List<CompanyResponse> findAll();
+    Page<CompanyResponse> findAll(@Valid @ParameterObject CompanyListQuery query);
 
     @Operation(
         operationId = "getCompanyById",
