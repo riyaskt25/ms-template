@@ -1,6 +1,7 @@
 package com.snb.ms.company;
 
 import com.snb.ms.shared.BaseResponseDTO;
+import com.snb.ms.shared.api.CommonApiParameters;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import com.snb.ms.shared.PaginatedResponseDTO;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 
@@ -22,17 +22,15 @@ public interface CompanyApi {
 
     @Operation(
         operationId = "getAllCompanies",
-        summary = "List companies",
-        description = "Returns active company records with pagination, sorting, and optional filtering."
+        summary = "List companies (offset pagination)",
+        description = "Returns active company records using offset-based pagination. Best for small to medium datasets or when random access to pages is needed."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "page", description = "Zero-based page index", example = "0"),
         @Parameter(name = "size", description = "Page size (max 200)", example = "20"),
-        @Parameter(name = "sortBy", description = "Sort fields (comma-separated)", example = "companyId,registrationNumber"),
-        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "DESC,ASC"),
+        @Parameter(name = "sortBy", description = "Sort fields (comma-separated)", example = "companyStatus,registrationNumber"),
+        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "ASC,DESC"),
         @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", example = "true"),
         @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
         @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
@@ -52,17 +50,52 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    PaginatedResponseDTO<CompanyResponse> findAll(@Valid @ParameterObject CompanyListQuery query);
+    CompanyPageResponse findAll(@Valid @ParameterObject CompanyListQuery query);
+
+    @Operation(
+        operationId = "getAllCompaniesCursor",
+        summary = "List companies (lazy loading with cursor)",
+        description = "Returns active company records using cursor-based lazy loading. Recommended for large datasets or continuous scrolling. Provides efficient, deterministic pagination."
+    )
+    @CommonApiParameters
+    @Parameters({
+        @Parameter(name = "cursor", description = "Opaque cursor token from previous response's lazyLoading.nextCursor. Omit for first request.", example = "eyJjb21wYW55SWQiOiIxMjAifQ"),
+        @Parameter(name = "limit", description = "Lazy-loading batch size (max 200)", example = "20"),
+        @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Multi-sort supported with companyId as automatic tie-breaker.", example = "companyStatus,registrationNumber"),
+        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "ASC,DESC"),
+        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", example = "true"),
+        @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
+        @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
+        @Parameter(name = "companyType", description = "Optional company type contains filter", example = "DEALER"),
+        @Parameter(name = "emailAddress", description = "Optional email contains filter", example = "company@example.com"),
+        @Parameter(name = "mobileNumber", description = "Optional mobile contains filter", example = "+971555")
+    })
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Companies fetched successfully",
+            content = @Content(schema = @Schema(implementation = CompanyPageResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid cursor token or parameters",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        )
+    })
+    CompanyPageResponse findAllLazy(@Valid @ParameterObject CompanyListQuery query);
 
     @Operation(
         operationId = "getCompanyById",
         summary = "Get company by id",
         description = "Finds a single company by its identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
     })
     @ApiResponses({
@@ -106,11 +139,7 @@ public interface CompanyApi {
         summary = "Create company",
         description = "Creates a new company record and provisions the linked internal user."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @RequestBody(
         required = true,
         description = "Company payload to create",
@@ -151,10 +180,8 @@ public interface CompanyApi {
         summary = "Update company",
         description = "Updates an existing company record by identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
     })
     @RequestBody(
@@ -198,10 +225,8 @@ public interface CompanyApi {
         summary = "Soft delete company",
         description = "Marks a company record as inactive without physical deletion."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
     })
     @ApiResponses({
@@ -233,10 +258,8 @@ public interface CompanyApi {
         summary = "Decide company status",
         description = "Allows administrator to decide a pending company as ACTIVE or REJECTED."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
     })
     @RequestBody(

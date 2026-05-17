@@ -11,28 +11,21 @@ import com.snb.ms.company.Company;
 import com.snb.ms.shared.Users;
 import com.snb.ms.company.CompanyMapper;
 import com.snb.ms.company.CompanyRepository;
-import com.snb.ms.shared.constants.ListQueryDefaults;
 import com.snb.ms.companysalesman.CompanySalesmanRepository;
 import com.snb.ms.companysalesman.CompanySalesman;
 import com.snb.ms.salesman.SalesmanMapper;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.Optional;
@@ -41,18 +34,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class CompanyService {
-
-    // Whitelist public sort fields to safe entity paths.
-    private static final Map<String, String> ALLOWED_SORTS = Map.of(
-        "companyId", "companyId",
-        "registrationNumber", "registrationNumber",
-        "companyStatus", "companyStatus",
-        "companyType", "companyType",
-        "emailAddress", "user.emailAddress",
-        "mobileNumber", "user.mobileNumber",
-        "createdAt", "createdAt",
-        "updatedAt", "updatedAt"
-    );
 
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
@@ -63,16 +44,22 @@ public class CompanyService {
 
     @Transactional(readOnly = true)
     public Page<CompanyResponse> findAll(CompanyListQuery query) {
-        Pageable pageable = buildPageable(query.getPage(), query.getSize(), query.getSortBy(), query.getSortDirection());
-        Specification<Company> specification = buildSpecification(
-            query.getRegistrationNumber(),
-            query.getCompanyStatus(),
-            query.getCompanyType(),
-            query.getEmailAddress(),
-            query.getMobileNumber()
+        Page<Company> companiesPage = companyRepository.findAll(
+            CompanyQueryBuilder.buildSpecification(
+                query.getRegistrationNumber(),
+                query.getCompanyStatus(),
+                query.getCompanyType(),
+                query.getEmailAddress(),
+                query.getMobileNumber()
+            ),
+            CompanyQueryBuilder.buildPageable(
+                query.getPage(),
+                query.getSize(),
+                query.getSortBy(),
+                query.getSortDirection()
+            )
         );
 
-        Page<Company> companiesPage = companyRepository.findAll(specification, pageable);
         Page<CompanyResponse> companies = companiesPage.map(companyMapper::toDto);
 
         // Two-step loading: enrich only when includeSalesmen=true.
@@ -85,8 +72,53 @@ public class CompanyService {
         return companies;
     }
 
+    @Transactional(readOnly = true)
+    public CompanyCursorSlice findAllLazy(CompanyListQuery query) {
+        Specification<Company> spec = CompanyQueryBuilder.withCursor(
+            CompanyQueryBuilder.buildSpecification(
+                query.getRegistrationNumber(),
+                query.getCompanyStatus(),
+                query.getCompanyType(),
+                query.getEmailAddress(),
+                query.getMobileNumber()
+            ),
+            query.getCursor(),
+            query.getSortBy(),
+            query.getSortDirection()
+        );
+
+        Pageable pageable = CompanyQueryBuilder.buildCursorPageable(
+            query.getLimit(),
+            query.getSortBy(),
+            query.getSortDirection()
+        );
+        Page<Company> companiesPage = companyRepository.findAll(spec, pageable);
+
+        int limit = query.getLimit() == null ? pageable.getPageSize() - 1 : query.getLimit();
+        List<Company> content = companiesPage.getContent();
+        boolean hasNext = content.size() > limit;
+        if (hasNext) {
+            content = content.subList(0, limit);
+        }
+
+        List<CompanyResponse> data = content.stream().map(companyMapper::toDto).collect(Collectors.toList());
+        if (Boolean.TRUE.equals(query.getIncludeSalesmen())) {
+            enrichWithSalesmenList(data);
+        }
+
+        String nextCursor = hasNext && !content.isEmpty()
+            ? CompanyQueryBuilder.buildNextCursor(content.get(content.size() - 1), query.getSortBy(), query.getSortDirection())
+            : null;
+
+        return new CompanyCursorSlice(data, limit, hasNext, nextCursor);
+    }
+
     private void enrichWithSalesmen(Page<CompanyResponse> companiesPage) {
-        List<Long> companyIds = companiesPage.getContent().stream()
+        enrichWithSalesmenList(companiesPage.getContent());
+    }
+
+    private void enrichWithSalesmenList(List<CompanyResponse> companies) {
+        List<Long> companyIds = companies.stream()
             .map(CompanyResponse::getCompanyId)
             .collect(Collectors.toList());
 
@@ -105,108 +137,42 @@ public class CompanyService {
             ));
 
         // Attach salesmen to each company response
-        for (CompanyResponse company : companiesPage.getContent()) {
+        for (CompanyResponse company : companies) {
             company.setSalesmen(salesmenByCompanyId.getOrDefault(company.getCompanyId(), List.of()));
         }
     }
 
-    private Pageable buildPageable(Integer page, Integer size, String sortBy, String sortDirection) {
-        int effectivePage = page == null ? ListQueryDefaults.DEFAULT_PAGE : Math.max(page, ListQueryDefaults.DEFAULT_PAGE);
-        int requestedSize = size == null ? ListQueryDefaults.DEFAULT_SIZE : size;
-        int effectiveSize = Math.min(Math.max(requestedSize, 1), ListQueryDefaults.MAX_PAGE_SIZE);
+    public static class CompanyCursorSlice {
+        private final List<CompanyResponse> data;
+        private final Integer limit;
+        private final boolean hasNext;
+        private final String nextCursor;
 
-        Sort sort = buildSort(sortBy, sortDirection);
-        return PageRequest.of(effectivePage, effectiveSize, sort);
-    }
-
-    private Sort buildSort(String sortBy, String sortDirection) {
-        List<String> fields = splitCsv(sortBy);
-        List<String> directions = splitCsv(sortDirection);
-        boolean singleDirection = directions.size() == 1;
-
-        List<Sort.Order> orders = new ArrayList<>();
-        for (int i = 0; i < fields.size(); i++) {
-            String requestedField = fields.get(i);
-            String mappedField = ALLOWED_SORTS.get(requestedField);
-            if (mappedField == null) {
-                continue;
-            }
-
-            String requestedDirection = directions.isEmpty()
-                ? "ASC"
-                : (singleDirection ? directions.get(0) : directions.get(Math.min(i, directions.size() - 1)));
-
-            Sort.Direction direction = "DESC".equalsIgnoreCase(requestedDirection)
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-            orders.add(new Sort.Order(direction, mappedField));
+        public CompanyCursorSlice(List<CompanyResponse> data, Integer limit, boolean hasNext, String nextCursor) {
+            this.data = data;
+            this.limit = limit;
+            this.hasNext = hasNext;
+            this.nextCursor = nextCursor;
         }
 
-        if (orders.isEmpty()) {
-            return Sort.by(Sort.Order.asc("companyId"));
-        }
-        return Sort.by(orders);
-    }
-
-    private List<String> splitCsv(String raw) {
-        if (raw == null || raw.trim().isEmpty()) {
-            return List.of();
+        public List<CompanyResponse> getData() {
+            return data;
         }
 
-        List<String> values = new ArrayList<>();
-        for (String item : raw.split(",")) {
-            String trimmed = item.trim();
-            if (!trimmed.isEmpty()) {
-                values.add(trimmed);
-            }
+        public Integer getLimit() {
+            return limit;
         }
-        return values;
-    }
 
-    private Specification<Company> buildSpecification(String registrationNumber,
-                                                      String companyStatus,
-                                                      String companyType,
-                                                      String emailAddress,
-                                                      String mobileNumber) {
-        Specification<Company> specification = activeOnly();
-        specification = specification.and(likeCompanyField("registrationNumber", registrationNumber));
-        specification = specification.and(likeCompanyField("companyStatus", companyStatus));
-        specification = specification.and(likeCompanyField("companyType", companyType));
-        specification = specification.and(likeUserField("emailAddress", emailAddress));
-        specification = specification.and(likeUserField("mobileNumber", mobileNumber));
-        return specification;
-    }
-
-    private Specification<Company> activeOnly() {
-        return (root, query, cb) -> cb.equal(root.get("deletedFlag"), "N");
-    }
-
-    private Specification<Company> likeCompanyField(String fieldName, String value) {
-        if (isBlank(value)) {
-            return null;
+        public boolean isHasNext() {
+            return hasNext;
         }
-        String normalized = normalizeLikeValue(value);
-        return (root, query, cb) -> cb.like(cb.lower(root.get(fieldName)), normalized);
-    }
 
-    private Specification<Company> likeUserField(String fieldName, String value) {
-        if (isBlank(value)) {
-            return null;
+        public String getNextCursor() {
+            return nextCursor;
         }
-        String normalized = normalizeLikeValue(value);
-        return (root, query, cb) -> {
-            Join<Object, Object> userJoin = root.join("user", JoinType.INNER);
-            return cb.like(cb.lower(userJoin.get(fieldName)), normalized);
-        };
     }
 
-    private String normalizeLikeValue(String value) {
-        return "%" + value.trim().toLowerCase() + "%";
-    }
 
-    private boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
-    }
 
     @Transactional(readOnly = true)
     public Optional<CompanyResponse> findById(Long id) {

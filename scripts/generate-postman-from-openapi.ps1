@@ -372,6 +372,11 @@ function Build-RequestObject {
             
             # Remove quotes if present
             $value = $value.Trim('"').Trim("'")
+
+            # Use explicit collection variable for next cursor sample value.
+            if ($qParam.name -eq "cursor") {
+                $value = "{{nextCursor}}"
+            }
             
             $queryArray += [ordered]@{
                 key = $qParam.name
@@ -452,6 +457,7 @@ $collection = [ordered]@{
     }
     variable = @(
         [ordered]@{ key = "baseUrl"; value = "http://localhost:8080" },
+        [ordered]@{ key = "nextCursor"; value = "eyJjb21wYW55SWQiOiIxMjAifQ" },
         [ordered]@{ key = "companyId"; value = "1" },
         [ordered]@{ key = "salesmanId"; value = "1" },
         [ordered]@{ key = "adminUserId"; value = "1" },

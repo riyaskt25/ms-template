@@ -1,6 +1,7 @@
 package com.snb.ms.posts;
 
 import com.snb.ms.shared.BaseResponseDTO;
+import com.snb.ms.shared.api.CommonApiParameters;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,11 +22,7 @@ public interface PostsApi {
         summary = "List external posts",
         description = "Fetches posts from the configured external provider (default: JSONPlaceholder)."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -50,10 +47,8 @@ public interface PostsApi {
         summary = "Get external post by id",
         description = "Fetches one external post by identifier from the configured provider."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "External post identifier", required = true, example = "1")
     })
     @ApiResponses({

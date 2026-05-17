@@ -1,6 +1,7 @@
 package com.snb.ms.adminuser;
 
 import com.snb.ms.shared.BaseResponseDTO;
+import com.snb.ms.shared.api.CommonApiParameters;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -26,11 +27,7 @@ public interface AdminUserApi {
         summary = "List admin users",
         description = "Returns all active admin user records."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -50,10 +47,8 @@ public interface AdminUserApi {
         summary = "Get admin user by id",
         description = "Finds an admin user by identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
     })
     @ApiResponses({
@@ -81,11 +76,7 @@ public interface AdminUserApi {
         summary = "Create admin user",
         description = "Creates an admin user record and provisions the linked internal user profile."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @RequestBody(
         required = true,
         description = "Admin user payload to create",
@@ -121,10 +112,8 @@ public interface AdminUserApi {
         summary = "Update admin user",
         description = "Updates an existing admin user by identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
     })
     @RequestBody(
@@ -164,10 +153,8 @@ public interface AdminUserApi {
         summary = "Soft delete admin user",
         description = "Marks an admin user as inactive without deleting the record physically."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
     })
     @ApiResponses({

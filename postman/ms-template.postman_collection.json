@@ -10,6 +10,10 @@
                          "value":  "http://localhost:8080"
                      },
                      {
+                         "key":  "nextCursor",
+                         "value":  "eyJjb21wYW55SWQiOiIxMjAifQ"
+                     },
+                     {
                          "key":  "companyId",
                          "value":  "1"
                      },
@@ -230,7 +234,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "findAll_1",
+                                      "name":  "getAllCompanies",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -252,7 +256,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies?page=0\u0026size=20\u0026sortBy=companyId,registrationNumber\u0026sortDirection=DESC,ASC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
+                                                                  "raw":  "{{baseUrl}}/api/companies?page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -273,12 +277,99 @@
                                                                                 },
                                                                                 {
                                                                                     "key":  "sortBy",
-                                                                                    "value":  "companyId,registrationNumber",
+                                                                                    "value":  "companyStatus,registrationNumber",
                                                                                     "description":  "Sort fields (comma-separated)"
                                                                                 },
                                                                                 {
                                                                                     "key":  "sortDirection",
-                                                                                    "value":  "DESC,ASC",
+                                                                                    "value":  "ASC,DESC",
+                                                                                    "description":  "Sort directions (single value for all or comma-separated per field)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "includeSalesmen",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "registrationNumber",
+                                                                                    "value":  "REG-2026",
+                                                                                    "description":  "Optional registration number contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyStatus",
+                                                                                    "value":  "ACTIVE",
+                                                                                    "description":  "Optional company status contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyType",
+                                                                                    "value":  "DEALER",
+                                                                                    "description":  "Optional company type contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "emailAddress",
+                                                                                    "value":  "company@example.com",
+                                                                                    "description":  "Optional email contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "mobileNumber",
+                                                                                    "value":  "+971555",
+                                                                                    "description":  "Optional mobile contains filter"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "getAllCompaniesCursor",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "X-Request-Id",
+                                                                         "value":  "{{X-Request-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Accept-Language",
+                                                                         "value":  "{{Accept-Language}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Tenant-Id",
+                                                                         "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/companies/lazy?cursor={{nextCursor}}\u0026limit=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "companies",
+                                                                               "lazy"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "cursor",
+                                                                                    "value":  "{{nextCursor}}",
+                                                                                    "description":  "Opaque cursor token from previous response\u0027s lazyLoading.nextCursor. Omit for first request."
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "20",
+                                                                                    "description":  "Lazy-loading batch size (max 200)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortBy",
+                                                                                    "value":  "companyStatus,registrationNumber",
+                                                                                    "description":  "Sort fields (comma-separated). Multi-sort supported with companyId as automatic tie-breaker."
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortDirection",
+                                                                                    "value":  "ASC,DESC",
                                                                                     "description":  "Sort directions (single value for all or comma-separated per field)"
                                                                                 },
                                                                                 {
@@ -342,13 +433,14 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies",
+                                                                  "raw":  "{{baseUrl}}/api/companies/lazy",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
                                                                   "path":  [
                                                                                "api",
-                                                                               "companies"
+                                                                               "companies",
+                                                                               "lazy"
                                                                            ]
                                                               },
                                                       "body":  {
@@ -358,7 +450,7 @@
                                                                                                "language":  "json"
                                                                                            }
                                                                                },
-                                                                   "raw":  "{\r\n    \"registrationNumber\": \"{{companyRegistrationNumber}}\",\r\n    \"emailAddress\": \"{{companyEmailAddress}}\",\r\n    \"mobileNumber\": \"{{companyMobileNumber}}\"\r\n}"
+                                                                   "raw":  "{}"
                                                                }
                                                   }
                                   }

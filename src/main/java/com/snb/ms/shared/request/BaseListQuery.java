@@ -22,5 +22,11 @@ public class BaseListQuery {
 
     private String sortDirection = "ASC";
 
+    @Positive
+    @Max(ListQueryDefaults.MAX_PAGE_SIZE)
+    private Integer limit;
+
+    private String cursor;
+
     private String select;
 }

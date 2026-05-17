@@ -1,6 +1,7 @@
 package com.snb.ms.salesman;
 
 import com.snb.ms.shared.BaseResponseDTO;
+import com.snb.ms.shared.api.CommonApiParameters;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -26,11 +27,7 @@ public interface SalesmanApi {
         summary = "List salesmen",
         description = "Returns all active salesman records."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -50,10 +47,8 @@ public interface SalesmanApi {
         summary = "Get salesman by id",
         description = "Finds a salesman by identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
     })
     @ApiResponses({
@@ -81,11 +76,7 @@ public interface SalesmanApi {
         summary = "Create salesman",
         description = "Creates a salesman and links the record with a company and internal user profile."
     )
-    @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
-    })
+    @CommonApiParameters
     @RequestBody(
         required = true,
         description = "Salesman payload to create",
@@ -126,10 +117,8 @@ public interface SalesmanApi {
         summary = "Update salesman",
         description = "Updates mutable salesman fields by identifier."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
     })
     @RequestBody(
@@ -169,10 +158,8 @@ public interface SalesmanApi {
         summary = "Soft delete salesman",
         description = "Marks a salesman as inactive without removing the row."
     )
+    @CommonApiParameters
     @Parameters({
-        @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-        @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-        @Parameter(ref = "#/components/parameters/AcceptLanguageHeader"),
         @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
     })
     @ApiResponses({

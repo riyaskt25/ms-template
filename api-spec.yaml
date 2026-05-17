@@ -287,9 +287,9 @@ paths:
     get:
       tags:
       - Companies
-      summary: List companies with pagination, sorting, and filtering
-      description: Returns active company records with pagination, sorting, and optional filtering.
-      operationId: findAll_1
+      summary: List companies (offset pagination)
+      description: Returns active company records using offset-based pagination. Best for small to medium datasets or when random access to pages is needed.
+      operationId: getAllCompanies
       parameters:
       - name: page
         in: query
@@ -305,21 +305,21 @@ paths:
         schema:
           type: integer
           format: int32
-          default: 10
+          default: 20
         example: 20
       - name: sortBy
         in: query
         description: Sort fields (comma-separated)
         schema:
           type: string
-        example: "companyId,registrationNumber"
+        example: "companyStatus,registrationNumber"
       - name: sortDirection
         in: query
         description: Sort directions (single value for all or comma-separated per field)
         schema:
           type: string
           default: ASC
-        example: "DESC,ASC"
+        example: "ASC,DESC"
       - name: includeSalesmen
         in: query
         description: Set true to include associated salesmen in each company
@@ -364,6 +364,91 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/CompanyPageResponse"
+  /api/companies/lazy:
+    get:
+      tags:
+      - Companies
+      summary: List companies (lazy loading with cursor)
+      description: Returns active company records using cursor-based lazy loading. Recommended for large datasets or continuous scrolling. Provides efficient, deterministic pagination.
+      operationId: getAllCompaniesCursor
+      parameters:
+      - name: cursor
+        in: query
+        description: Opaque cursor token from previous response's lazyLoading.nextCursor. Omit for first request.
+        schema:
+          type: string
+        example: "eyJjb21wYW55SWQiOiIxMjAifQ"
+      - name: limit
+        in: query
+        description: Lazy-loading batch size (max 200)
+        schema:
+          type: integer
+          format: int32
+          default: 20
+        example: 20
+      - name: sortBy
+        in: query
+        description: Sort fields (comma-separated). Multi-sort supported with companyId as automatic tie-breaker.
+        schema:
+          type: string
+        example: "companyStatus,registrationNumber"
+      - name: sortDirection
+        in: query
+        description: Sort directions (single value for all or comma-separated per field)
+        schema:
+          type: string
+          default: ASC
+        example: "ASC,DESC"
+      - name: includeSalesmen
+        in: query
+        description: Set true to include associated salesmen in each company
+        schema:
+          type: boolean
+          default: false
+        example: true
+      - name: registrationNumber
+        in: query
+        description: Optional registration number contains filter
+        schema:
+          type: string
+        example: "REG-2026"
+      - name: companyStatus
+        in: query
+        description: Optional company status contains filter
+        schema:
+          type: string
+        example: "ACTIVE"
+      - name: companyType
+        in: query
+        description: Optional company type contains filter
+        schema:
+          type: string
+        example: "DEALER"
+      - name: emailAddress
+        in: query
+        description: Optional email contains filter
+        schema:
+          type: string
+        example: "company@example.com"
+      - name: mobileNumber
+        in: query
+        description: Optional mobile contains filter
+        schema:
+          type: string
+        example: "+971555"
+      responses:
+        "200":
+          description: Companies fetched successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyPageResponse"
+        "400":
+          description: Invalid cursor token or parameters
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     post:
       tags:
       - Companies
@@ -818,6 +903,23 @@ components:
           items: {}
         pagination:
           $ref: "#/components/schemas/PaginationMeta"
+    LazyLoadingMeta:
+      type: object
+      description: Cursor metadata for lazy loading
+      properties:
+        limit:
+          type: integer
+          format: int32
+          description: Requested lazy-loading limit
+          example: 20
+        hasNext:
+          type: boolean
+          description: Whether more items are available
+          example: true
+        nextCursor:
+          type: string
+          description: Opaque cursor token to request the next slice
+          example: "eyJjb21wYW55SWQiOiIxMjAifQ"
     CompanyPageResponse:
       allOf:
       - $ref: "#/components/schemas/PaginatedResponseDTO"
@@ -828,3 +930,5 @@ components:
             description: List of companies in the current page
             items:
               $ref: "#/components/schemas/CompanyDto"
+          lazyLoading:
+            $ref: "#/components/schemas/LazyLoadingMeta"
