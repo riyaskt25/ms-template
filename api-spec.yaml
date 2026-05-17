@@ -309,13 +309,13 @@ paths:
         example: 20
       - name: sortBy
         in: query
-        description: Sort fields (comma-separated)
+        description: "Sort fields (comma-separated). Defaults to companyId ASC when omitted. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt."
         schema:
           type: string
         example: "companyStatus,registrationNumber"
       - name: sortDirection
         in: query
-        description: Sort directions (single value for all or comma-separated per field)
+        description: "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted."
         schema:
           type: string
           default: ASC
@@ -388,13 +388,13 @@ paths:
         example: 20
       - name: sortBy
         in: query
-        description: Sort fields (comma-separated). Multi-sort supported with companyId as automatic tie-breaker.
+        description: "Sort fields (comma-separated). Defaults to companyId ASC when omitted. companyId is always appended as tie-breaker when missing. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt."
         schema:
           type: string
         example: "companyStatus,registrationNumber"
       - name: sortDirection
         in: query
-        description: Sort directions (single value for all or comma-separated per field)
+        description: "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted."
         schema:
           type: string
           default: ASC

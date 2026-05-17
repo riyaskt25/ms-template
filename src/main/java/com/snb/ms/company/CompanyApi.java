@@ -29,8 +29,8 @@ public interface CompanyApi {
     @Parameters({
         @Parameter(name = "page", description = "Zero-based page index", example = "0"),
         @Parameter(name = "size", description = "Page size (max 200)", example = "20"),
-        @Parameter(name = "sortBy", description = "Sort fields (comma-separated)", example = "companyStatus,registrationNumber"),
-        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "ASC,DESC"),
+        @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Defaults to companyId ASC when omitted. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.", example = "companyStatus,registrationNumber"),
+        @Parameter(name = "sortDirection", description = "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.", example = "ASC,DESC"),
         @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", example = "true"),
         @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
         @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
@@ -61,8 +61,8 @@ public interface CompanyApi {
     @Parameters({
         @Parameter(name = "cursor", description = "Opaque cursor token from previous response's lazyLoading.nextCursor. Omit for first request.", example = "eyJjb21wYW55SWQiOiIxMjAifQ"),
         @Parameter(name = "limit", description = "Lazy-loading batch size (max 200)", example = "20"),
-        @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Multi-sort supported with companyId as automatic tie-breaker.", example = "companyStatus,registrationNumber"),
-        @Parameter(name = "sortDirection", description = "Sort directions (single value for all or comma-separated per field)", example = "ASC,DESC"),
+        @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Defaults to companyId ASC when omitted. companyId is always appended as tie-breaker when missing. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.", example = "companyStatus,registrationNumber"),
+        @Parameter(name = "sortDirection", description = "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.", example = "ASC,DESC"),
         @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", example = "true"),
         @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
         @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),

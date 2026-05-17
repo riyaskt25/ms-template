@@ -1,5 +1,6 @@
 package com.snb.ms.company;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.snb.ms.shared.PaginatedResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Schema(description = "Paginated company response")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CompanyPageResponse extends PaginatedResponseDTO<CompanyResponse> {
 
 	@Schema(description = "Lazy-loading metadata. Present when cursor mode is used.")

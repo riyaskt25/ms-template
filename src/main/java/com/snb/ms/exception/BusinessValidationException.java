@@ -33,4 +33,28 @@ public class BusinessValidationException extends RuntimeException {
             "Company status transition is not allowed from " + from + " to " + to + "."
         );
     }
+
+    public static BusinessValidationException invalidSortField(Object value) {
+        return new BusinessValidationException(
+            "error.validation.sort.field.invalid",
+            new Object[]{value},
+            "Invalid sortBy field: " + value + "."
+        );
+    }
+
+    public static BusinessValidationException invalidSortDirectionCount(int fieldCount, int directionCount) {
+        return new BusinessValidationException(
+            "error.validation.sort.direction.count.invalid",
+            new Object[]{fieldCount, directionCount},
+            "sortDirection count must match sortBy count. sortBy items=" + fieldCount + ", sortDirection items=" + directionCount + "."
+        );
+    }
+
+    public static BusinessValidationException invalidSortDirectionValue(Object value) {
+        return new BusinessValidationException(
+            "error.validation.sort.direction.value.invalid",
+            new Object[]{value},
+            "Invalid sortDirection value: " + value + ". Allowed values are ASC or DESC."
+        );
+    }
 }

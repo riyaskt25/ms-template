@@ -2,6 +2,7 @@ package com.snb.ms.company;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.shared.commons.StringParsingUtils;
 import com.snb.ms.shared.constants.ListQueryDefaults;
 import jakarta.persistence.criteria.Join;
@@ -255,19 +256,27 @@ public final class CompanyQueryBuilder {
     private static List<Sort.Order> toSortOrders(String sortBy, String sortDirection) {
         List<String> fields = StringParsingUtils.splitCsv(sortBy);
         List<String> directions = StringParsingUtils.splitCsv(sortDirection);
+
         boolean singleDirection = directions.size() == 1;
+        if (!directions.isEmpty() && !singleDirection && directions.size() != fields.size()) {
+            throw BusinessValidationException.invalidSortDirectionCount(fields.size(), directions.size());
+        }
 
         List<Sort.Order> orders = new ArrayList<>();
         for (int i = 0; i < fields.size(); i++) {
             String requestedField = fields.get(i);
             String mappedField = ALLOWED_SORTS.get(requestedField);
             if (mappedField == null) {
-                continue;
+                throw BusinessValidationException.invalidSortField(requestedField);
             }
 
             String requestedDirection = directions.isEmpty()
                 ? DEFAULT_SORT_DIRECTION
-                : (singleDirection ? directions.get(0) : directions.get(Math.min(i, directions.size() - 1)));
+                : (singleDirection ? directions.get(0) : directions.get(i));
+
+            if (!"ASC".equalsIgnoreCase(requestedDirection) && !"DESC".equalsIgnoreCase(requestedDirection)) {
+                throw BusinessValidationException.invalidSortDirectionValue(requestedDirection);
+            }
 
             Sort.Direction direction = "DESC".equalsIgnoreCase(requestedDirection)
                 ? Sort.Direction.DESC
