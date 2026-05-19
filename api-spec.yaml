@@ -68,7 +68,16 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanResponse"
+                $ref: "#/components/schemas/BaseResponseDTO"
+              examples:
+                SalesmanNotFound:
+                  description: SalesmanNotFound
+                  value:
+                    errors:
+                    - type: NOT_FOUND
+                      code: RESOURCE_NOT_FOUND
+                      message: Resource not found
+                      description: Salesman not found for id=999
         "500":
           description: Internal server error
           content:
@@ -129,7 +138,16 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanResponse"
+                $ref: "#/components/schemas/BaseResponseDTO"
+              examples:
+                SalesmanNotFound:
+                  description: SalesmanNotFound
+                  value:
+                    errors:
+                    - type: NOT_FOUND
+                      code: RESOURCE_NOT_FOUND
+                      message: Resource not found
+                      description: Salesman not found for id=999
         "500":
           description: Internal server error
           content:
@@ -173,7 +191,16 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanResponse"
+                $ref: "#/components/schemas/BaseResponseDTO"
+              examples:
+                SalesmanNotFound:
+                  description: SalesmanNotFound
+                  value:
+                    errors:
+                    - type: NOT_FOUND
+                      code: RESOURCE_NOT_FOUND
+                      message: Resource not found
+                      description: Salesman not found for id=999
         "500":
           description: Internal server error
           content:
