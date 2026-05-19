@@ -1,16 +1,14 @@
 package com.snb.ms.adminuser;
-import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Admin user response payload")
-public class AdminUserResponse extends BaseResponseDTO {
+public class AdminUserResponse {
     @Schema(description = "Unique admin user identifier", example = "1")
     private Long adminUserId;
 

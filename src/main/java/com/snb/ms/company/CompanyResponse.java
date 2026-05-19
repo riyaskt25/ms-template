@@ -1,6 +1,4 @@
 package com.snb.ms.company;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.*;
@@ -8,12 +6,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value = {"errors"})
 @Schema(description = "Company response payload")
-public class CompanyResponse extends BaseResponseDTO {
+public class CompanyResponse {
     @Schema(description = "Unique company identifier", example = "1")
     private Long companyId;
 

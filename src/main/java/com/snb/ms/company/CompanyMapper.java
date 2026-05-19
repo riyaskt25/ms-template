@@ -13,7 +13,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
 
-    @Mapping(target = "errors", ignore = true)
     @Mapping(source = "user.emailAddress", target = "emailAddress")
     @Mapping(source = "user.mobileNumber", target = "mobileNumber")
     CompanyResponse toDto(Company company);

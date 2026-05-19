@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UsersMapper {
 
-    @Mapping(target = "errors", ignore = true)
     UsersDto toDto(Users users);
 
     List<UsersDto> toDtoList(List<Users> users);

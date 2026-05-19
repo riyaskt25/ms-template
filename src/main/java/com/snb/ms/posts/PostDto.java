@@ -1,18 +1,15 @@
 package com.snb.ms.posts;
 
-import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "External post response payload")
-public class PostDto extends BaseResponseDTO {
+public class PostDto {
     @Schema(description = "External author identifier", example = "1")
     private Long userId;
 

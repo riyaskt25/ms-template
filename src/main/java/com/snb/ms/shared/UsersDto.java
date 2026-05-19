@@ -4,10 +4,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsersDto extends BaseResponseDTO {
+public class UsersDto {
     private Long userId;
     private String emailAddress;
     private String mobileNumber;

@@ -966,6 +966,47 @@
                                                   }
                                   }
                               ]
+                 },
+                 {
+                     "name":  "favicon-controller",
+                     "item":  [
+                                  {
+                                      "name":  "favicon",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "X-Request-Id",
+                                                                         "value":  "{{X-Request-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Accept-Language",
+                                                                         "value":  "{{Accept-Language}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Tenant-Id",
+                                                                         "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}/status",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "companies",
+                                                                               "{{id}}",
+                                                                               "status"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
                  }
              ]
 }

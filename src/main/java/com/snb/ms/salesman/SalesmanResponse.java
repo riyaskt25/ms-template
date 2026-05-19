@@ -1,5 +1,4 @@
 package com.snb.ms.salesman;
-import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.*;
@@ -7,11 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Salesman response payload")
-public class SalesmanResponse extends BaseResponseDTO {
+public class SalesmanResponse {
     @Schema(description = "Unique salesman identifier", example = "1")
     private Long salesmanId;
 

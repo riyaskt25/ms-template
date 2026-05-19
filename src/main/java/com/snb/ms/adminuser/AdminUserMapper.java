@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AdminUserMapper {
 
-    @Mapping(target = "errors", ignore = true)
     AdminUserResponse toDto(AdminUser adminUser);
 
     List<AdminUserResponse> toDtoList(List<AdminUser> adminUsers);

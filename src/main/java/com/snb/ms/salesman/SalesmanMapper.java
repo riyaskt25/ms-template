@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface SalesmanMapper {
 
-    @Mapping(target = "errors", ignore = true)
     SalesmanResponse toDto(Salesman salesman);
 
     List<SalesmanResponse> toDtoList(List<Salesman> salesmen);

@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CompanySalesmanMapper {
 
-    @Mapping(target = "errors", ignore = true)
     @Mapping(source = "company.companyId", target = "companyId")
     @Mapping(source = "salesman.salesmanId", target = "salesmanId")
     CompanySalesmanDto toDto(CompanySalesman companySalesman);

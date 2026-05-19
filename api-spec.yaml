@@ -879,6 +879,14 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BaseResponseDTO"
+  /favicon.ico:
+    get:
+      tags:
+      - favicon-controller
+      operationId: favicon
+      responses:
+        "200":
+          description: OK
   /api/posts:
     get:
       tags:
@@ -1130,34 +1138,10 @@ components:
           example: 784-1986-0000001-1
           maxLength: 50
           minLength: 0
-    ErrorInfo:
-      type: object
-      description: Detailed error information
-      properties:
-        type:
-          type: string
-          description: Error category
-          example: VALIDATION_ERROR
-        code:
-          type: string
-          description: Application-specific error code
-          example: EMAILADDRESS_INVALID
-        message:
-          type: string
-          description: "Localized, user-friendly error message"
-          example: emailAddress must be a valid email
-        description:
-          type: string
-          description: Additional diagnostic details
-          example: "Rejected value: not-an-email"
     SalesmanResponse:
       type: object
       description: Salesman response payload
       properties:
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorInfo"
         salesmanId:
           type: integer
           format: int64
@@ -1211,6 +1195,26 @@ components:
           format: date-time
           description: Last update timestamp in ISO-8601 format
           example: 2026-05-04T11:20:45
+    ErrorInfo:
+      type: object
+      description: Detailed error information
+      properties:
+        type:
+          type: string
+          description: Error category
+          example: VALIDATION_ERROR
+        code:
+          type: string
+          description: Application-specific error code
+          example: EMAILADDRESS_INVALID
+        message:
+          type: string
+          description: "Localized, user-friendly error message"
+          example: emailAddress must be a valid email
+        description:
+          type: string
+          description: Additional diagnostic details
+          example: "Rejected value: not-an-email"
     BaseResponseDTO:
       type: object
       description: Base API response wrapper with error details
@@ -1350,10 +1354,6 @@ components:
       type: object
       description: Admin user response payload
       properties:
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorInfo"
         adminUserId:
           type: integer
           format: int64
@@ -1552,10 +1552,6 @@ components:
       type: object
       description: External post response payload
       properties:
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorInfo"
         userId:
           type: integer
           format: int64

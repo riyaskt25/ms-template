@@ -1,15 +1,13 @@
 package com.snb.ms.companysalesman;
-import com.snb.ms.shared.BaseResponseDTO;
 
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanySalesmanDto extends BaseResponseDTO {
+public class CompanySalesmanDto {
     private Long companySalesmanId;
     private Long companyId;
     private Long salesmanId;
