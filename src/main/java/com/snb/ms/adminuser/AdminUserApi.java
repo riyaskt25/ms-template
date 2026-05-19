@@ -59,6 +59,11 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
+            description = "Invalid id supplied",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
             description = "Admin user not found",
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
@@ -67,9 +72,7 @@ public interface AdminUserApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
                 )
             )
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Admin user not found"),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
@@ -103,6 +106,11 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
+            description = "Validation failed",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
             description = "Admin user not found",
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
@@ -111,7 +119,6 @@ public interface AdminUserApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
                 )
             )
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
         @ApiResponse(
             responseCode = "500",
@@ -149,6 +156,11 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
+            description = "Validation failed or invalid id",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
             description = "Admin user not found",
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
@@ -157,9 +169,7 @@ public interface AdminUserApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
                 )
             )
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Admin user not found"),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
@@ -189,7 +199,17 @@ public interface AdminUserApi {
             description = "Invalid id supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Admin user not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Admin user not found",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "AdminUserNotFound",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
+                )
+            )
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
