@@ -199,11 +199,13 @@ paths:
         example: 1
       - name: includeSalesmen
         in: query
-        description: Set true to include associated salesmen for this company
-        required: true
+        description: Set true to include associated salesmen for this company. Defaults
+          to false.
+        required: false
         schema:
           type: boolean
-        example: true
+          default: false
+        example: false
       - $ref: "#/components/parameters/XRequestIdHeader"
       - $ref: "#/components/parameters/XTenantIdHeader"
       - $ref: "#/components/parameters/AcceptLanguageHeader"
@@ -630,13 +632,16 @@ paths:
         example: "+971555"
       - name: includeSalesmen
         in: query
-        description: Set true to include associated salesmen in each company
-        required: true
+        description: Set true to include associated salesmen in each company. Defaults
+          to false.
+        required: false
         schema:
           type: boolean
-          description: Set true to include associated salesmen in each company response
-          example: true
-        example: true
+          default: false
+          description: Set true to include associated salesmen in each company response.
+            Defaults to false.
+          example: false
+        example: false
       - name: page
         in: query
         description: Zero-based page index
@@ -1021,13 +1026,16 @@ paths:
         example: "+971555"
       - name: includeSalesmen
         in: query
-        description: Set true to include associated salesmen in each company
-        required: true
+        description: Set true to include associated salesmen in each company. Defaults
+          to false.
+        required: false
         schema:
           type: boolean
-          description: Set true to include associated salesmen in each company response
-          example: true
-        example: true
+          default: false
+          description: Set true to include associated salesmen in each company response.
+            Defaults to false.
+          example: false
+        example: false
       - name: page
         in: query
         required: false

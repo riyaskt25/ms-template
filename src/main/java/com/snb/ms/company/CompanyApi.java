@@ -31,7 +31,7 @@ public interface CompanyApi {
         @Parameter(name = "size", description = "Page size (max 200)", example = "20"),
         @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Defaults to companyId ASC when omitted. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.", example = "companyStatus,registrationNumber"),
         @Parameter(name = "sortDirection", description = "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.", example = "ASC,DESC"),
-        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", required = true, example = "true"),
+        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company. Defaults to false.", example = "false"),
         @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
         @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
         @Parameter(name = "companyType", description = "Optional company type contains filter", example = "DEALER"),
@@ -63,7 +63,7 @@ public interface CompanyApi {
         @Parameter(name = "limit", description = "Lazy-loading batch size (max 200)", example = "20"),
         @Parameter(name = "sortBy", description = "Sort fields (comma-separated). Defaults to companyId ASC when omitted. companyId is always appended as tie-breaker when missing. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.", example = "companyStatus,registrationNumber"),
         @Parameter(name = "sortDirection", description = "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.", example = "ASC,DESC"),
-        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company", required = true, example = "true"),
+        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen in each company. Defaults to false.", example = "false"),
         @Parameter(name = "registrationNumber", description = "Optional registration number contains filter", example = "REG-2026"),
         @Parameter(name = "companyStatus", description = "Optional company status contains filter", example = "ACTIVE"),
         @Parameter(name = "companyType", description = "Optional company type contains filter", example = "DEALER"),
@@ -97,7 +97,7 @@ public interface CompanyApi {
     @CommonApiParameters
     @Parameters({
         @Parameter(name = "id", description = "Company identifier", required = true, example = "1"),
-        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen for this company", required = true, example = "true")
+        @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen for this company. Defaults to false.", example = "false")
     })
     @ApiResponses({
         @ApiResponse(
@@ -134,7 +134,7 @@ public interface CompanyApi {
         )
     })
     CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") Long id,
-                             @jakarta.validation.constraints.NotNull(message = "{validation.company.includeSalesmen.required}") Boolean includeSalesmen);
+                             Boolean includeSalesmen);
 
     @Operation(
         operationId = "createCompany",

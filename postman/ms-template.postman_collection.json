@@ -89,7 +89,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}?includeSalesmen=true",
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}?includeSalesmen=false",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -101,8 +101,8 @@
                                                                   "query":  [
                                                                                 {
                                                                                     "key":  "includeSalesmen",
-                                                                                    "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen for this company"
+                                                                                    "value":  "false",
+                                                                                    "description":  "Set true to include associated salesmen for this company. Defaults"
                                                                                 }
                                                                             ]
                                                               }
@@ -214,7 +214,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=true\u0026page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=\u0026cursor={{nextCursor}}\u0026select=",
+                                                                  "raw":  "{{baseUrl}}/api/companies?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=false\u0026page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=\u0026cursor={{nextCursor}}\u0026select=",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -250,8 +250,8 @@
                                                                                 },
                                                                                 {
                                                                                     "key":  "includeSalesmen",
-                                                                                    "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company response"
+                                                                                    "value":  "false",
+                                                                                    "description":  "Set true to include associated salesmen in each company response."
                                                                                 },
                                                                                 {
                                                                                     "key":  "page",
@@ -411,7 +411,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/lazy?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=true\u0026page=\u0026size=\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=20\u0026cursor={{nextCursor}}\u0026select=",
+                                                                  "raw":  "{{baseUrl}}/api/companies/lazy?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=false\u0026page=\u0026size=\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=20\u0026cursor={{nextCursor}}\u0026select=",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -448,8 +448,8 @@
                                                                                 },
                                                                                 {
                                                                                     "key":  "includeSalesmen",
-                                                                                    "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company response"
+                                                                                    "value":  "false",
+                                                                                    "description":  "Set true to include associated salesmen in each company response."
                                                                                 },
                                                                                 {
                                                                                     "key":  "page",

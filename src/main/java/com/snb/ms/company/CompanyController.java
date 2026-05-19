@@ -2,7 +2,6 @@ package com.snb.ms.company;
 
 import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +52,7 @@ public class CompanyController implements CompanyApi {
     @Override
     @GetMapping("/{id}")
     public CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
-                                    @NotNull(message = "{validation.company.includeSalesmen.required}") @RequestParam Boolean includeSalesmen) {
+                                    @RequestParam(defaultValue = "false") Boolean includeSalesmen) {
         log.debug("Received request to fetch company by id={} includeSalesmen={}", id, includeSalesmen);
         CompanyResponse result = companyService.findById(id, includeSalesmen)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
