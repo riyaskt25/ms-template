@@ -62,7 +62,17 @@ public interface SalesmanApi {
             description = "Invalid id supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Salesman not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Salesman not found",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "SalesmanNotFound",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
+                )
+            )
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
@@ -143,7 +153,11 @@ public interface SalesmanApi {
             description = "Validation failed or invalid id",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Salesman not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Salesman not found",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
@@ -173,7 +187,11 @@ public interface SalesmanApi {
             description = "Invalid id supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Salesman not found"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Salesman not found",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+        ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
