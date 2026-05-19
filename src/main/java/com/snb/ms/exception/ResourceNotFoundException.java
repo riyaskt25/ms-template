@@ -57,4 +57,44 @@ public class ResourceNotFoundException extends RuntimeException {
             "Post not found for id=" + id
         );
     }
+
+    public static ResourceNotFoundException roleById(Object id) {
+        return new ResourceNotFoundException(
+            "error.resource.role.not.found.by.id",
+            new Object[]{id},
+            "Role not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException privilegeById(Object id) {
+        return new ResourceNotFoundException(
+            "error.resource.privilege.not.found.by.id",
+            new Object[]{id},
+            "Privilege not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException userRoleById(Object id) {
+        return new ResourceNotFoundException(
+            "error.resource.userRole.not.found.by.id",
+            new Object[]{id},
+            "User-role assignment not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException rolePrivilegeById(Object id) {
+        return new ResourceNotFoundException(
+            "error.resource.rolePrivilege.not.found.by.id",
+            new Object[]{id},
+            "Role-privilege grant not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException userById(Object id) {
+        return new ResourceNotFoundException(
+            "error.resource.user.not.found.by.id",
+            new Object[]{id},
+            "User not found for id=" + id
+        );
+    }
 }

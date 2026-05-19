@@ -27,8 +27,8 @@ tags:
   description: Operations for salesman resources
 - name: Posts
   description: Operations for external posts resource consumption
-- name: Admin Users
-  description: Operations for admin user resources
+- name: RBAC
+  description: Role-based access control operations
 paths:
   /api/salesmen/{id}:
     get:
@@ -384,7 +384,7 @@ paths:
   /api/admin-users/{id}:
     get:
       tags:
-      - Admin Users
+      - RBAC
       summary: Get admin user by id
       description: Finds an admin user by identifier.
       operationId: getAdminUserById
@@ -428,7 +428,7 @@ paths:
                 $ref: "#/components/schemas/BaseResponseDTO"
     put:
       tags:
-      - Admin Users
+      - RBAC
       summary: Update admin user
       description: Updates an existing admin user by identifier.
       operationId: updateAdminUser
@@ -489,7 +489,7 @@ paths:
                 $ref: "#/components/schemas/BaseResponseDTO"
     delete:
       tags:
-      - Admin Users
+      - RBAC
       summary: Soft delete admin user
       description: Marks an admin user as inactive without deleting the record physically.
       operationId: softDeleteAdminUser
@@ -775,7 +775,7 @@ paths:
   /api/admin-users:
     get:
       tags:
-      - Admin Users
+      - RBAC
       summary: List admin users
       description: Returns all active admin user records.
       operationId: getAllAdminUsers
@@ -800,7 +800,7 @@ paths:
                 $ref: "#/components/schemas/BaseResponseDTO"
     post:
       tags:
-      - Admin Users
+      - RBAC
       summary: Create admin user
       description: Creates an admin user record and provisions the linked internal
         user profile.
