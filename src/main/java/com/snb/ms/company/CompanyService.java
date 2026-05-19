@@ -175,15 +175,18 @@ public class CompanyService {
 
 
     @Transactional(readOnly = true)
-    public Optional<CompanyResponse> findById(Long id) {
+    public Optional<CompanyResponse> findById(Long id, Boolean includeSalesmen) {
         log.debug("Fetching company by id={}", id);
         Optional<CompanyResponse> result = companyRepository.findActiveById(id).map(companyMapper::toDto);
+        if (Boolean.TRUE.equals(includeSalesmen)) {
+            result.ifPresent(company -> enrichWithSalesmenList(List.of(company)));
+        }
         log.info("Company lookup id={} found={}", id, result.isPresent());
         return result;
     }
 
     @Transactional
-    public CompanyResponse create(CompanyCreateRequest request) {
+    public CompanyWriteResponse create(CompanyCreateRequest request) {
         log.debug("Creating company for registrationNumber={}", request.getRegistrationNumber());
         UsersRequest userRequest = new UsersRequest();
         userRequest.setEmailAddress(request.getEmailAddress());
@@ -202,17 +205,17 @@ public class CompanyService {
         company.setCompanyType("DEALER");
         company.setDeletedFlag("N");
         company.setVersionNumber(0L);
-        CompanyResponse created = companyMapper.toDto(companyRepository.save(company));
+        CompanyWriteResponse created = companyMapper.toWriteDto(companyRepository.save(company));
         log.info("Created company id={} registrationNumber={}", created.getCompanyId(), request.getRegistrationNumber());
         return created;
     }
 
     @Transactional
-    public Optional<CompanyResponse> update(Long id, CompanyUpdateRequest request) {
+    public Optional<CompanyWriteResponse> update(Long id, CompanyUpdateRequest request) {
         log.debug("Updating company id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<CompanyResponse> updated = companyRepository.findActiveById(id).map(existing -> {
+        Optional<CompanyWriteResponse> updated = companyRepository.findActiveById(id).map(existing -> {
             companyMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -225,31 +228,31 @@ public class CompanyService {
             existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
-            return companyMapper.toDto(companyRepository.save(existing));
+            return companyMapper.toWriteDto(companyRepository.save(existing));
         });
         log.info("Company update id={} success={}", id, updated.isPresent());
         return updated;
     }
 
     @Transactional
-    public Optional<CompanyResponse> softDelete(Long id) {
+    public Optional<CompanyWriteResponse> softDelete(Long id) {
         log.debug("Soft-deleting company id={}", id);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<CompanyResponse> deleted = companyRepository.findActiveById(id).map(existing -> {
+        Optional<CompanyWriteResponse> deleted = companyRepository.findActiveById(id).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
-            return companyMapper.toDto(companyRepository.save(existing));
+            return companyMapper.toWriteDto(companyRepository.save(existing));
         });
         log.info("Company soft-delete id={} success={}", id, deleted.isPresent());
         return deleted;
     }
 
     @Transactional
-    public Optional<CompanyResponse> decideStatus(Long id, CompanyStatusDecisionRequest request) {
+    public Optional<CompanyWriteResponse> decideStatus(Long id, CompanyStatusDecisionRequest request) {
         log.debug("Applying status decision for company id={} targetStatus={}", id, request.getStatus());
         CompanyStatus targetStatus = CompanyStatus.fromValue(request.getStatus())
             .orElseThrow(() -> BusinessValidationException.invalidCompanyStatusValue(request.getStatus()));
@@ -260,7 +263,7 @@ public class CompanyService {
 
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<CompanyResponse> decided = companyRepository.findActiveById(id).map(existing -> {
+        Optional<CompanyWriteResponse> decided = companyRepository.findActiveById(id).map(existing -> {
             CompanyStatus currentStatus = CompanyStatus.fromValue(existing.getCompanyStatus())
                 .orElseThrow(() -> BusinessValidationException.invalidCompanyStatusTransition(existing.getCompanyStatus(), targetStatus.name()));
 
@@ -285,7 +288,7 @@ public class CompanyService {
             existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
-            return companyMapper.toDto(companyRepository.save(existing));
+            return companyMapper.toWriteDto(companyRepository.save(existing));
         });
 
         log.info("Company status decision id={} success={}", id, decided.isPresent());

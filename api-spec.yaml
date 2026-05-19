@@ -197,6 +197,13 @@ paths:
           format: int64
           exclusiveMinimum: 0
         example: 1
+      - name: includeSalesmen
+        in: query
+        description: Set true to include associated salesmen for this company
+        required: true
+        schema:
+          type: boolean
+        example: true
       - $ref: "#/components/parameters/XRequestIdHeader"
       - $ref: "#/components/parameters/XTenantIdHeader"
       - $ref: "#/components/parameters/AcceptLanguageHeader"
@@ -282,7 +289,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyResponse"
+                $ref: "#/components/schemas/CompanyWriteResponse"
         "400":
           description: Validation failed or invalid id
           content:
@@ -326,7 +333,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyResponse"
+                $ref: "#/components/schemas/CompanyWriteResponse"
         "400":
           description: Invalid company id supplied
           content:
@@ -624,9 +631,11 @@ paths:
       - name: includeSalesmen
         in: query
         description: Set true to include associated salesmen in each company
-        required: false
+        required: true
         schema:
           type: boolean
+          description: Set true to include associated salesmen in each company response
+          example: true
         example: true
       - name: page
         in: query
@@ -730,7 +739,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyResponse"
+                $ref: "#/components/schemas/CompanyWriteResponse"
         "400":
           description: Validation failed
           content:
@@ -860,7 +869,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyResponse"
+                $ref: "#/components/schemas/CompanyWriteResponse"
         "400":
           description: Invalid status value or transition
           content:
@@ -1013,9 +1022,11 @@ paths:
       - name: includeSalesmen
         in: query
         description: Set true to include associated salesmen in each company
-        required: false
+        required: true
         schema:
           type: boolean
+          description: Set true to include associated salesmen in each company response
+          example: true
         example: true
       - name: page
         in: query
@@ -1249,9 +1260,9 @@ components:
       - emailAddress
       - mobileNumber
       - registrationNumber
-    CompanyResponse:
+    CompanyWriteResponse:
       type: object
-      description: Company response payload
+      description: Company write-operation response payload
       properties:
         companyId:
           type: integer
@@ -1298,11 +1309,6 @@ components:
           format: date-time
           description: Last update timestamp in ISO-8601 format
           example: 2026-05-04T11:20:45
-        salesmen:
-          type: array
-          description: Associated salesmen (only when includeSalesmen=true is requested)
-          items:
-            $ref: "#/components/schemas/SalesmanResponse"
     AdminUserUpdateRequest:
       type: object
       description: Admin user update request payload
@@ -1584,6 +1590,60 @@ components:
         lazyLoading:
           $ref: "#/components/schemas/LazyLoadingMeta"
           description: Lazy-loading metadata. Present when cursor mode is used.
+    CompanyResponse:
+      type: object
+      description: Company response payload
+      properties:
+        companyId:
+          type: integer
+          format: int64
+          description: Unique company identifier
+          example: 1
+        emailAddress:
+          type: string
+          description: Primary email address
+          example: company@example.com
+        mobileNumber:
+          type: string
+          description: Primary mobile number
+          example: "+971555010101"
+        registrationNumber:
+          type: string
+          description: Registration number
+          example: REG-2026-0001
+        companyStatus:
+          type: string
+          description: Current status of company
+          example: ACTIVE
+        companyType:
+          type: string
+          description: Company type classification
+          example: STANDARD
+        createdBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who created the record
+          example: 1001
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
+        updatedBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
+        salesmen:
+          type: array
+          description: Associated salesmen (only when includeSalesmen=true is requested)
+          items:
+            $ref: "#/components/schemas/SalesmanResponse"
     LazyLoadingMeta:
       type: object
       description: Cursor metadata for lazy loading

@@ -17,6 +17,10 @@ public interface CompanyMapper {
     @Mapping(source = "user.mobileNumber", target = "mobileNumber")
     CompanyResponse toDto(Company company);
 
+    @Mapping(source = "user.emailAddress", target = "emailAddress")
+    @Mapping(source = "user.mobileNumber", target = "mobileNumber")
+    CompanyWriteResponse toWriteDto(Company company);
+
     List<CompanyResponse> toDtoList(List<Company> companies);
 
     @Mapping(target = "user", ignore = true)

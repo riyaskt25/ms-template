@@ -2,6 +2,7 @@ package com.snb.ms.company;
 
 import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +52,10 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping("/{id}")
-    public CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
-        log.debug("Received request to fetch company by id={}", id);
-        CompanyResponse result = companyService.findById(id)
+    public CompanyResponse findById(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
+                                    @NotNull(message = "{validation.company.includeSalesmen.required}") @RequestParam Boolean includeSalesmen) {
+        log.debug("Received request to fetch company by id={} includeSalesmen={}", id, includeSalesmen);
+        CompanyResponse result = companyService.findById(id, includeSalesmen)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Company found for id={}", id);
         return result;
@@ -61,19 +63,19 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyCreateRequest request) {
+    public ResponseEntity<CompanyWriteResponse> create(@Valid @RequestBody CompanyCreateRequest request) {
         log.debug("Received request to create company registrationNumber={}", request.getRegistrationNumber());
-        CompanyResponse created = companyService.create(request);
+        CompanyWriteResponse created = companyService.create(request);
         log.info("Created company with id={}", created.getCompanyId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
     @PutMapping("/{id}")
-    public CompanyResponse update(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
-                                  @Valid @RequestBody CompanyUpdateRequest request) {
+    public CompanyWriteResponse update(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
+                                       @Valid @RequestBody CompanyUpdateRequest request) {
         log.debug("Received request to update company id={}", id);
-        CompanyResponse updated = companyService.update(id, request)
+        CompanyWriteResponse updated = companyService.update(id, request)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Updated company id={}", id);
         return updated;
@@ -81,9 +83,9 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public CompanyResponse softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
+    public CompanyWriteResponse softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
-        CompanyResponse deleted = companyService.softDelete(id)
+        CompanyWriteResponse deleted = companyService.softDelete(id)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Soft-deleted company id={}", id);
         return deleted;
@@ -91,10 +93,10 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @PatchMapping("/{id}/status")
-    public CompanyResponse decideStatus(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
-                                        @Valid @RequestBody CompanyStatusDecisionRequest request) {
+    public CompanyWriteResponse decideStatus(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id,
+                                             @Valid @RequestBody CompanyStatusDecisionRequest request) {
         log.debug("Received status decision for company id={} targetStatus={}", id, request.getStatus());
-        CompanyResponse updated = companyService.decideStatus(id, request)
+        CompanyWriteResponse updated = companyService.decideStatus(id, request)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Updated company status id={} to={}", id, updated.getCompanyStatus());
         return updated;

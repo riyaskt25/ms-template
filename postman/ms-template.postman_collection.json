@@ -89,7 +89,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}",
+                                                                  "raw":  "{{baseUrl}}/api/companies/{{id}}?includeSalesmen=true",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -97,7 +97,14 @@
                                                                                "api",
                                                                                "companies",
                                                                                "{{id}}"
-                                                                           ]
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "includeSalesmen",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Set true to include associated salesmen for this company"
+                                                                                }
+                                                                            ]
                                                               }
                                                   }
                                   },
@@ -244,7 +251,7 @@
                                                                                 {
                                                                                     "key":  "includeSalesmen",
                                                                                     "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                    "description":  "Set true to include associated salesmen in each company response"
                                                                                 },
                                                                                 {
                                                                                     "key":  "page",
@@ -442,7 +449,7 @@
                                                                                 {
                                                                                     "key":  "includeSalesmen",
                                                                                     "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                    "description":  "Set true to include associated salesmen in each company response"
                                                                                 },
                                                                                 {
                                                                                     "key":  "page",
