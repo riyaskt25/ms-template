@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +81,12 @@ public class GlobalExceptionHandler {
         log.warn("Data integrity violation");
         log.debug("Data integrity root cause", ex);
         return buildResponse(ErrorCodeEnum.DATA_INTEGRITY_VIOLATION, resolveDataIntegrityDescription(ex));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<BaseResponseDTO> handleNoResourceFound(NoResourceFoundException ex) {
+        log.debug("Static resource not found: {}", ex.getResourcePath());
+        return buildResponse(ErrorCodeEnum.RESOURCE_NOT_FOUND, "No static resource " + ex.getResourcePath() + ".");
     }
 
     @ExceptionHandler(Exception.class)

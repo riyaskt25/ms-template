@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.shared.commons.StringParsingUtils;
 import com.snb.ms.shared.constants.ListQueryDefaults;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -149,42 +150,60 @@ public final class CompanyQueryBuilder {
         Map<String, String> cursorValues = decodeCursor(cursor);
         Sort cursorSort = buildCursorSort(sortBy, sortDirection);
 
-        return baseSpec.and((root, query, cb) -> {
-            List<Sort.Order> orders = cursorSort.stream().toList();
-            List<Predicate> orBlocks = new ArrayList<>();
+        return baseSpec.and((root, query, cb) -> buildCursorPredicate(root, cb, cursorSort, cursorValues));
+    }
 
-            for (int i = 0; i < orders.size(); i++) {
-                List<Predicate> andParts = new ArrayList<>();
+    private static Predicate buildCursorPredicate(Root<Company> root,
+                                                  CriteriaBuilder cb,
+                                                  Sort cursorSort,
+                                                  Map<String, String> cursorValues) {
+        List<Sort.Order> orders = cursorSort.stream().toList();
+        List<Predicate> orBlocks = new ArrayList<>();
 
-                for (int j = 0; j < i; j++) {
-                    Sort.Order priorOrder = orders.get(j);
-                    String priorValueRaw = cursorValues.get(priorOrder.getProperty());
-                    if (priorValueRaw == null) {
-                        return cb.conjunction();
-                    }
-                    Comparable<?> priorValue = parseCursorValue(priorOrder.getProperty(), priorValueRaw);
-                    Path<? extends Comparable<?>> priorPath = resolveComparablePath(root, priorOrder.getProperty());
-                    andParts.add(cb.equal(priorPath, priorValue));
-                }
-
-                Sort.Order currentOrder = orders.get(i);
-                String currentValueRaw = cursorValues.get(currentOrder.getProperty());
-                if (currentValueRaw == null) {
-                    return cb.conjunction();
-                }
-                Comparable<?> currentValue = parseCursorValue(currentOrder.getProperty(), currentValueRaw);
-                Path<? extends Comparable<?>> currentPath = resolveComparablePath(root, currentOrder.getProperty());
-
-                Predicate compare = buildComparisonPredicate(cb, currentPath, currentValue, currentOrder.isAscending());
-                andParts.add(compare);
-                orBlocks.add(cb.and(andParts.toArray(new Predicate[0])));
-            }
-
-            if (orBlocks.isEmpty()) {
+        for (int i = 0; i < orders.size(); i++) {
+            Predicate orBranch = buildCursorOrBranch(root, cb, orders, cursorValues, i);
+            if (orBranch == null) {
                 return cb.conjunction();
             }
-            return cb.or(orBlocks.toArray(new Predicate[0]));
-        });
+            orBlocks.add(orBranch);
+        }
+
+        if (orBlocks.isEmpty()) {
+            return cb.conjunction();
+        }
+        return cb.or(orBlocks.toArray(new Predicate[0]));
+    }
+
+    private static Predicate buildCursorOrBranch(Root<Company> root,
+                                                 CriteriaBuilder cb,
+                                                 List<Sort.Order> orders,
+                                                 Map<String, String> cursorValues,
+                                                 int branchIndex) {
+        List<Predicate> andParts = new ArrayList<>();
+
+        for (int j = 0; j < branchIndex; j++) {
+            Sort.Order priorOrder = orders.get(j);
+            String priorValueRaw = cursorValues.get(priorOrder.getProperty());
+            if (priorValueRaw == null) {
+                return null;
+            }
+
+            Comparable<?> priorValue = parseCursorValue(priorOrder.getProperty(), priorValueRaw);
+            Path<? extends Comparable<?>> priorPath = resolveComparablePath(root, priorOrder.getProperty());
+            andParts.add(cb.equal(priorPath, priorValue));
+        }
+
+        Sort.Order currentOrder = orders.get(branchIndex);
+        String currentValueRaw = cursorValues.get(currentOrder.getProperty());
+        if (currentValueRaw == null) {
+            return null;
+        }
+
+        Comparable<?> currentValue = parseCursorValue(currentOrder.getProperty(), currentValueRaw);
+        Path<? extends Comparable<?>> currentPath = resolveComparablePath(root, currentOrder.getProperty());
+        Predicate compare = buildComparisonPredicate(cb, currentPath, currentValue, currentOrder.isAscending());
+        andParts.add(compare);
+        return cb.and(andParts.toArray(new Predicate[0]));
     }
 
     /**

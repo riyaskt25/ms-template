@@ -31,6 +31,11 @@ public class RequestContextFilter extends OncePerRequestFilter {
     private boolean requestBoundaryEnabled;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "/favicon.ico".equals(request.getRequestURI());
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {

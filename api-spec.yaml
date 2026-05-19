@@ -1,280 +1,556 @@
 openapi: 3.1.0
 info:
   title: MS Template API
-  description: "API documentation for company, salesman, and admin user endpoints"
+  description: "Microservice template API exposing company, salesman, admin user,\
+    \ and external posts endpoints. All endpoints support request context propagation\
+    \ using X-Request-Id, X-Tenant-Id, and Accept-Language headers."
   contact:
     name: MS Template Team
+    url: https://snb.com/support
     email: support@snb.com
   license:
     name: Proprietary
+    url: https://snb.com/legal
   version: v1
+externalDocs:
+  description: Project quick start and usage
+  url: https://snb.com/docs/ms-template
 servers:
 - url: http://localhost:8080
-  description: Local
+  description: Local development
 - url: /
-  description: Default
+  description: Relative deployment base path
 tags:
 - name: Companies
   description: Operations for company resources
 - name: Salesmen
   description: Operations for salesman resources
-- name: Admin Users
-  description: Operations for admin user resources
 - name: Posts
   description: Operations for external posts resource consumption
+- name: Admin Users
+  description: Operations for admin user resources
 paths:
   /api/salesmen/{id}:
     get:
       tags:
       - Salesmen
-      operationId: findById
+      summary: Get salesman by id
+      description: Finds a salesman by identifier.
+      operationId: getSalesmanById
       parameters:
       - name: id
         in: path
+        description: Salesman identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Salesman fetched successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanDto"
+                $ref: "#/components/schemas/SalesmanResponse"
+        "400":
+          description: Invalid id supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Salesman not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     put:
       tags:
       - Salesmen
-      operationId: update
+      summary: Update salesman
+      description: Updates mutable salesman fields by identifier.
+      operationId: updateSalesman
       parameters:
       - name: id
         in: path
+        description: Salesman identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       requestBody:
+        description: Salesman payload to update
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/SalesmanUpdateRequest"
+            examples:
+              UpdateSalesman:
+                description: UpdateSalesman
+                value:
+                  firstName: Ahamed
+                  middleName: Ibrahim
+                  lastName: Khan
+                  accountNumber: ACC-9911
+                  cifNumber: CIF-1022
+                  idNumber: 784-1986-0000001-1
         required: true
       responses:
         "200":
-          description: OK
+          description: Salesman updated successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanDto"
+                $ref: "#/components/schemas/SalesmanResponse"
+        "400":
+          description: Validation failed or invalid id
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Salesman not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     delete:
       tags:
       - Salesmen
-      operationId: softDelete
+      summary: Soft delete salesman
+      description: Marks a salesman as inactive without removing the row.
+      operationId: softDeleteSalesman
       parameters:
       - name: id
         in: path
+        description: Salesman identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Salesman soft-deleted successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanDto"
+                $ref: "#/components/schemas/SalesmanResponse"
+        "400":
+          description: Invalid id supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Salesman not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SalesmanResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
   /api/companies/{id}:
     get:
       tags:
       - Companies
-      operationId: findById_1
+      summary: Get company by id
+      description: Finds a single company by its identifier.
+      operationId: getCompanyById
       parameters:
       - name: id
         in: path
+        description: Company identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Company fetched successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyDto"
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Invalid company id supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Company not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+              examples:
+                CompanyNotFound:
+                  description: CompanyNotFound
+                  value:
+                    errors:
+                    - type: NOT_FOUND
+                      code: RESOURCE_NOT_FOUND
+                      message: Resource not found
+                      description: Company not found for id=999
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+              examples:
+                InternalServerError:
+                  description: InternalServerError
+                  value:
+                    errors:
+                    - type: SERVER_ERROR
+                      code: INTERNAL_ERROR
+                      message: Unexpected internal server error
+                      description: null
     put:
       tags:
       - Companies
-      operationId: update_1
+      summary: Update company
+      description: Updates an existing company record by identifier.
+      operationId: updateCompany
       parameters:
       - name: id
         in: path
+        description: Company identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       requestBody:
+        description: Company payload to update
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CompanyUpdateRequest"
+            examples:
+              UpdateCompany:
+                description: UpdateCompany
+                value:
+                  registrationNumber: REG-2026-0001
+                  emailAddress: company.updated@example.com
+                  mobileNumber: "+971555010102"
         required: true
       responses:
         "200":
-          description: OK
+          description: Company updated successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyDto"
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Validation failed or invalid id
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Company not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     delete:
       tags:
       - Companies
-      operationId: softDelete_1
+      summary: Soft delete company
+      description: Marks a company record as inactive without physical deletion.
+      operationId: softDeleteCompany
       parameters:
       - name: id
         in: path
+        description: Company identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Company soft-deleted successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyDto"
-  /api/companies/{id}/status:
-    patch:
-      tags:
-      - Companies
-      summary: Decide pending company status as ACTIVE or REJECTED
-      operationId: decideStatus
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-          exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompanyStatusDecisionRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Invalid company id supplied
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyDto"
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Company not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
   /api/admin-users/{id}:
     get:
       tags:
       - Admin Users
-      operationId: findById_2
+      summary: Get admin user by id
+      description: Finds an admin user by identifier.
+      operationId: getAdminUserById
       parameters:
       - name: id
         in: path
+        description: Admin user identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Admin user fetched successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/AdminUserDto"
+                $ref: "#/components/schemas/AdminUserResponse"
+        "400":
+          description: Invalid id supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Admin user not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     put:
       tags:
       - Admin Users
-      operationId: update_2
+      summary: Update admin user
+      description: Updates an existing admin user by identifier.
+      operationId: updateAdminUser
       parameters:
       - name: id
         in: path
+        description: Admin user identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       requestBody:
+        description: Admin user payload to update
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/AdminUserUpdateRequest"
+            examples:
+              UpdateAdminUser:
+                description: UpdateAdminUser
+                value:
+                  firstName: Sara
+                  middleName: Mariam
+                  lastName: Naseer
+                  extensionNumber: EXT-1002
+                  emailAddress: sara.naseer@example.com
+                  mobileNumber: "+971555010302"
         required: true
       responses:
         "200":
-          description: OK
+          description: Admin user updated successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/AdminUserDto"
+                $ref: "#/components/schemas/AdminUserResponse"
+        "400":
+          description: Validation failed or invalid id
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Admin user not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     delete:
       tags:
       - Admin Users
-      operationId: softDelete_2
+      summary: Soft delete admin user
+      description: Marks an admin user as inactive without deleting the record physically.
+      operationId: softDeleteAdminUser
       parameters:
       - name: id
         in: path
+        description: Admin user identifier
         required: true
         schema:
           type: integer
           format: int64
           exclusiveMinimum: 0
-      - $ref: '#/components/parameters/UserIdHeader'
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Admin user soft-deleted successfully
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/AdminUserDto"
+                $ref: "#/components/schemas/AdminUserResponse"
+        "400":
+          description: Invalid id supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Admin user not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
   /api/salesmen:
     get:
       tags:
       - Salesmen
-      operationId: findAll
+      summary: List salesmen
+      description: Returns all active salesman records.
+      operationId: getAllSalesmen
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
-          description: OK
+          description: Salesmen fetched successfully
           content:
             '*/*':
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SalesmanDto"
+                  $ref: "#/components/schemas/SalesmanResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
     post:
       tags:
       - Salesmen
-      summary: Create salesman with linked user and company association
-      operationId: create
+      summary: Create salesman
+      description: Creates a salesman and links the record with a company and internal
+        user profile.
+      operationId: createSalesman
       parameters:
-      - $ref: '#/components/parameters/UserIdHeader'
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       requestBody:
+        description: Salesman payload to create
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/SalesmanCreateRequest"
+            examples:
+              CreateSalesman:
+                description: CreateSalesman
+                value:
+                  firstName: Ahamed
+                  middleName: I
+                  lastName: Khan
+                  accountNumber: ACC-9911
+                  cifNumber: CIF-1022
+                  idNumber: 784-1986-0000001-1
+                  companyId: 1
+                  emailAddress: ahamed.khan@example.com
+                  mobileNumber: "+971555010201"
         required: true
       responses:
         "201":
@@ -282,81 +558,134 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SalesmanDto"
+                $ref: "#/components/schemas/SalesmanResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Company reference not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
   /api/companies:
     get:
       tags:
       - Companies
       summary: List companies (offset pagination)
-      description: Returns active company records using offset-based pagination. Best for small to medium datasets or when random access to pages is needed.
+      description: Returns active company records using offset-based pagination. Best
+        for small to medium datasets or when random access to pages is needed.
       operationId: getAllCompanies
       parameters:
+      - name: registrationNumber
+        in: query
+        description: Optional registration number contains filter
+        required: false
+        schema:
+          type: string
+        example: REG-2026
+      - name: companyStatus
+        in: query
+        description: Optional company status contains filter
+        required: false
+        schema:
+          type: string
+        example: ACTIVE
+      - name: companyType
+        in: query
+        description: Optional company type contains filter
+        required: false
+        schema:
+          type: string
+        example: DEALER
+      - name: emailAddress
+        in: query
+        description: Optional email contains filter
+        required: false
+        schema:
+          type: string
+        example: company@example.com
+      - name: mobileNumber
+        in: query
+        description: Optional mobile contains filter
+        required: false
+        schema:
+          type: string
+        example: "+971555"
+      - name: includeSalesmen
+        in: query
+        description: Set true to include associated salesmen in each company
+        required: false
+        schema:
+          type: boolean
+        example: true
       - name: page
         in: query
         description: Zero-based page index
+        required: false
         schema:
           type: integer
           format: int32
-          default: 0
+          minimum: 0
         example: 0
       - name: size
         in: query
         description: Page size (max 200)
+        required: false
         schema:
           type: integer
           format: int32
-          default: 20
+          exclusiveMinimum: 0
+          maximum: 200
         example: 20
       - name: sortBy
         in: query
-        description: "Sort fields (comma-separated). Defaults to companyId ASC when omitted. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt."
+        description: "Sort fields (comma-separated). Defaults to companyId ASC when\
+          \ omitted. Allowed fields: companyId, registrationNumber, companyStatus,\
+          \ companyType, emailAddress, mobileNumber, createdAt, updatedAt."
+        required: false
         schema:
           type: string
         example: "companyStatus,registrationNumber"
       - name: sortDirection
         in: query
-        description: "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted."
+        description: "Sort directions. Provide a single value (e.g. DESC) to apply\
+          \ to all sortBy fields, or comma-separated values matching the sortBy count.\
+          \ Allowed values: ASC, DESC. Defaults to ASC when omitted."
+        required: false
         schema:
           type: string
-          default: ASC
         example: "ASC,DESC"
-      - name: includeSalesmen
+      - name: limit
         in: query
-        description: Set true to include associated salesmen in each company
+        required: false
         schema:
-          type: boolean
-          default: false
-        example: true
-      - name: registrationNumber
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+          maximum: 200
+      - name: cursor
         in: query
-        description: Optional registration number contains filter
-        schema:
-          type: string
-        example: "REG-2026"
-      - name: companyStatus
-        in: query
-        description: Optional company status contains filter
+        required: false
         schema:
           type: string
-        example: "ACTIVE"
-      - name: companyType
+      - name: select
         in: query
-        description: Optional company type contains filter
+        required: false
         schema:
           type: string
-        example: "DEALER"
-      - name: emailAddress
-        in: query
-        description: Optional email contains filter
-        schema:
-          type: string
-        example: "company@example.com"
-      - name: mobileNumber
-        in: query
-        description: Optional mobile contains filter
-        schema:
-          type: string
-        example: "+971555"
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
           description: Companies fetched successfully
@@ -364,78 +693,382 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/CompanyPageResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - Companies
+      summary: Create company
+      description: Creates a new company record and provisions the linked internal
+        user.
+      operationId: createCompany
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Company payload to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyCreateRequest"
+            examples:
+              CreateCompany:
+                description: CreateCompany
+                value:
+                  registrationNumber: REG-2026-0001
+                  emailAddress: company@example.com
+                  mobileNumber: "+971555010101"
+        required: true
+      responses:
+        "201":
+          description: Company created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "409":
+          description: Duplicate registration number or conflicting data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/admin-users:
+    get:
+      tags:
+      - Admin Users
+      summary: List admin users
+      description: Returns all active admin user records.
+      operationId: getAllAdminUsers
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Admin users fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUserResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - Admin Users
+      summary: Create admin user
+      description: Creates an admin user record and provisions the linked internal
+        user profile.
+      operationId: createAdminUser
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Admin user payload to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserCreateRequest"
+            examples:
+              CreateAdminUser:
+                description: CreateAdminUser
+                value:
+                  firstName: Sara
+                  middleName: M
+                  lastName: Naseer
+                  extensionNumber: EXT-1001
+                  emailAddress: sara.naseer@example.com
+                  mobileNumber: "+971555010301"
+        required: true
+      responses:
+        "201":
+          description: Admin user created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AdminUserResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/companies/{id}/status:
+    patch:
+      tags:
+      - Companies
+      summary: Decide company status
+      description: Allows administrator to decide a pending company as ACTIVE or REJECTED.
+      operationId: decideCompanyStatus
+      parameters:
+      - name: id
+        in: path
+        description: Company identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Status decision payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyStatusDecisionRequest"
+            examples:
+              DecideCompanyStatus:
+                description: DecideCompanyStatus
+                value:
+                  status: ACTIVE
+        required: true
+      responses:
+        "200":
+          description: Company status updated successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Invalid status value or transition
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Company not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/posts:
+    get:
+      tags:
+      - Posts
+      summary: List external posts
+      description: "Fetches posts from the configured external provider (default:\
+        \ JSONPlaceholder)."
+      operationId: getAllExternalPosts
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Posts fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PostDto"
+        "502":
+          description: Upstream provider call failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/posts/{id}:
+    get:
+      tags:
+      - Posts
+      summary: Get external post by id
+      description: Fetches one external post by identifier from the configured provider.
+      operationId: getExternalPostById
+      parameters:
+      - name: id
+        in: path
+        description: External post identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Post fetched successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PostDto"
+        "404":
+          description: Post not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PostDto"
+        "502":
+          description: Upstream provider call failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
   /api/companies/lazy:
     get:
       tags:
       - Companies
       summary: List companies (lazy loading with cursor)
-      description: Returns active company records using cursor-based lazy loading. Recommended for large datasets or continuous scrolling. Provides efficient, deterministic pagination.
+      description: "Returns active company records using cursor-based lazy loading.\
+        \ Recommended for large datasets or continuous scrolling. Provides efficient,\
+        \ deterministic pagination."
       operationId: getAllCompaniesCursor
       parameters:
-      - name: cursor
+      - name: registrationNumber
         in: query
-        description: Opaque cursor token from previous response's lazyLoading.nextCursor. Omit for first request.
+        description: Optional registration number contains filter
+        required: false
         schema:
           type: string
-        example: "eyJjb21wYW55SWQiOiIxMjAifQ"
-      - name: limit
+        example: REG-2026
+      - name: companyStatus
         in: query
-        description: Lazy-loading batch size (max 200)
+        description: Optional company status contains filter
+        required: false
+        schema:
+          type: string
+        example: ACTIVE
+      - name: companyType
+        in: query
+        description: Optional company type contains filter
+        required: false
+        schema:
+          type: string
+        example: DEALER
+      - name: emailAddress
+        in: query
+        description: Optional email contains filter
+        required: false
+        schema:
+          type: string
+        example: company@example.com
+      - name: mobileNumber
+        in: query
+        description: Optional mobile contains filter
+        required: false
+        schema:
+          type: string
+        example: "+971555"
+      - name: includeSalesmen
+        in: query
+        description: Set true to include associated salesmen in each company
+        required: false
+        schema:
+          type: boolean
+        example: true
+      - name: page
+        in: query
+        required: false
         schema:
           type: integer
           format: int32
-          default: 20
-        example: 20
+          minimum: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+          maximum: 200
       - name: sortBy
         in: query
-        description: "Sort fields (comma-separated). Defaults to companyId ASC when omitted. companyId is always appended as tie-breaker when missing. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt."
+        description: "Sort fields (comma-separated). Defaults to companyId ASC when\
+          \ omitted. companyId is always appended as tie-breaker when missing. Allowed\
+          \ fields: companyId, registrationNumber, companyStatus, companyType, emailAddress,\
+          \ mobileNumber, createdAt, updatedAt."
+        required: false
         schema:
           type: string
         example: "companyStatus,registrationNumber"
       - name: sortDirection
         in: query
-        description: "Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted."
+        description: "Sort directions. Provide a single value (e.g. DESC) to apply\
+          \ to all sortBy fields, or comma-separated values matching the sortBy count.\
+          \ Allowed values: ASC, DESC. Defaults to ASC when omitted."
+        required: false
         schema:
           type: string
-          default: ASC
         example: "ASC,DESC"
-      - name: includeSalesmen
+      - name: limit
         in: query
-        description: Set true to include associated salesmen in each company
+        description: Lazy-loading batch size (max 200)
+        required: false
         schema:
-          type: boolean
-          default: false
-        example: true
-      - name: registrationNumber
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+          maximum: 200
+        example: 20
+      - name: cursor
         in: query
-        description: Optional registration number contains filter
-        schema:
-          type: string
-        example: "REG-2026"
-      - name: companyStatus
-        in: query
-        description: Optional company status contains filter
-        schema:
-          type: string
-        example: "ACTIVE"
-      - name: companyType
-        in: query
-        description: Optional company type contains filter
+        description: Opaque cursor token from previous response's lazyLoading.nextCursor.
+          Omit for first request.
+        required: false
         schema:
           type: string
-        example: "DEALER"
-      - name: emailAddress
+        example: eyJjb21wYW55SWQiOiIxMjAifQ
+      - name: select
         in: query
-        description: Optional email contains filter
+        required: false
         schema:
           type: string
-        example: "company@example.com"
-      - name: mobileNumber
-        in: query
-        description: Optional mobile contains filter
-        schema:
-          type: string
-        example: "+971555"
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
       responses:
         "200":
           description: Companies fetched successfully
@@ -449,238 +1082,261 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BaseResponseDTO"
-    post:
-      tags:
-      - Companies
-      summary: Create company with linked user
-      operationId: create_1
-      parameters:
-      - $ref: '#/components/parameters/UserIdHeader'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompanyCreateRequest"
-        required: true
-      responses:
-        "201":
-          description: Company created successfully
+        "500":
+          description: Internal server error
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/CompanyDto"
-  /api/admin-users:
-    get:
-      tags:
-      - Admin Users
-      operationId: findAll_2
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AdminUserDto"
-    post:
-      tags:
-      - Admin Users
-      summary: Create admin user with linked user
-      operationId: create_2
-      parameters:
-      - $ref: '#/components/parameters/UserIdHeader'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AdminUserCreateRequest"
-        required: true
-      responses:
-        "201":
-          description: Admin user created successfully
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AdminUserDto"
-  /api/posts:
-    get:
-      tags:
-      - Posts
-      operationId: findAll_3
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PostDto"
-  /api/posts/{id}:
-    get:
-      tags:
-      - Posts
-      operationId: findById_3
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-          exclusiveMinimum: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PostDto"
-        "404":
-          description: Not Found
+                $ref: "#/components/schemas/BaseResponseDTO"
 components:
-  parameters:
-    UserIdHeader:
-      name: USER_ID
-      in: header
-      required: true
-      description: Caller user id used for audit fields like createdBy and updatedBy.
-      schema:
-        type: integer
-        format: int64
   schemas:
     SalesmanUpdateRequest:
       type: object
+      description: Salesman update request payload
       properties:
         firstName:
           type: string
+          description: First name
+          example: Ahamed
           maxLength: 100
           minLength: 0
         middleName:
           type: string
+          description: Middle name
+          example: Ibrahim
           maxLength: 100
           minLength: 0
         lastName:
           type: string
+          description: Last name
+          example: Khan
           maxLength: 100
           minLength: 0
         accountNumber:
           type: string
+          description: Account number
+          example: ACC-9911
           maxLength: 50
           minLength: 0
         cifNumber:
           type: string
+          description: Customer information file number
+          example: CIF-1022
           maxLength: 50
           minLength: 0
         idNumber:
           type: string
+          description: National or identity number
+          example: 784-1986-0000001-1
           maxLength: 50
           minLength: 0
-    SalesmanDto:
+    ErrorInfo:
       type: object
+      description: Detailed error information
       properties:
+        type:
+          type: string
+          description: Error category
+          example: VALIDATION_ERROR
+        code:
+          type: string
+          description: Application-specific error code
+          example: EMAILADDRESS_INVALID
+        message:
+          type: string
+          description: "Localized, user-friendly error message"
+          example: emailAddress must be a valid email
+        description:
+          type: string
+          description: Additional diagnostic details
+          example: "Rejected value: not-an-email"
+    SalesmanResponse:
+      type: object
+      description: Salesman response payload
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
         salesmanId:
           type: integer
           format: int64
+          description: Unique salesman identifier
+          example: 1
         firstName:
           type: string
+          description: First name
+          example: Ahamed
         middleName:
           type: string
+          description: Middle name
+          example: Ibrahim
         lastName:
           type: string
+          description: Last name
+          example: Khan
         accountNumber:
           type: string
+          description: Account number
+          example: ACC-9911
         cifNumber:
           type: string
+          description: Customer information file number
+          example: CIF-1022
         idNumber:
           type: string
+          description: National or identity number
+          example: 784-1986-0000001-1
         availableIncentiveAmount:
           type: number
+          description: Available incentive amount
+          example: 1250.75
         createdBy:
           type: integer
           format: int64
+          description: Identifier of actor who created the record
+          example: 1001
         createdAt:
           type: string
           format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
         updatedBy:
           type: integer
           format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
         updatedAt:
           type: string
           format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
+    BaseResponseDTO:
+      type: object
+      description: Base API response wrapper with error details
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
     CompanyUpdateRequest:
       type: object
+      description: Company update request payload
       properties:
         registrationNumber:
           type: string
+          description: Company registration number
+          example: REG-2026-0001
           maxLength: 100
           minLength: 0
         emailAddress:
           type: string
+          description: Company email address
+          example: company.updated@example.com
           maxLength: 150
           minLength: 0
         mobileNumber:
           type: string
+          description: Company mobile number
+          example: "+971555010102"
           maxLength: 20
           minLength: 0
       required:
       - emailAddress
       - mobileNumber
       - registrationNumber
-    CompanyDto:
+    CompanyResponse:
       type: object
+      description: Company response payload
       properties:
         companyId:
           type: integer
           format: int64
+          description: Unique company identifier
+          example: 1
         emailAddress:
           type: string
+          description: Primary email address
+          example: company@example.com
         mobileNumber:
           type: string
+          description: Primary mobile number
+          example: "+971555010101"
         registrationNumber:
           type: string
+          description: Registration number
+          example: REG-2026-0001
         companyStatus:
           type: string
+          description: Current status of company
+          example: ACTIVE
         companyType:
           type: string
+          description: Company type classification
+          example: STANDARD
         createdBy:
           type: integer
           format: int64
+          description: Identifier of actor who created the record
+          example: 1001
         createdAt:
           type: string
           format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
         updatedBy:
           type: integer
           format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
         updatedAt:
           type: string
           format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
+        salesmen:
+          type: array
+          description: Associated salesmen (only when includeSalesmen=true is requested)
+          items:
+            $ref: "#/components/schemas/SalesmanResponse"
     AdminUserUpdateRequest:
       type: object
+      description: Admin user update request payload
       properties:
         firstName:
           type: string
+          description: First name
+          example: Sara
           maxLength: 100
           minLength: 0
         middleName:
           type: string
+          description: Middle name
+          example: Mariam
           maxLength: 100
           minLength: 0
         lastName:
           type: string
+          description: Last name
+          example: Naseer
           maxLength: 100
           minLength: 0
         extensionNumber:
           type: string
+          description: Extension number
+          example: EXT-1002
           maxLength: 20
           minLength: 0
         emailAddress:
           type: string
+          description: Admin user email address
+          example: sara.naseer@example.com
           maxLength: 150
           minLength: 0
         mobileNumber:
           type: string
+          description: Admin user mobile number
+          example: "+971555010302"
           maxLength: 20
           minLength: 0
       required:
@@ -690,72 +1346,118 @@ components:
       - lastName
       - middleName
       - mobileNumber
-    AdminUserDto:
+    AdminUserResponse:
       type: object
+      description: Admin user response payload
       properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
         adminUserId:
           type: integer
           format: int64
+          description: Unique admin user identifier
+          example: 1
         firstName:
           type: string
+          description: First name
+          example: Sara
         middleName:
           type: string
+          description: Middle name
+          example: M
         lastName:
           type: string
+          description: Last name
+          example: Naseer
         extensionNumber:
           type: string
+          description: Extension number
+          example: EXT-1001
         adminType:
           type: string
+          description: Admin role type
+          example: SUPERVISOR
         adminStatus:
           type: string
+          description: Admin status
+          example: ACTIVE
         createdBy:
           type: integer
           format: int64
+          description: Identifier of actor who created the record
+          example: 1001
         createdAt:
           type: string
           format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
         updatedBy:
           type: integer
           format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
         updatedAt:
           type: string
           format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
     SalesmanCreateRequest:
       type: object
+      description: Salesman creation request payload
       properties:
         firstName:
           type: string
+          description: First name
+          example: Ahamed
           maxLength: 100
           minLength: 0
         middleName:
           type: string
+          description: Middle name
+          example: I
           maxLength: 100
           minLength: 0
         lastName:
           type: string
+          description: Last name
+          example: Khan
           maxLength: 100
           minLength: 0
         accountNumber:
           type: string
+          description: Account number
+          example: ACC-9911
           maxLength: 50
           minLength: 0
         cifNumber:
           type: string
+          description: Customer information file number
+          example: CIF-1022
           maxLength: 50
           minLength: 0
         idNumber:
           type: string
+          description: National or identity number
+          example: 784-1986-0000001-1
           maxLength: 50
           minLength: 0
         companyId:
           type: integer
           format: int64
+          description: Linked company identifier
+          example: 1
         emailAddress:
           type: string
+          description: Salesman email address
+          example: ahamed.khan@example.com
           maxLength: 150
           minLength: 0
         mobileNumber:
           type: string
+          description: Salesman mobile number
+          example: "+971555010201"
           maxLength: 20
           minLength: 0
       required:
@@ -764,58 +1466,68 @@ components:
       - mobileNumber
     CompanyCreateRequest:
       type: object
+      description: Company creation request payload
       properties:
         registrationNumber:
           type: string
+          description: Company registration number
+          example: REG-2026-0001
           maxLength: 100
           minLength: 0
         emailAddress:
           type: string
+          description: Company email address
+          example: company@example.com
           maxLength: 150
           minLength: 0
         mobileNumber:
           type: string
+          description: Company mobile number
+          example: "+971555010101"
           maxLength: 20
           minLength: 0
       required:
       - emailAddress
       - mobileNumber
       - registrationNumber
-    CompanyStatusDecisionRequest:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - ACTIVE
-          - REJECTED
-      required:
-      - status
     AdminUserCreateRequest:
       type: object
+      description: Admin user creation request payload
       properties:
         firstName:
           type: string
+          description: First name
+          example: Sara
           maxLength: 100
           minLength: 0
         middleName:
           type: string
+          description: Middle name
+          example: M
           maxLength: 100
           minLength: 0
         lastName:
           type: string
+          description: Last name
+          example: Naseer
           maxLength: 100
           minLength: 0
         extensionNumber:
           type: string
+          description: Extension number
+          example: EXT-1001
           maxLength: 20
           minLength: 0
         emailAddress:
           type: string
+          description: Admin user email address
+          example: sara.naseer@example.com
           maxLength: 150
           minLength: 0
         mobileNumber:
           type: string
+          description: Admin user mobile number
+          example: "+971555010301"
           maxLength: 20
           minLength: 0
       required:
@@ -825,19 +1537,74 @@ components:
       - lastName
       - middleName
       - mobileNumber
+    CompanyStatusDecisionRequest:
+      type: object
+      description: Company status decision request payload
+      properties:
+        status:
+          type: string
+          description: Target company status decided by administrator
+          example: ACTIVE
+          minLength: 1
+      required:
+      - status
     PostDto:
       type: object
+      description: External post response payload
       properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
         userId:
           type: integer
           format: int64
+          description: External author identifier
+          example: 1
         id:
           type: integer
           format: int64
+          description: External post identifier
+          example: 1
         title:
           type: string
+          description: Post title
+          example: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
         body:
           type: string
+          description: Post body content
+          example: quia et suscipit suscipit recusandae consequuntur expedita et cum
+    CompanyPageResponse:
+      type: object
+      description: Paginated company response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompanyResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+          description: Pagination metadata
+        lazyLoading:
+          $ref: "#/components/schemas/LazyLoadingMeta"
+          description: Lazy-loading metadata. Present when cursor mode is used.
+    LazyLoadingMeta:
+      type: object
+      description: Cursor metadata for lazy loading
+      properties:
+        limit:
+          type: integer
+          format: int32
+          description: Requested lazy-loading limit
+          example: 20
+        hasNext:
+          type: boolean
+          description: Whether more items are available
+          example: true
+        nextCursor:
+          type: string
+          description: Opaque cursor token to request the next slice
+          example: eyJjb21wYW55SWQiOiIxMjAifQ
     PaginationMeta:
       type: object
       description: Pagination metadata
@@ -885,50 +1652,35 @@ components:
           example: false
         sorted:
           type: boolean
-          description: Whether results are sorted
-          example: false
-        sortFields:
+          description: Whether any sorting is applied
+          example: true
+        sort:
           type: array
-          description: List of sort fields and directions
           items:
             type: string
-          example: ["companyId,ASC"]
-    PaginatedResponseDTO:
-      type: object
-      description: Standard paginated response wrapper
-      properties:
-        data:
-          type: array
-          description: List of items in the current page
-          items: {}
-        pagination:
-          $ref: "#/components/schemas/PaginationMeta"
-    LazyLoadingMeta:
-      type: object
-      description: Cursor metadata for lazy loading
-      properties:
-        limit:
-          type: integer
-          format: int32
-          description: Requested lazy-loading limit
-          example: 20
-        hasNext:
-          type: boolean
-          description: Whether more items are available
-          example: true
-        nextCursor:
-          type: string
-          description: Opaque cursor token to request the next slice
-          example: "eyJjb21wYW55SWQiOiIxMjAifQ"
-    CompanyPageResponse:
-      allOf:
-      - $ref: "#/components/schemas/PaginatedResponseDTO"
-      - type: object
-        properties:
-          data:
-            type: array
-            description: List of companies in the current page
-            items:
-              $ref: "#/components/schemas/CompanyDto"
-          lazyLoading:
-            $ref: "#/components/schemas/LazyLoadingMeta"
+  parameters:
+    XRequestIdHeader:
+      name: X-Request-Id
+      in: header
+      description: "Correlation identifier for distributed tracing. If omitted, the\
+        \ service generates one."
+      required: false
+      schema:
+        type: string
+        example: req-20260504-0001
+    XTenantIdHeader:
+      name: X-Tenant-Id
+      in: header
+      description: Tenant identifier used for multi-tenant context propagation.
+      required: false
+      schema:
+        type: string
+        example: tenant-001
+    AcceptLanguageHeader:
+      name: Accept-Language
+      in: header
+      description: Preferred locale for localized validation and error messages.
+      required: false
+      schema:
+        type: string
+        example: en

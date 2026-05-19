@@ -67,7 +67,7 @@
                      "name":  "Companies",
                      "item":  [
                                   {
-                                      "name":  "findById_1",
+                                      "name":  "getCompanyById",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -102,7 +102,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "update_1",
+                                      "name":  "updateCompany",
                                       "request":  {
                                                       "method":  "PUT",
                                                       "header":  [
@@ -150,7 +150,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "softDelete_1",
+                                      "name":  "softDeleteCompany",
                                       "request":  {
                                                       "method":  "DELETE",
                                                       "header":  [
@@ -185,7 +185,155 @@
                                                   }
                                   },
                                   {
-                                      "name":  "decideStatus",
+                                      "name":  "getAllCompanies",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "X-Request-Id",
+                                                                         "value":  "{{X-Request-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Accept-Language",
+                                                                         "value":  "{{Accept-Language}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Tenant-Id",
+                                                                         "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/companies?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=true\u0026page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=\u0026cursor={{nextCursor}}\u0026select=",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "companies"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "registrationNumber",
+                                                                                    "value":  "REG-2026",
+                                                                                    "description":  "Optional registration number contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyStatus",
+                                                                                    "value":  "ACTIVE",
+                                                                                    "description":  "Optional company status contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "companyType",
+                                                                                    "value":  "DEALER",
+                                                                                    "description":  "Optional company type contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "emailAddress",
+                                                                                    "value":  "company@example.com",
+                                                                                    "description":  "Optional email contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "mobileNumber",
+                                                                                    "value":  "+971555",
+                                                                                    "description":  "Optional mobile contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "includeSalesmen",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0",
+                                                                                    "description":  "Zero-based page index"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "20",
+                                                                                    "description":  "Page size (max 200)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortBy",
+                                                                                    "value":  "companyStatus,registrationNumber",
+                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when\\"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortDirection",
+                                                                                    "value":  "ASC,DESC",
+                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply\\"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "",
+                                                                                    "description":  null
+                                                                                },
+                                                                                {
+                                                                                    "key":  "cursor",
+                                                                                    "value":  "{{nextCursor}}",
+                                                                                    "description":  null
+                                                                                },
+                                                                                {
+                                                                                    "key":  "select",
+                                                                                    "value":  "",
+                                                                                    "description":  null
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "createCompany",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Request-Id",
+                                                                         "value":  "{{X-Request-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Accept-Language",
+                                                                         "value":  "{{Accept-Language}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Tenant-Id",
+                                                                         "value":  "{{X-Tenant-Id}}"
+                                                                     },
+                                                                     {
+                                                                         "key":  "USER_ID",
+                                                                         "value":  "{{USER_ID}}"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/companies",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "companies"
+                                                                           ]
+                                                              },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               },
+                                                                   "raw":  "{\r\n    \"registrationNumber\": \"{{companyRegistrationNumber}}\",\r\n    \"emailAddress\": \"{{companyEmailAddress}}\",\r\n    \"mobileNumber\": \"{{companyMobileNumber}}\"\r\n}"
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "decideCompanyStatus",
                                       "request":  {
                                                       "method":  "PATCH",
                                                       "header":  [
@@ -234,92 +382,6 @@
                                                   }
                                   },
                                   {
-                                      "name":  "getAllCompanies",
-                                      "request":  {
-                                                      "method":  "GET",
-                                                      "header":  [
-                                                                     {
-                                                                         "key":  "X-Request-Id",
-                                                                         "value":  "{{X-Request-Id}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "Accept-Language",
-                                                                         "value":  "{{Accept-Language}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "X-Tenant-Id",
-                                                                         "value":  "{{X-Tenant-Id}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "USER_ID",
-                                                                         "value":  "{{USER_ID}}"
-                                                                     }
-                                                                 ],
-                                                      "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies?page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
-                                                                  "host":  [
-                                                                               "{{baseUrl}}"
-                                                                           ],
-                                                                  "path":  [
-                                                                               "api",
-                                                                               "companies"
-                                                                           ],
-                                                                  "query":  [
-                                                                                {
-                                                                                    "key":  "page",
-                                                                                    "value":  "0",
-                                                                                    "description":  "Zero-based page index"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "size",
-                                                                                    "value":  "20",
-                                                                                    "description":  "Page size (max 200)"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortBy",
-                                                                                    "value":  "companyStatus,registrationNumber",
-                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when omitted. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.\""
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortDirection",
-                                                                                    "value":  "ASC,DESC",
-                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.\""
-                                                                                },
-                                                                                {
-                                                                                    "key":  "includeSalesmen",
-                                                                                    "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "registrationNumber",
-                                                                                    "value":  "REG-2026",
-                                                                                    "description":  "Optional registration number contains filter"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "companyStatus",
-                                                                                    "value":  "ACTIVE",
-                                                                                    "description":  "Optional company status contains filter"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "companyType",
-                                                                                    "value":  "DEALER",
-                                                                                    "description":  "Optional company type contains filter"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "emailAddress",
-                                                                                    "value":  "company@example.com",
-                                                                                    "description":  "Optional email contains filter"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "mobileNumber",
-                                                                                    "value":  "+971555",
-                                                                                    "description":  "Optional mobile contains filter"
-                                                                                }
-                                                                            ]
-                                                              }
-                                                  }
-                                  },
-                                  {
                                       "name":  "getAllCompaniesCursor",
                                       "request":  {
                                                       "method":  "GET",
@@ -342,7 +404,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/lazy?cursor={{nextCursor}}\u0026limit=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026includeSalesmen=true\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555",
+                                                                  "raw":  "{{baseUrl}}/api/companies/lazy?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=true\u0026page=\u0026size=\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=20\u0026cursor={{nextCursor}}\u0026select=",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -352,31 +414,6 @@
                                                                                "lazy"
                                                                            ],
                                                                   "query":  [
-                                                                                {
-                                                                                    "key":  "cursor",
-                                                                                    "value":  "{{nextCursor}}",
-                                                                                    "description":  "Opaque cursor token from previous response\u0027s lazyLoading.nextCursor. Omit for first request."
-                                                                                },
-                                                                                {
-                                                                                    "key":  "limit",
-                                                                                    "value":  "20",
-                                                                                    "description":  "Lazy-loading batch size (max 200)"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortBy",
-                                                                                    "value":  "companyStatus,registrationNumber",
-                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when omitted. companyId is always appended as tie-breaker when missing. Allowed fields: companyId, registrationNumber, companyStatus, companyType, emailAddress, mobileNumber, createdAt, updatedAt.\""
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortDirection",
-                                                                                    "value":  "ASC,DESC",
-                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply to all sortBy fields, or comma-separated values matching the sortBy count. Allowed values: ASC, DESC. Defaults to ASC when omitted.\""
-                                                                                },
-                                                                                {
-                                                                                    "key":  "includeSalesmen",
-                                                                                    "value":  "true",
-                                                                                    "description":  "Set true to include associated salesmen in each company"
-                                                                                },
                                                                                 {
                                                                                     "key":  "registrationNumber",
                                                                                     "value":  "REG-2026",
@@ -401,57 +438,49 @@
                                                                                     "key":  "mobileNumber",
                                                                                     "value":  "+971555",
                                                                                     "description":  "Optional mobile contains filter"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "includeSalesmen",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Set true to include associated salesmen in each company"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "",
+                                                                                    "description":  null
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "",
+                                                                                    "description":  null
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortBy",
+                                                                                    "value":  "companyStatus,registrationNumber",
+                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when\\"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortDirection",
+                                                                                    "value":  "ASC,DESC",
+                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply\\"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "20",
+                                                                                    "description":  "Lazy-loading batch size (max 200)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "cursor",
+                                                                                    "value":  "{{nextCursor}}",
+                                                                                    "description":  "Opaque cursor token from previous response\u0027s lazyLoading.nextCursor."
+                                                                                },
+                                                                                {
+                                                                                    "key":  "select",
+                                                                                    "value":  "",
+                                                                                    "description":  null
                                                                                 }
                                                                             ]
                                                               }
-                                                  }
-                                  },
-                                  {
-                                      "name":  "create_1",
-                                      "request":  {
-                                                      "method":  "POST",
-                                                      "header":  [
-                                                                     {
-                                                                         "key":  "Content-Type",
-                                                                         "value":  "application/json"
-                                                                     },
-                                                                     {
-                                                                         "key":  "X-Request-Id",
-                                                                         "value":  "{{X-Request-Id}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "Accept-Language",
-                                                                         "value":  "{{Accept-Language}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "X-Tenant-Id",
-                                                                         "value":  "{{X-Tenant-Id}}"
-                                                                     },
-                                                                     {
-                                                                         "key":  "USER_ID",
-                                                                         "value":  "{{USER_ID}}"
-                                                                     }
-                                                                 ],
-                                                      "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies/lazy",
-                                                                  "host":  [
-                                                                               "{{baseUrl}}"
-                                                                           ],
-                                                                  "path":  [
-                                                                               "api",
-                                                                               "companies",
-                                                                               "lazy"
-                                                                           ]
-                                                              },
-                                                      "body":  {
-                                                                   "mode":  "raw",
-                                                                   "options":  {
-                                                                                   "raw":  {
-                                                                                               "language":  "json"
-                                                                                           }
-                                                                               },
-                                                                   "raw":  "{}"
-                                                               }
                                                   }
                                   }
                               ]
@@ -460,7 +489,7 @@
                      "name":  "Salesmen",
                      "item":  [
                                   {
-                                      "name":  "findById",
+                                      "name":  "getSalesmanById",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -495,7 +524,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "update",
+                                      "name":  "updateSalesman",
                                       "request":  {
                                                       "method":  "PUT",
                                                       "header":  [
@@ -543,7 +572,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "softDelete",
+                                      "name":  "softDeleteSalesman",
                                       "request":  {
                                                       "method":  "DELETE",
                                                       "header":  [
@@ -578,7 +607,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "findAll",
+                                      "name":  "getAllSalesmen",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -612,7 +641,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "create",
+                                      "name":  "createSalesman",
                                       "request":  {
                                                       "method":  "POST",
                                                       "header":  [
@@ -664,7 +693,7 @@
                      "name":  "Admin Users",
                      "item":  [
                                   {
-                                      "name":  "findById_2",
+                                      "name":  "getAdminUserById",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -699,7 +728,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "update_2",
+                                      "name":  "updateAdminUser",
                                       "request":  {
                                                       "method":  "PUT",
                                                       "header":  [
@@ -747,7 +776,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "softDelete_2",
+                                      "name":  "softDeleteAdminUser",
                                       "request":  {
                                                       "method":  "DELETE",
                                                       "header":  [
@@ -782,7 +811,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "findAll_2",
+                                      "name":  "getAllAdminUsers",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -816,7 +845,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "create_2",
+                                      "name":  "createAdminUser",
                                       "request":  {
                                                       "method":  "POST",
                                                       "header":  [
@@ -868,7 +897,7 @@
                      "name":  "Posts",
                      "item":  [
                                   {
-                                      "name":  "findAll_3",
+                                      "name":  "getAllExternalPosts",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
@@ -902,7 +931,7 @@
                                                   }
                                   },
                                   {
-                                      "name":  "findById_3",
+                                      "name":  "getExternalPostById",
                                       "request":  {
                                                       "method":  "GET",
                                                       "header":  [
