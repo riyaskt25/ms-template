@@ -43,7 +43,7 @@ public class CompanyService {
     private final CompanySalesmanRepository companySalesmanRepository;
 
     @Transactional(readOnly = true)
-    public Page<CompanyResponse> findAll(CompanyListQuery query) {
+    public Page<CompanyResponse> findAll(CompanyOffsetListQuery query) {
         Page<Company> companiesPage = companyRepository.findAll(
             CompanyQueryBuilder.buildSpecification(
                 query.getRegistrationNumber(),

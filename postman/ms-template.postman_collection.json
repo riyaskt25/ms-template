@@ -214,7 +214,7 @@
                                                                      }
                                                                  ],
                                                       "url":  {
-                                                                  "raw":  "{{baseUrl}}/api/companies?registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=false\u0026page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026limit=\u0026cursor={{nextCursor}}\u0026select=",
+                                                                  "raw":  "{{baseUrl}}/api/companies?page=0\u0026size=20\u0026sortBy=companyStatus,registrationNumber\u0026sortDirection=ASC,DESC\u0026registrationNumber=REG-2026\u0026companyStatus=ACTIVE\u0026companyType=DEALER\u0026emailAddress=company@example.com\u0026mobileNumber=+971555\u0026includeSalesmen=false",
                                                                   "host":  [
                                                                                "{{baseUrl}}"
                                                                            ],
@@ -223,6 +223,26 @@
                                                                                "companies"
                                                                            ],
                                                                   "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0",
+                                                                                    "description":  "Zero-based page index"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "20",
+                                                                                    "description":  "Page size (max 200)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortBy",
+                                                                                    "value":  "companyStatus,registrationNumber",
+                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when\\"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sortDirection",
+                                                                                    "value":  "ASC,DESC",
+                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply\\"
+                                                                                },
                                                                                 {
                                                                                     "key":  "registrationNumber",
                                                                                     "value":  "REG-2026",
@@ -252,41 +272,6 @@
                                                                                     "key":  "includeSalesmen",
                                                                                     "value":  "false",
                                                                                     "description":  "Set true to include associated salesmen in each company response."
-                                                                                },
-                                                                                {
-                                                                                    "key":  "page",
-                                                                                    "value":  "0",
-                                                                                    "description":  "Zero-based page index"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "size",
-                                                                                    "value":  "20",
-                                                                                    "description":  "Page size (max 200)"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortBy",
-                                                                                    "value":  "companyStatus,registrationNumber",
-                                                                                    "description":  "\"Sort fields (comma-separated). Defaults to companyId ASC when\\"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "sortDirection",
-                                                                                    "value":  "ASC,DESC",
-                                                                                    "description":  "\"Sort directions. Provide a single value (e.g. DESC) to apply\\"
-                                                                                },
-                                                                                {
-                                                                                    "key":  "limit",
-                                                                                    "value":  "",
-                                                                                    "description":  null
-                                                                                },
-                                                                                {
-                                                                                    "key":  "cursor",
-                                                                                    "value":  "{{nextCursor}}",
-                                                                                    "description":  null
-                                                                                },
-                                                                                {
-                                                                                    "key":  "select",
-                                                                                    "value":  "",
-                                                                                    "description":  null
                                                                                 }
                                                                             ]
                                                               }

@@ -595,6 +595,43 @@ paths:
         for small to medium datasets or when random access to pages is needed.
       operationId: getAllCompanies
       parameters:
+      - name: page
+        in: query
+        description: Zero-based page index
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+        example: 0
+      - name: size
+        in: query
+        description: Page size (max 200)
+        required: false
+        schema:
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+          maximum: 200
+        example: 20
+      - name: sortBy
+        in: query
+        description: "Sort fields (comma-separated). Defaults to companyId ASC when\
+          \ omitted. Allowed fields: companyId, registrationNumber, companyStatus,\
+          \ companyType, emailAddress, mobileNumber, createdAt, updatedAt."
+        required: false
+        schema:
+          type: string
+        example: "companyStatus,registrationNumber"
+      - name: sortDirection
+        in: query
+        description: "Sort directions. Provide a single value (e.g. DESC) to apply\
+          \ to all sortBy fields, or comma-separated values matching the sortBy count.\
+          \ Allowed values: ASC, DESC. Defaults to ASC when omitted."
+        required: false
+        schema:
+          type: string
+        example: "ASC,DESC"
       - name: registrationNumber
         in: query
         description: Optional registration number contains filter
@@ -642,61 +679,6 @@ paths:
             Defaults to false.
           example: false
         example: false
-      - name: page
-        in: query
-        description: Zero-based page index
-        required: false
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-        example: 0
-      - name: size
-        in: query
-        description: Page size (max 200)
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
-          maximum: 200
-        example: 20
-      - name: sortBy
-        in: query
-        description: "Sort fields (comma-separated). Defaults to companyId ASC when\
-          \ omitted. Allowed fields: companyId, registrationNumber, companyStatus,\
-          \ companyType, emailAddress, mobileNumber, createdAt, updatedAt."
-        required: false
-        schema:
-          type: string
-        example: "companyStatus,registrationNumber"
-      - name: sortDirection
-        in: query
-        description: "Sort directions. Provide a single value (e.g. DESC) to apply\
-          \ to all sortBy fields, or comma-separated values matching the sortBy count.\
-          \ Allowed values: ASC, DESC. Defaults to ASC when omitted."
-        required: false
-        schema:
-          type: string
-        example: "ASC,DESC"
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
-          maximum: 200
-      - name: cursor
-        in: query
-        required: false
-        schema:
-          type: string
-      - name: select
-        in: query
-        required: false
-        schema:
-          type: string
       - $ref: "#/components/parameters/XRequestIdHeader"
       - $ref: "#/components/parameters/XTenantIdHeader"
       - $ref: "#/components/parameters/AcceptLanguageHeader"

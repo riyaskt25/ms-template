@@ -23,7 +23,7 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @GetMapping
-    public CompanyPageResponse findAll(@Valid @ModelAttribute CompanyListQuery query) {
+    public CompanyPageResponse findAll(@Valid @ModelAttribute CompanyOffsetListQuery query) {
         log.debug("Received request to fetch companies (offset pagination): page={}, size={}, sortBy={}, sortDirection={}, includeSalesmen={}",
             query.getPage(), query.getSize(), query.getSortBy(), query.getSortDirection(), query.getIncludeSalesmen());
 

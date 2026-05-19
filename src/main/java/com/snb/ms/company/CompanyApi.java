@@ -50,7 +50,7 @@ public interface CompanyApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
         )
     })
-    CompanyPageResponse findAll(@Valid @ParameterObject CompanyListQuery query);
+    CompanyPageResponse findAll(@Valid @ParameterObject CompanyOffsetListQuery query);
 
     @Operation(
         operationId = "getAllCompaniesCursor",
