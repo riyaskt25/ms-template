@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Parameters({
-    @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
-    @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
-    @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
+    // @Parameter(ref = "#/components/parameters/XRequestIdHeader"),
+    // @Parameter(ref = "#/components/parameters/XTenantIdHeader"),
+    // @Parameter(ref = "#/components/parameters/AcceptLanguageHeader")
 })
 public @interface CommonApiParameters {
 }
