@@ -13,8 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +33,6 @@ public class UserRoleService {
     private final RequestContextAccessor contextAccessor;
 
     @Transactional(readOnly = true)
-    public List<UserRoleResponse> findAll() {
-        log.debug("Fetching all active user-role assignments");
-        List<UserRoleResponse> results = userRoleMapper.toDtoList(userRoleRepository.findAllActive());
-        log.info("Fetched {} user-role assignments", results.size());
-        return results;
-    }
-
-    @Transactional(readOnly = true)
     public List<UserRoleResponse> findByUserId(Long userId) {
         log.debug("Fetching roles for userId={}", userId);
         List<UserRoleResponse> results = userRoleMapper.toDtoList(userRoleRepository.findActiveByUserId(userId));
@@ -43,42 +40,87 @@ public class UserRoleService {
         return results;
     }
 
-    @Transactional(readOnly = true)
-    public Optional<UserRoleResponse> findById(Long id) {
-        log.debug("Fetching user-role assignment id={}", id);
-        return userRoleRepository.findActiveById(id).map(userRoleMapper::toDto);
-    }
-
     @Transactional
-    public UserRoleResponse assign(UserRoleRequest request) {
-        log.debug("Assigning roleId={} to userId={}", request.getRoleId(), request.getUserId());
-        if (userRoleRepository.existsByUser_UserIdAndRole_RoleIdAndDeletedFlag(request.getUserId(), request.getRoleId(), "N")) {
-            throw new BusinessValidationException("error.userRole.alreadyExists", new Object[]{request.getUserId(), request.getRoleId()}, "User already has this role assigned");
+    public List<UserRoleResponse> assign(Long userId, UserRoleRequest request) {
+        Set<Long> requestedRoleIds = normalizeRoleIds(request.getRoleIds());
+        log.debug("Assigning roleIds={} to userId={}", requestedRoleIds, userId);
+        Users user = usersRepository.findActiveById(userId)
+            .orElseThrow(() -> ResourceNotFoundException.userById(userId));
+        List<UserRole> activeAssignments = userRoleRepository.findActiveByUserId(userId);
+        Set<Long> existingRoleIds = activeAssignments.stream()
+            .map(assignment -> assignment.getRole().getRoleId())
+            .collect(Collectors.toSet());
+        Set<Long> duplicateRoleIds = requestedRoleIds.stream()
+            .filter(existingRoleIds::contains)
+            .collect(Collectors.toSet());
+        if (!duplicateRoleIds.isEmpty()) {
+            throw new BusinessValidationException(
+                "error.userRole.alreadyExists",
+                new Object[]{userId, duplicateRoleIds.stream().findFirst().orElse(null)},
+                "User already has this role assigned"
+            );
         }
-        Users user = usersRepository.findById(request.getUserId())
-            .orElseThrow(() -> ResourceNotFoundException.userById(request.getUserId()));
-        Role role = roleRepository.findActiveById(request.getRoleId())
-            .orElseThrow(() -> ResourceNotFoundException.roleById(request.getRoleId()));
 
+        Set<Long> roleIdsToAdd = requestedRoleIds.stream()
+            .filter(roleId -> !existingRoleIds.contains(roleId))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+        Map<Long, Role> roleById = loadRolesByIds(roleIdsToAdd);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(role);
-        userRole.setCreatedAt(LocalDateTime.now());
-        userRole.setCreatedBy(callerId);
-        userRole.setDeletedFlag("N");
-        userRole.setVersionNumber(0L);
-        UserRoleResponse created = userRoleMapper.toDto(userRoleRepository.save(userRole));
-        log.info("Assigned roleId={} to userId={} assignmentId={}", request.getRoleId(), request.getUserId(), created.getId());
+        LocalDateTime now = LocalDateTime.now();
+
+        List<UserRole> createdAssignments = roleIdsToAdd.stream()
+            .map(roleId -> newUserRole(user, roleById.get(roleId), callerId, now))
+            .collect(Collectors.toList());
+
+        List<UserRoleResponse> created = userRoleMapper.toDtoList(userRoleRepository.saveAll(createdAssignments));
+        log.info("Assigned {} roles to userId={}", created.size(), userId);
         return created;
     }
 
     @Transactional
-    public Optional<UserRoleResponse> revoke(Long id) {
-        log.debug("Revoking user-role assignment id={}", id);
+    public List<UserRoleResponse> replace(Long userId, UserRoleRequest request) {
+        Set<Long> requestedRoleIds = normalizeRoleIds(request.getRoleIds());
+        log.debug("Replacing roles for userId={} with roleIds={}", userId, requestedRoleIds);
+        Users user = usersRepository.findActiveById(userId)
+            .orElseThrow(() -> ResourceNotFoundException.userById(userId));
+        Map<Long, Role> requestedRoleById = loadRolesByIds(requestedRoleIds);
+
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<UserRoleResponse> revoked = userRoleRepository.findActiveById(id).map(existing -> {
+
+        List<UserRole> existingAssignments = userRoleRepository.findActiveByUserId(userId);
+        Map<Long, UserRole> existingByRoleId = existingAssignments.stream()
+            .collect(Collectors.toMap(assignment -> assignment.getRole().getRoleId(), Function.identity()));
+
+        existingAssignments.stream()
+            .filter(assignment -> !requestedRoleIds.contains(assignment.getRole().getRoleId()))
+            .forEach(assignment -> {
+                assignment.setDeletedFlag("Y");
+                assignment.setDeletedAt(now);
+                assignment.setUpdatedAt(now);
+                assignment.setUpdatedBy(callerId);
+                assignment.setVersionNumber(assignment.getVersionNumber() + 1);
+            });
+
+        List<UserRole> assignmentsToAdd = requestedRoleIds.stream()
+            .filter(roleId -> !existingByRoleId.containsKey(roleId))
+            .map(roleId -> newUserRole(user, requestedRoleById.get(roleId), callerId, now))
+            .collect(Collectors.toList());
+
+        userRoleRepository.saveAll(existingAssignments);
+        userRoleRepository.saveAll(assignmentsToAdd);
+
+        List<UserRoleResponse> results = userRoleMapper.toDtoList(userRoleRepository.findActiveByUserId(userId));
+        log.info("Replaced roles for userId={} with {} active roles", userId, results.size());
+        return results;
+    }
+
+    @Transactional
+    public Optional<UserRoleResponse> revoke(Long userId, Long roleId) {
+        log.debug("Revoking roleId={} for userId={}", roleId, userId);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
+        Optional<UserRoleResponse> revoked = userRoleRepository.findActiveByUserIdAndRoleId(userId, roleId).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
@@ -86,7 +128,30 @@ public class UserRoleService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return userRoleMapper.toDto(userRoleRepository.save(existing));
         });
-        log.info("User-role revoke id={} success={}", id, revoked.isPresent());
+        log.info("User-role revoke userId={} roleId={} success={}", userId, roleId, revoked.isPresent());
         return revoked;
+    }
+
+    private Set<Long> normalizeRoleIds(List<Long> roleIds) {
+        return roleIds.stream().collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Map<Long, Role> loadRolesByIds(Set<Long> roleIds) {
+        Map<Long, Role> roleById = roleIds.stream()
+            .map(roleId -> roleRepository.findActiveById(roleId)
+                .orElseThrow(() -> ResourceNotFoundException.roleById(roleId)))
+            .collect(Collectors.toMap(Role::getRoleId, Function.identity()));
+        return roleById;
+    }
+
+    private UserRole newUserRole(Users user, Role role, Long callerId, LocalDateTime now) {
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        userRole.setRole(role);
+        userRole.setCreatedAt(now);
+        userRole.setCreatedBy(callerId);
+        userRole.setDeletedFlag("N");
+        userRole.setVersionNumber(0L);
+        return userRole;
     }
 }

@@ -1,6 +1,7 @@
 package com.snb.ms.rbac.userrole;
 
 import com.snb.ms.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rbac/user-roles")
+@RequestMapping("/api/users/{userId}/roles")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -21,13 +22,6 @@ public class UserRoleController implements UserRoleApi {
 
     @Override
     @GetMapping
-    public List<UserRoleResponse> findAll() {
-        log.debug("Received request to fetch all user-role assignments");
-        return userRoleService.findAll();
-    }
-
-    @Override
-    @GetMapping("/user/{userId}")
     public List<UserRoleResponse> findByUserId(@PathVariable Long userId) {
         log.debug("Received request to fetch roles for userId={}", userId);
         return userRoleService.findByUserId(userId);
@@ -35,20 +29,29 @@ public class UserRoleController implements UserRoleApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<UserRoleResponse> assign(@RequestBody UserRoleRequest request) {
-        log.debug("Received request to assign roleId={} to userId={}", request.getRoleId(), request.getUserId());
-        UserRoleResponse created = userRoleService.assign(request);
-        log.info("Assigned roleId={} to userId={}", request.getRoleId(), request.getUserId());
+    public ResponseEntity<List<UserRoleResponse>> assign(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
+        log.debug("Received request to assign roleIds={} to userId={}", request.getRoleIds(), userId);
+        List<UserRoleResponse> created = userRoleService.assign(userId, request);
+        log.info("Assigned {} roles to userId={}", created.size(), userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public UserRoleResponse revoke(@PathVariable Long id) {
-        log.debug("Received request to revoke user-role assignment id={}", id);
-        UserRoleResponse revoked = userRoleService.revoke(id)
-            .orElseThrow(() -> ResourceNotFoundException.userRoleById(id));
-        log.info("Revoked user-role assignment id={}", id);
+    @PutMapping
+    public List<UserRoleResponse> replace(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
+        log.debug("Received request to replace roles with roleIds={} for userId={}", request.getRoleIds(), userId);
+        List<UserRoleResponse> updated = userRoleService.replace(userId, request);
+        log.info("Replaced roles for userId={} with {} roles", userId, updated.size());
+        return updated;
+    }
+
+    @Override
+    @DeleteMapping("/{roleId}")
+    public UserRoleResponse revoke(@PathVariable Long userId, @PathVariable Long roleId) {
+        log.debug("Received request to revoke roleId={} for userId={}", roleId, userId);
+        UserRoleResponse revoked = userRoleService.revoke(userId, roleId)
+            .orElseThrow(() -> ResourceNotFoundException.userRoleByUserIdAndRoleId(userId, roleId));
+        log.info("Revoked roleId={} for userId={}", roleId, userId);
         return revoked;
     }
 }
