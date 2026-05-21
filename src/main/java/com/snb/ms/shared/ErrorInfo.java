@@ -13,12 +13,12 @@ public class ErrorInfo {
     @Schema(description = "Error category", example = "VALIDATION_ERROR")
     private String type;
 
-    @Schema(description = "Application-specific error code", example = "EMAILADDRESS_INVALID")
+    @Schema(description = "Application-specific error code", example = "INVALID_INPUT")
     private String code;
 
-    @Schema(description = "Localized, user-friendly error message", example = "emailAddress must be a valid email")
+    @Schema(description = "Localized, user-friendly error message", example = "Input value is invalid")
     private String message;
 
-    @Schema(description = "Additional diagnostic details", example = "Rejected value: not-an-email")
+    @Schema(description = "Additional diagnostic details", example = "Rejected value: invalid-input")
     private String description;
 }
