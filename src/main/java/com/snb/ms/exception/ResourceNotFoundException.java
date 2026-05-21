@@ -106,6 +106,14 @@ public class ResourceNotFoundException extends RuntimeException {
         );
     }
 
+    public static ResourceNotFoundException userRoleByUserIdAndRoleCode(Object userId, Object roleCode) {
+        return new ResourceNotFoundException(
+            "error.resource.userRole.not.found.by.userId.and.roleCode",
+            new Object[]{userId, roleCode},
+            "User-role assignment not found for userId=" + userId + " and roleCode=" + roleCode
+        );
+    }
+
     public static ResourceNotFoundException rolePrivilegeById(Object id) {
         return new ResourceNotFoundException(
             "error.resource.rolePrivilege.not.found.by.id",

@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "MS Template API",
                 version = "v1",
-                description = "Microservice template API exposing company, salesman, admin user, and external posts endpoints. " +
-                        "All endpoints support request context propagation using X-Request-Id, X-Tenant-Id, and Accept-Language headers.",
+                description = "Microservice template API exposing companies, salesmen, admin users, RBAC (roles, privileges, role-privileges, user-roles), and external posts endpoints.",
+
                 contact = @Contact(
                         name = "MS Template Team",
                         email = "support@snb.com",
@@ -44,7 +44,7 @@ public class OpenApiConfig {
                 .info(new io.swagger.v3.oas.models.info.Info()
                         .title("MS Template API")
                         .version("v1")
-                        .description("Detailed API contract for internal master data and external posts integration endpoints."))
+                        .description("Detailed API contract for companies, salesmen, admin users, RBAC, and external posts integration endpoints.",))
                 .components(new Components()
                         .addParameters("XRequestIdHeader", new Parameter()
                                 .name("X-Request-Id")

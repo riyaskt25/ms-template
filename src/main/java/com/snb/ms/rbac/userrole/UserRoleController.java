@@ -29,7 +29,7 @@ public class UserRoleController implements UserRoleApi {
     @Override
     @PostMapping
     public ResponseEntity<List<UserRoleResponse>> assign(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
-        log.debug("Received request to assign roleIds={} to userId={}", request.getRoleIds(), userId);
+        log.debug("Received request to assign roleCodes={} to userId={}", request.getRoleCodes(), userId);
         List<UserRoleResponse> created = userRoleService.assign(userId, request);
         log.info("Assigned {} roles to userId={}", created.size(), userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -38,19 +38,19 @@ public class UserRoleController implements UserRoleApi {
     @Override
     @PutMapping
     public List<UserRoleResponse> replace(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
-        log.debug("Received request to replace roles with roleIds={} for userId={}", request.getRoleIds(), userId);
+        log.debug("Received request to replace roles with roleCodes={} for userId={}", request.getRoleCodes(), userId);
         List<UserRoleResponse> updated = userRoleService.replace(userId, request);
         log.info("Replaced roles for userId={} with {} roles", userId, updated.size());
         return updated;
     }
 
     @Override
-    @DeleteMapping("/{roleId}")
-    public UserRoleResponse revoke(@PathVariable Long userId, @PathVariable Long roleId) {
-        log.debug("Received request to revoke roleId={} for userId={}", roleId, userId);
-        UserRoleResponse revoked = userRoleService.revoke(userId, roleId)
-            .orElseThrow(() -> ResourceNotFoundException.userRoleByUserIdAndRoleId(userId, roleId));
-        log.info("Revoked roleId={} for userId={}", roleId, userId);
+    @DeleteMapping("/{roleCode}")
+    public UserRoleResponse revoke(@PathVariable Long userId, @PathVariable String roleCode) {
+        log.debug("Received request to revoke roleCode={} for userId={}", roleCode, userId);
+        UserRoleResponse revoked = userRoleService.revoke(userId, roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.userRoleByUserIdAndRoleCode(userId, roleCode));
+        log.info("Revoked roleCode={} for userId={}", roleCode, userId);
         return revoked;
     }
 }

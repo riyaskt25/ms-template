@@ -38,7 +38,7 @@ public interface UserRoleApi {
     @RequestBody(required = true, description = "Assignment payload",
         content = @Content(schema = @Schema(implementation = UserRoleRequest.class),
             examples = @ExampleObject(name = "AssignRoles",
-                value = "{\n  \"roleIds\": [1, 2, 3]\n}")))
+                value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Roles assigned successfully",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
@@ -57,7 +57,7 @@ public interface UserRoleApi {
     @RequestBody(required = true, description = "Role replacement payload",
         content = @Content(schema = @Schema(implementation = UserRoleRequest.class),
             examples = @ExampleObject(name = "ReplaceRoles",
-                value = "{\n  \"roleIds\": [1, 4]\n}")))
+                value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User roles updated successfully",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
@@ -70,11 +70,11 @@ public interface UserRoleApi {
     })
     List<UserRoleResponse> replace(@Positive(message = "{validation.common.id.positive}") Long userId, @Valid UserRoleRequest request);
 
-    @Operation(operationId = "revokeUserRole", summary = "Revoke user-role assignment", description = "Soft-deletes a user-role assignment by userId and roleId.")
+    @Operation(operationId = "revokeUserRole", summary = "Revoke user-role assignment", description = "Soft-deletes a user-role assignment by userId and roleCode.")
     @CommonApiParameters
     @Parameters({
         @Parameter(name = "userId", description = "User identifier", required = true, example = "10"),
-        @Parameter(name = "roleId", description = "Role identifier", required = true, example = "1")
+        @Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")
     })
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Role revoked successfully",
@@ -82,12 +82,12 @@ public interface UserRoleApi {
         @ApiResponse(responseCode = "404", description = "Assignment not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "NotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"User-role assignment not found for userId=10 and roleId=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"User-role assignment not found for userId=10 and roleCode=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
     UserRoleResponse revoke(
         @Positive(message = "{validation.common.id.positive}") Long userId,
-        @Positive(message = "{validation.common.id.positive}") Long roleId
+        String roleCode
     );
 }
