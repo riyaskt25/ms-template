@@ -1,8 +1,8 @@
 package com.snb.ms.company;
-import com.snb.ms.shared.Users;
-import com.snb.ms.shared.BaseEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.snb.ms.shared.BaseEntity;
+import com.snb.ms.shared.Users;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

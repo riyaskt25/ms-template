@@ -3,8 +3,8 @@ package com.snb.ms.salesman;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.*;
 import java.math.BigDecimal;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

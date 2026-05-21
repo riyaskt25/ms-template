@@ -1,8 +1,7 @@
 package com.snb.ms.shared.request;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 @Component
 public class RequestContextAccessor {

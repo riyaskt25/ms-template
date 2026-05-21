@@ -1,13 +1,12 @@
 package com.snb.ms.companysalesman;
-import com.snb.ms.salesman.Salesman;
-import com.snb.ms.company.Company;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.snb.ms.company.Company;
+import com.snb.ms.salesman.Salesman;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity

@@ -1,13 +1,9 @@
 package com.snb.ms.companysalesman;
 
-import com.snb.ms.companysalesman.CompanySalesmanDto;
-import com.snb.ms.companysalesman.CompanySalesmanRequest;
-import com.snb.ms.companysalesman.CompanySalesman;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CompanySalesmanMapper {

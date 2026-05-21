@@ -1,8 +1,8 @@
 package com.snb.ms.adminuser;
-import io.swagger.v3.oas.annotations.media.Schema;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

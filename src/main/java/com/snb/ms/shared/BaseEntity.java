@@ -2,10 +2,9 @@ package com.snb.ms.shared;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter

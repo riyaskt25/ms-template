@@ -2,14 +2,13 @@ package com.snb.ms.shared;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor

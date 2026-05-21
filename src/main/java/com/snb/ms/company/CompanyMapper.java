@@ -1,14 +1,9 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyResponse;
-import com.snb.ms.company.CompanyCreateRequest;
-import com.snb.ms.company.CompanyUpdateRequest;
-import com.snb.ms.company.Company;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {

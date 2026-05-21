@@ -2,9 +2,9 @@ package com.snb.ms.companysalesman;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
-import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

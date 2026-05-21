@@ -1,17 +1,16 @@
 package com.snb.ms.adminuser;
 
-import com.snb.ms.shared.UsersRequest;
-import com.snb.ms.shared.Users;
-import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.snb.ms.shared.UserProvisioningService;
+import com.snb.ms.shared.Users;
+import com.snb.ms.shared.UsersRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

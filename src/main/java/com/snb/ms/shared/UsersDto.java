@@ -1,7 +1,7 @@
 package com.snb.ms.shared;
 
-import lombok.*;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

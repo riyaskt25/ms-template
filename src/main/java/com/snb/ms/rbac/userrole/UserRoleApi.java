@@ -1,23 +1,22 @@
 package com.snb.ms.rbac.userrole;
 
-import com.snb.ms.shared.BaseResponseDTO;
 import com.snb.ms.shared.api.CommonApiParameters;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
+import com.snb.ms.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @Tag(name = "User Roles", description = "RBAC user-role assignment operations")
 public interface UserRoleApi {

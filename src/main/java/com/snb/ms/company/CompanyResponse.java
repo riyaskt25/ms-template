@@ -1,9 +1,9 @@
 package com.snb.ms.company;
-import io.swagger.v3.oas.annotations.media.Schema;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

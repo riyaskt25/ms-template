@@ -1,9 +1,9 @@
 package com.snb.ms.salesman;
-import io.swagger.v3.oas.annotations.media.Schema;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

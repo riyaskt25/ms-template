@@ -1,34 +1,25 @@
 package com.snb.ms.company;
 
-import com.snb.ms.company.CompanyResponse;
-import com.snb.ms.company.CompanyCreateRequest;
-import com.snb.ms.company.CompanyStatus;
-import com.snb.ms.company.CompanyStatusDecisionRequest;
-import com.snb.ms.company.CompanyUpdateRequest;
-import com.snb.ms.exception.BusinessValidationException;
-import com.snb.ms.shared.UsersRequest;
-import com.snb.ms.company.Company;
-import com.snb.ms.shared.Users;
-import com.snb.ms.company.CompanyMapper;
-import com.snb.ms.company.CompanyRepository;
-import com.snb.ms.companysalesman.CompanySalesmanRepository;
 import com.snb.ms.companysalesman.CompanySalesman;
+import com.snb.ms.companysalesman.CompanySalesmanRepository;
+import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.salesman.SalesmanMapper;
-import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.request.RequestContextAccessor;
-import lombok.RequiredArgsConstructor;
+import com.snb.ms.shared.UserProvisioningService;
+import com.snb.ms.shared.Users;
+import com.snb.ms.shared.UsersRequest;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

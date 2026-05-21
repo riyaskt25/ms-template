@@ -3,12 +3,11 @@ package com.snb.ms.company;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.snb.ms.shared.PaginatedResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 @Schema(description = "Paginated company response")
 @JsonInclude(JsonInclude.Include.NON_NULL)

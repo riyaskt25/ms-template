@@ -1,18 +1,17 @@
 package com.snb.ms.companysalesman;
 
 import com.snb.ms.company.Company;
-import com.snb.ms.salesman.Salesman;
-import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.company.CompanyRepository;
+import com.snb.ms.exception.ResourceNotFoundException;
+import com.snb.ms.salesman.Salesman;
 import com.snb.ms.salesman.SalesmanRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
