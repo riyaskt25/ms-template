@@ -17,6 +17,9 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     @Query("SELECT r FROM Role r WHERE r.roleId = :id AND r.deletedFlag = 'N'")
     Optional<Role> findActiveById(@Param("id") Long id);
 
+    @Query("SELECT r FROM Role r WHERE r.roleCode = :roleCode AND r.deletedFlag = 'N'")
+    Optional<Role> findActiveByRoleCode(@Param("roleCode") String roleCode);
+
     boolean existsByRoleCodeAndDeletedFlag(String roleCode, String deletedFlag);
 
     boolean existsByRoleNameAndDeletedFlag(String roleName, String deletedFlag);

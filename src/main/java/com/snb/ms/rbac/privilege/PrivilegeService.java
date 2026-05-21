@@ -28,10 +28,10 @@ public class PrivilegeService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<PrivilegeResponse> findById(Long id) {
-        log.debug("Fetching privilege by id={}", id);
-        Optional<PrivilegeResponse> result = privilegeRepository.findActiveById(id).map(privilegeMapper::toDto);
-        log.info("Privilege lookup id={} found={}", id, result.isPresent());
+    public Optional<PrivilegeResponse> findByCode(String privilegeCode) {
+        log.debug("Fetching privilege by code={}", privilegeCode);
+        Optional<PrivilegeResponse> result = privilegeRepository.findActiveByPrivilegeCode(privilegeCode).map(privilegeMapper::toDto);
+        log.info("Privilege lookup code={} found={}", privilegeCode, result.isPresent());
         return result;
     }
 
@@ -50,27 +50,27 @@ public class PrivilegeService {
     }
 
     @Transactional
-    public Optional<PrivilegeResponse> update(Long id, PrivilegeUpdateRequest request) {
-        log.debug("Updating privilege id={}", id);
+    public Optional<PrivilegeResponse> update(String privilegeCode, PrivilegeUpdateRequest request) {
+        log.debug("Updating privilege code={}", privilegeCode);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<PrivilegeResponse> updated = privilegeRepository.findActiveById(id).map(existing -> {
+        Optional<PrivilegeResponse> updated = privilegeRepository.findActiveByPrivilegeCode(privilegeCode).map(existing -> {
             privilegeMapper.updateEntity(request, existing);
             existing.setUpdatedAt(now);
             existing.setUpdatedBy(callerId);
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return privilegeMapper.toDto(privilegeRepository.save(existing));
         });
-        log.info("Privilege update id={} success={}", id, updated.isPresent());
+        log.info("Privilege update code={} success={}", privilegeCode, updated.isPresent());
         return updated;
     }
 
     @Transactional
-    public Optional<PrivilegeResponse> softDelete(Long id) {
-        log.debug("Soft-deleting privilege id={}", id);
+    public Optional<PrivilegeResponse> softDelete(String privilegeCode) {
+        log.debug("Soft-deleting privilege code={}", privilegeCode);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<PrivilegeResponse> deleted = privilegeRepository.findActiveById(id).map(existing -> {
+        Optional<PrivilegeResponse> deleted = privilegeRepository.findActiveByPrivilegeCode(privilegeCode).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
@@ -78,7 +78,7 @@ public class PrivilegeService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return privilegeMapper.toDto(privilegeRepository.save(existing));
         });
-        log.info("Privilege soft-delete id={} success={}", id, deleted.isPresent());
+        log.info("Privilege soft-delete code={} success={}", privilegeCode, deleted.isPresent());
         return deleted;
     }
 }

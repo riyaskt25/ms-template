@@ -1124,8 +1124,1265 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BaseResponseDTO"
+  /api/rbac/roles:
+    get:
+      tags:
+      - RBAC
+      summary: List roles
+      description: Returns all active role records.
+      operationId: getAllRoles
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Roles fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoleResponse"
+              examples:
+                RolesList:
+                  description: RolesList
+                  value:
+                  - roleId: 1
+                    roleCode: SUPER_ADMIN
+                    roleName: Super Admin
+                    description: Full platform access
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:15:30
+                    updatedBy: 1002
+                    updatedAt: 2026-05-04T11:20:45
+                  - roleId: 2
+                    roleCode: AUDITOR
+                    roleName: Auditor
+                    description: Read-only audit access
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:30:00
+                    updatedBy: 1002
+                    updatedAt: 2026-05-04T11:30:00
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - RBAC
+      summary: Create role
+      description: Creates a new role record.
+      operationId: createRole
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Role payload to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleCreateRequest"
+            examples:
+              CreateRole:
+                description: CreateRole
+                value:
+                  roleCode: SUPER_ADMIN
+                  roleName: Super Admin
+                  description: Full platform access
+        required: true
+      responses:
+        "201":
+          description: Role created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleResponse"
+              examples:
+                CreatedRole:
+                  description: CreatedRole
+                  value:
+                    roleId: 1
+                    roleCode: SUPER_ADMIN
+                    roleName: Super Admin
+                    description: Full platform access
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:15:30
+                    updatedBy: 1001
+                    updatedAt: 2026-05-04T10:15:30
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/rbac/roles/bulk:
+    post:
+      tags:
+      - RBAC
+      summary: Create roles in bulk
+      description: Creates multiple role records in a single request.
+      operationId: createRolesBulk
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Bulk role payload to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleBulkCreateRequest"
+            examples:
+              CreateRolesBulk:
+                description: CreateRolesBulk
+                value:
+                  roles:
+                  - roleCode: SUPER_ADMIN
+                    roleName: Super Admin
+                    description: Full platform access
+                  - roleCode: AUDITOR
+                    roleName: Auditor
+                    description: Read-only audit access
+        required: true
+      responses:
+        "201":
+          description: Roles created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleBulkResponse"
+              examples:
+                CreatedRolesBulk:
+                  description: CreatedRolesBulk
+                  value:
+                    roles:
+                    - roleId: 1
+                      roleCode: SUPER_ADMIN
+                      roleName: Super Admin
+                      description: Full platform access
+                      createdBy: 1001
+                      createdAt: 2026-05-04T10:15:30
+                      updatedBy: 1001
+                      updatedAt: 2026-05-04T10:15:30
+                    - roleId: 2
+                      roleCode: AUDITOR
+                      roleName: Auditor
+                      description: Read-only audit access
+                      createdBy: 1001
+                      createdAt: 2026-05-04T10:15:31
+                      updatedBy: 1001
+                      updatedAt: 2026-05-04T10:15:31
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/rbac/roles/{roleCode}:
+    get:
+      tags:
+      - RBAC
+      summary: Get role by code
+      description: Finds a role by code.
+      operationId: getRoleByCode
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Role fetched successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleResponse"
+              examples:
+                RoleByCode:
+                  description: RoleByCode
+                  value:
+                    roleId: 1
+                    roleCode: SUPER_ADMIN
+                    roleName: Super Admin
+                    description: Full platform access
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:15:30
+                    updatedBy: 1002
+                    updatedAt: 2026-05-04T11:20:45
+        "400":
+          description: Invalid role code supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Role not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    put:
+      tags:
+      - RBAC
+      summary: Update role
+      description: Updates an existing role record by code.
+      operationId: updateRole
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Role payload to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleUpdateRequest"
+            examples:
+              UpdateRole:
+                description: UpdateRole
+                value:
+                  roleName: Super Administrator
+                  description: Updated description
+        required: true
+      responses:
+        "200":
+          description: Role updated successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleResponse"
+              examples:
+                UpdatedRole:
+                  description: UpdatedRole
+                  value:
+                    roleId: 1
+                    roleCode: SUPER_ADMIN
+                    roleName: Super Administrator
+                    description: Updated description
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:15:30
+                    updatedBy: 1002
+                    updatedAt: 2026-05-04T12:15:30
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Role not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    delete:
+      tags:
+      - RBAC
+      summary: Delete role
+      description: Soft-deletes a role record by code.
+      operationId: deleteRole
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Role deleted successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleResponse"
+              examples:
+                DeletedRole:
+                  description: DeletedRole
+                  value:
+                    roleId: 1
+                    roleCode: SUPER_ADMIN
+                    roleName: Super Administrator
+                    description: Updated description
+                    createdBy: 1001
+                    createdAt: 2026-05-04T10:15:30
+                    updatedBy: 1002
+                    updatedAt: 2026-05-04T12:20:00
+        "404":
+          description: Role not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/rbac/privileges:
+    get:
+      tags:
+      - RBAC
+      summary: List privileges
+      description: Returns all active privilege records.
+      operationId: getAllPrivileges
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Privileges fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PrivilegeResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - RBAC
+      summary: Create privilege
+      description: Creates a new privilege record.
+      operationId: createPrivilege
+      parameters:
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Privilege payload to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrivilegeCreateRequest"
+            examples:
+              CreatePrivilege:
+                description: CreatePrivilege
+                value:
+                  privilegeCode: USER_VIEW
+                  privilegeName: View Users
+                  description: Can view user profiles
+        required: true
+      responses:
+        "201":
+          description: Privilege created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PrivilegeResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/rbac/privileges/{privilegeCode}:
+    get:
+      tags:
+      - RBAC
+      summary: Get privilege by code
+      description: Finds a privilege by code.
+      operationId: getPrivilegeByCode
+      parameters:
+      - name: privilegeCode
+        in: path
+        description: Privilege code
+        required: true
+        schema:
+          type: string
+        example: USER_VIEW
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Privilege fetched successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PrivilegeResponse"
+        "400":
+          description: Invalid privilege code supplied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Privilege not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    put:
+      tags:
+      - RBAC
+      summary: Update privilege
+      description: Updates an existing privilege record.
+      operationId: updatePrivilege
+      parameters:
+      - name: privilegeCode
+        in: path
+        description: Privilege code
+        required: true
+        schema:
+          type: string
+        example: USER_VIEW
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Privilege payload to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrivilegeUpdateRequest"
+            examples:
+              UpdatePrivilege:
+                description: UpdatePrivilege
+                value:
+                  privilegeName: View All Users
+                  description: Updated description
+        required: true
+      responses:
+        "200":
+          description: Privilege updated successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PrivilegeResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Privilege not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    delete:
+      tags:
+      - RBAC
+      summary: Delete privilege
+      description: Soft-deletes a privilege record.
+      operationId: deletePrivilege
+      parameters:
+      - name: privilegeCode
+        in: path
+        description: Privilege code
+        required: true
+        schema:
+          type: string
+        example: USER_VIEW
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Privilege deleted successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PrivilegeResponse"
+        "404":
+          description: Privilege not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/roles/{roleCode}/privileges:
+    get:
+      tags:
+      - RBAC
+      summary: Get privileges by role code
+      description: Returns all active privilege grants for a role.
+      operationId: getPrivilegesByRoleCode
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Role privileges fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RolePrivilegeResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - RBAC
+      summary: Grant privilege to role
+      description: Creates a role-privilege grant.
+      operationId: grantPrivilegeToRole
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Grant payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePrivilegeRequest"
+            examples:
+              GrantPrivilege:
+                description: GrantPrivilege
+                value:
+                  privilegeCode: USER_VIEW
+        required: true
+      responses:
+        "201":
+          description: Privilege granted successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RolePrivilegeResponse"
+        "400":
+          description: Validation failed or privilege already granted
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Role or privilege not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/roles/{roleCode}/privileges/bulk:
+    post:
+      tags:
+      - RBAC
+      summary: Grant privileges to role in bulk
+      description: Creates multiple role-privilege grants in one request.
+      operationId: grantPrivilegesToRoleBulk
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Bulk grant payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePrivilegeBulkRequest"
+            examples:
+              GrantPrivilegesBulk:
+                description: GrantPrivilegesBulk
+                value:
+                  privilegeCodes:
+                  - USER_VIEW
+                  - USER_EDIT
+        required: true
+      responses:
+        "201":
+          description: Privileges granted successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RolePrivilegeResponse"
+        "400":
+          description: Validation failed or privilege already granted
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: Role or privilege not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/roles/{roleCode}/privileges/{privilegeCode}:
+    delete:
+      tags:
+      - RBAC
+      summary: Revoke role-privilege grant
+      description: Soft-deletes a role-privilege grant by roleCode and privilegeCode.
+      operationId: revokeRolePrivilege
+      parameters:
+      - name: roleCode
+        in: path
+        description: Role code
+        required: true
+        schema:
+          type: string
+        example: SUPER_ADMIN
+      - name: privilegeCode
+        in: path
+        description: Privilege code
+        required: true
+        schema:
+          type: string
+        example: USER_VIEW
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Privilege revoked successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RolePrivilegeResponse"
+        "404":
+          description: Grant not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/users/{userId}/roles:
+    get:
+      tags:
+      - RBAC
+      summary: Get roles by user id
+      description: Returns all active role assignments for a user.
+      operationId: getUserRoles
+      parameters:
+      - name: userId
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 10
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: User roles fetched successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserRoleResponse"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    post:
+      tags:
+      - RBAC
+      summary: Assign roles to user
+      description: Creates one or more user-role assignments.
+      operationId: assignUserRoles
+      parameters:
+      - name: userId
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 10
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Assignment payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRoleRequest"
+            examples:
+              AssignRoles:
+                description: AssignRoles
+                value:
+                  roleIds:
+                  - 1
+                  - 2
+                  - 3
+        required: true
+      responses:
+        "201":
+          description: Roles assigned successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserRoleResponse"
+        "400":
+          description: Validation failed or role already assigned
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: User or role not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+    put:
+      tags:
+      - RBAC
+      summary: Replace user roles
+      description: Replaces all active role assignments for a user with the provided roles.
+      operationId: replaceUserRoles
+      parameters:
+      - name: userId
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 10
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      requestBody:
+        description: Role replacement payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRoleRequest"
+            examples:
+              ReplaceRoles:
+                description: ReplaceRoles
+                value:
+                  roleIds:
+                  - 1
+                  - 4
+        required: true
+      responses:
+        "200":
+          description: User roles updated successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserRoleResponse"
+        "400":
+          description: Validation failed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "404":
+          description: User or role not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+  /api/users/{userId}/roles/{roleId}:
+    delete:
+      tags:
+      - RBAC
+      summary: Revoke user-role assignment
+      description: Soft-deletes a user-role assignment by userId and roleId.
+      operationId: revokeUserRole
+      parameters:
+      - name: userId
+        in: path
+        description: User identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 10
+      - name: roleId
+        in: path
+        description: Role identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        example: 1
+      - $ref: "#/components/parameters/XRequestIdHeader"
+      - $ref: "#/components/parameters/XTenantIdHeader"
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      responses:
+        "200":
+          description: Role revoked successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRoleResponse"
+        "404":
+          description: Assignment not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BaseResponseDTO"
 components:
   schemas:
+    RoleCreateRequest:
+      type: object
+      description: Role creation request payload
+      properties:
+        roleCode:
+          type: string
+          description: Stable role code used in authorization checks
+          example: SUPER_ADMIN
+          maxLength: 100
+          minLength: 1
+        roleName:
+          type: string
+          description: Human-readable role name
+          example: Super Admin
+          maxLength: 150
+          minLength: 1
+        description:
+          type: string
+          description: Role description
+          example: Full platform access
+          maxLength: 255
+      required:
+      - roleCode
+      - roleName
+    RoleUpdateRequest:
+      type: object
+      description: Role update request payload
+      properties:
+        roleName:
+          type: string
+          description: Human-readable role name
+          example: Super Administrator
+          maxLength: 150
+          minLength: 1
+        description:
+          type: string
+          description: Role description
+          example: Updated description
+          maxLength: 255
+      required:
+      - roleName
+    RoleBulkCreateRequest:
+      type: object
+      description: Bulk role creation request payload
+      properties:
+        roles:
+          type: array
+          description: Role payload list to create
+          items:
+            $ref: "#/components/schemas/RoleCreateRequest"
+      required:
+      - roles
+    RoleBulkResponse:
+      type: object
+      description: Bulk role creation response payload
+      properties:
+        roles:
+          type: array
+          description: Created role records
+          items:
+            $ref: "#/components/schemas/RoleResponse"
+      required:
+      - roles
+    RoleResponse:
+      type: object
+      description: Role response payload
+      properties:
+        roleId:
+          type: integer
+          format: int64
+          description: Unique role identifier
+          example: 1
+        roleCode:
+          type: string
+          description: Stable role code used in authorization checks
+          example: SUPER_ADMIN
+        roleName:
+          type: string
+          description: Human-readable role name
+          example: Super Admin
+        description:
+          type: string
+          description: Role description
+          example: Full platform access
+        createdBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who created the record
+          example: 1001
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
+        updatedBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
+    PrivilegeCreateRequest:
+      type: object
+      description: Privilege creation request payload
+      properties:
+        privilegeCode:
+          type: string
+          description: Stable privilege code used in authorization checks
+          example: USER_VIEW
+          maxLength: 100
+          minLength: 1
+        privilegeName:
+          type: string
+          description: Human-readable privilege name
+          example: View Users
+          maxLength: 150
+          minLength: 1
+        description:
+          type: string
+          description: Privilege description
+          example: Can view user profiles
+          maxLength: 255
+      required:
+      - privilegeCode
+      - privilegeName
+    PrivilegeUpdateRequest:
+      type: object
+      description: Privilege update request payload
+      properties:
+        privilegeName:
+          type: string
+          description: Human-readable privilege name
+          example: View All Users
+          maxLength: 150
+          minLength: 1
+        description:
+          type: string
+          description: Privilege description
+          example: Updated description
+          maxLength: 255
+      required:
+      - privilegeName
+    PrivilegeResponse:
+      type: object
+      description: Privilege response payload
+      properties:
+        privilegeId:
+          type: integer
+          format: int64
+          description: Unique privilege identifier
+          example: 1
+        privilegeCode:
+          type: string
+          description: Stable privilege code used in authorization checks
+          example: USER_VIEW
+        privilegeName:
+          type: string
+          description: Human-readable privilege name
+          example: View Users
+        description:
+          type: string
+          description: Privilege description
+          example: Can view user profiles
+        createdBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who created the record
+          example: 1001
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp in ISO-8601 format
+          example: 2026-05-04T10:15:30
+        updatedBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who last updated the record
+          example: 1002
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp in ISO-8601 format
+          example: 2026-05-04T11:20:45
+    RolePrivilegeRequest:
+      type: object
+      description: Role-privilege grant request payload
+      properties:
+        privilegeCode:
+          type: string
+          description: Privilege code to grant
+          example: USER_VIEW
+      required:
+      - privilegeCode
+    RolePrivilegeBulkRequest:
+      type: object
+      description: Role-privilege bulk grant request payload
+      properties:
+        privilegeCodes:
+          type: array
+          description: Privilege codes to grant
+          items:
+            type: string
+            example: USER_VIEW
+      required:
+      - privilegeCodes
+    RolePrivilegeResponse:
+      type: object
+      description: Role-privilege grant response payload
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Grant record identifier
+          example: 1
+        roleId:
+          type: integer
+          format: int64
+          description: Role identifier
+          example: 1
+        roleCode:
+          type: string
+          description: Role code
+          example: SUPER_ADMIN
+        privilegeId:
+          type: integer
+          format: int64
+          description: Privilege identifier
+          example: 1
+        privilegeCode:
+          type: string
+          description: Privilege code
+          example: USER_VIEW
+        privilegeName:
+          type: string
+          description: Privilege name
+          example: View Users
+        createdBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who created the record
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+          example: 2026-05-19T10:00:00
+        updatedBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who last updated the record
+          example: 1
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: 2026-05-19T11:00:00
+    UserRoleRequest:
+      type: object
+      description: User-role assignment request payload
+      properties:
+        roleIds:
+          type: array
+          description: Role identifiers to assign
+          items:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+            example: 1
+      required:
+      - roleIds
+    UserRoleResponse:
+      type: object
+      description: User-role assignment response payload
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Assignment record identifier
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          description: User identifier
+          example: 10
+        roleId:
+          type: integer
+          format: int64
+          description: Role identifier
+          example: 1
+        roleCode:
+          type: string
+          description: Role code
+          example: SUPER_ADMIN
+        roleName:
+          type: string
+          description: Role name
+          example: Super Admin
+        createdBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who created the record
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+          example: 2026-05-19T10:00:00
+        updatedBy:
+          type: integer
+          format: int64
+          description: Identifier of actor who last updated the record
+          example: 1
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: 2026-05-19T11:00:00
     SalesmanUpdateRequest:
       type: object
       description: Salesman update request payload

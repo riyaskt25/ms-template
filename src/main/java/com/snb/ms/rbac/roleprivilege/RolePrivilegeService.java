@@ -13,8 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,38 +33,26 @@ public class RolePrivilegeService {
     private final RequestContextAccessor contextAccessor;
 
     @Transactional(readOnly = true)
-    public List<RolePrivilegeResponse> findAll() {
-        log.debug("Fetching all active role-privilege grants");
-        List<RolePrivilegeResponse> results = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.findAllActive());
-        log.info("Fetched {} role-privilege grants", results.size());
+    public List<RolePrivilegeResponse> findByRoleCode(String roleCode) {
+        log.debug("Fetching privileges for roleCode={}", roleCode);
+        roleRepository.findActiveByRoleCode(roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        List<RolePrivilegeResponse> results = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.findActiveByRoleCode(roleCode));
+        log.info("Fetched {} privileges for roleCode={}", results.size(), roleCode);
         return results;
-    }
-
-    @Transactional(readOnly = true)
-    public List<RolePrivilegeResponse> findByRoleId(Long roleId) {
-        log.debug("Fetching privileges for roleId={}", roleId);
-        List<RolePrivilegeResponse> results = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.findActiveByRoleId(roleId));
-        log.info("Fetched {} privileges for roleId={}", results.size(), roleId);
-        return results;
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<RolePrivilegeResponse> findById(Long id) {
-        log.debug("Fetching role-privilege grant id={}", id);
-        return rolePrivilegeRepository.findActiveById(id).map(rolePrivilegeMapper::toDto);
     }
 
     @Transactional
-    public RolePrivilegeResponse grant(RolePrivilegeRequest request) {
-        log.debug("Granting privilegeId={} to roleId={}", request.getPrivilegeId(), request.getRoleId());
-        if (rolePrivilegeRepository.existsByRole_RoleIdAndPrivilege_PrivilegeIdAndDeletedFlag(
-                request.getRoleId(), request.getPrivilegeId(), "N")) {
-            throw new BusinessValidationException("error.rolePrivilege.alreadyExists", new Object[]{request.getRoleId(), request.getPrivilegeId()}, "Role already has this privilege granted");
+    public RolePrivilegeResponse grant(String roleCode, RolePrivilegeRequest request) {
+        log.debug("Granting privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
+        if (rolePrivilegeRepository.existsByRole_RoleCodeAndPrivilege_PrivilegeCodeAndDeletedFlag(
+                roleCode, request.getPrivilegeCode(), "N")) {
+            throw new BusinessValidationException("error.rolePrivilege.alreadyExists", new Object[]{roleCode, request.getPrivilegeCode()}, "Role already has this privilege granted");
         }
-        Role role = roleRepository.findActiveById(request.getRoleId())
-            .orElseThrow(() -> ResourceNotFoundException.roleById(request.getRoleId()));
-        Privilege privilege = privilegeRepository.findActiveById(request.getPrivilegeId())
-            .orElseThrow(() -> ResourceNotFoundException.privilegeById(request.getPrivilegeId()));
+        Role role = roleRepository.findActiveByRoleCode(roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        Privilege privilege = privilegeRepository.findActiveByPrivilegeCode(request.getPrivilegeCode())
+            .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(request.getPrivilegeCode()));
 
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         RolePrivilege rolePrivilege = new RolePrivilege();
@@ -70,16 +63,58 @@ public class RolePrivilegeService {
         rolePrivilege.setDeletedFlag("N");
         rolePrivilege.setVersionNumber(0L);
         RolePrivilegeResponse created = rolePrivilegeMapper.toDto(rolePrivilegeRepository.save(rolePrivilege));
-        log.info("Granted privilegeId={} to roleId={} grantId={}", request.getPrivilegeId(), request.getRoleId(), created.getId());
+        log.info("Granted privilegeCode={} to roleCode={} grantId={}", request.getPrivilegeCode(), roleCode, created.getId());
         return created;
     }
 
     @Transactional
-    public Optional<RolePrivilegeResponse> revoke(Long id) {
-        log.debug("Revoking role-privilege grant id={}", id);
+    public List<RolePrivilegeResponse> grantBulk(String roleCode, RolePrivilegeBulkRequest request) {
+        Set<String> requestedPrivilegeCodes = request.getPrivilegeCodes().stream().collect(Collectors.toCollection(LinkedHashSet::new));
+        log.debug("Bulk granting privilegeCodes={} to roleCode={}", requestedPrivilegeCodes, roleCode);
+
+        Role role = roleRepository.findActiveByRoleCode(roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        List<RolePrivilege> existingAssignments = rolePrivilegeRepository.findActiveByRoleCode(roleCode);
+        Set<String> existingPrivilegeCodes = existingAssignments.stream()
+            .map(assignment -> assignment.getPrivilege().getPrivilegeCode())
+            .collect(Collectors.toSet());
+        Set<String> duplicatePrivilegeCodes = requestedPrivilegeCodes.stream()
+            .filter(existingPrivilegeCodes::contains)
+            .collect(Collectors.toSet());
+        if (!duplicatePrivilegeCodes.isEmpty()) {
+            throw new BusinessValidationException(
+                "error.rolePrivilege.alreadyExists",
+                new Object[]{roleCode, duplicatePrivilegeCodes.stream().findFirst().orElse(null)},
+                "Role already has this privilege granted"
+            );
+        }
+
+        Set<String> privilegeCodesToAdd = requestedPrivilegeCodes.stream()
+            .filter(privilegeCode -> !existingPrivilegeCodes.contains(privilegeCode))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        Map<String, Privilege> privilegeByCode = privilegeCodesToAdd.stream()
+            .map(privilegeCode -> privilegeRepository.findActiveByPrivilegeCode(privilegeCode)
+                .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(privilegeCode)))
+            .collect(Collectors.toMap(Privilege::getPrivilegeCode, Function.identity()));
+
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<RolePrivilegeResponse> revoked = rolePrivilegeRepository.findActiveById(id).map(existing -> {
+        List<RolePrivilege> newAssignments = privilegeCodesToAdd.stream()
+            .map(privilegeCode -> newRolePrivilege(role, privilegeByCode.get(privilegeCode), callerId, now))
+            .collect(Collectors.toList());
+
+        List<RolePrivilegeResponse> created = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.saveAll(newAssignments));
+        log.info("Bulk granted {} privileges to roleCode={}", created.size(), roleCode);
+        return created;
+    }
+
+    @Transactional
+    public Optional<RolePrivilegeResponse> revoke(String roleCode, String privilegeCode) {
+        log.debug("Revoking privilegeCode={} for roleCode={}", privilegeCode, roleCode);
+        Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+        LocalDateTime now = LocalDateTime.now();
+        Optional<RolePrivilegeResponse> revoked = rolePrivilegeRepository.findActiveByRoleCodeAndPrivilegeCode(roleCode, privilegeCode).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
@@ -87,7 +122,18 @@ public class RolePrivilegeService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return rolePrivilegeMapper.toDto(rolePrivilegeRepository.save(existing));
         });
-        log.info("Role-privilege revoke id={} success={}", id, revoked.isPresent());
+        log.info("Role-privilege revoke roleCode={} privilegeCode={} success={}", roleCode, privilegeCode, revoked.isPresent());
         return revoked;
+    }
+
+    private RolePrivilege newRolePrivilege(Role role, Privilege privilege, Long callerId, LocalDateTime now) {
+        RolePrivilege rolePrivilege = new RolePrivilege();
+        rolePrivilege.setRole(role);
+        rolePrivilege.setPrivilege(privilege);
+        rolePrivilege.setCreatedAt(now);
+        rolePrivilege.setCreatedBy(callerId);
+        rolePrivilege.setDeletedFlag("N");
+        rolePrivilege.setVersionNumber(0L);
+        return rolePrivilege;
     }
 }

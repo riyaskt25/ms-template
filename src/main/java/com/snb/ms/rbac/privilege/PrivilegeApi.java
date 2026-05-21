@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -32,22 +31,22 @@ public interface PrivilegeApi {
     })
     List<PrivilegeResponse> findAll();
 
-    @Operation(operationId = "getPrivilegeById", summary = "Get privilege by id", description = "Finds a privilege by identifier.")
+    @Operation(operationId = "getPrivilegeByCode", summary = "Get privilege by code", description = "Finds a privilege by code.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Privilege identifier", required = true, example = "1")})
+    @Parameters({@Parameter(name = "privilegeCode", description = "Privilege code", required = true, example = "USER_VIEW")})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Privilege fetched successfully",
             content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+        @ApiResponse(responseCode = "400", description = "Invalid privilege code supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "PrivilegeNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    PrivilegeResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    PrivilegeResponse findByCode(String privilegeCode);
 
     @Operation(operationId = "createPrivilege", summary = "Create privilege", description = "Creates a new privilege record.")
     @CommonApiParameters
@@ -67,7 +66,7 @@ public interface PrivilegeApi {
 
     @Operation(operationId = "updatePrivilege", summary = "Update privilege", description = "Updates an existing privilege record.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Privilege identifier", required = true, example = "1")})
+    @Parameters({@Parameter(name = "privilegeCode", description = "Privilege code", required = true, example = "USER_VIEW")})
     @RequestBody(required = true, description = "Privilege payload to update",
         content = @Content(schema = @Schema(implementation = PrivilegeUpdateRequest.class),
             examples = @ExampleObject(name = "UpdatePrivilege",
@@ -80,24 +79,24 @@ public interface PrivilegeApi {
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "PrivilegeNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    PrivilegeResponse update(@Positive(message = "{validation.common.id.positive}") Long id, @Valid PrivilegeUpdateRequest request);
+    PrivilegeResponse update(String privilegeCode, @Valid PrivilegeUpdateRequest request);
 
     @Operation(operationId = "deletePrivilege", summary = "Delete privilege", description = "Soft-deletes a privilege record.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Privilege identifier", required = true, example = "1")})
+    @Parameters({@Parameter(name = "privilegeCode", description = "Privilege code", required = true, example = "USER_VIEW")})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Privilege deleted successfully",
             content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "PrivilegeNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    PrivilegeResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    PrivilegeResponse softDelete(String privilegeCode);
 }

@@ -1,6 +1,7 @@
 package com.snb.ms.rbac.roleprivilege;
 
 import com.snb.ms.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rbac/role-privileges")
+@RequestMapping("/api/roles/{roleCode}/privileges")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -21,34 +22,36 @@ public class RolePrivilegeController implements RolePrivilegeApi {
 
     @Override
     @GetMapping
-    public List<RolePrivilegeResponse> findAll() {
-        log.debug("Received request to fetch all role-privilege grants");
-        return rolePrivilegeService.findAll();
-    }
-
-    @Override
-    @GetMapping("/role/{roleId}")
-    public List<RolePrivilegeResponse> findByRoleId(@PathVariable Long roleId) {
-        log.debug("Received request to fetch privileges for roleId={}", roleId);
-        return rolePrivilegeService.findByRoleId(roleId);
+    public List<RolePrivilegeResponse> findByRoleCode(@PathVariable String roleCode) {
+        log.debug("Received request to fetch privileges for roleCode={}", roleCode);
+        return rolePrivilegeService.findByRoleCode(roleCode);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<RolePrivilegeResponse> grant(@RequestBody RolePrivilegeRequest request) {
-        log.debug("Received request to grant privilegeId={} to roleId={}", request.getPrivilegeId(), request.getRoleId());
-        RolePrivilegeResponse created = rolePrivilegeService.grant(request);
-        log.info("Granted privilegeId={} to roleId={}", request.getPrivilegeId(), request.getRoleId());
+    public ResponseEntity<RolePrivilegeResponse> grant(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeRequest request) {
+        log.debug("Received request to grant privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
+        RolePrivilegeResponse created = rolePrivilegeService.grant(roleCode, request);
+        log.info("Granted privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public RolePrivilegeResponse revoke(@PathVariable Long id) {
-        log.debug("Received request to revoke role-privilege grant id={}", id);
-        RolePrivilegeResponse revoked = rolePrivilegeService.revoke(id)
-            .orElseThrow(() -> ResourceNotFoundException.rolePrivilegeById(id));
-        log.info("Revoked role-privilege grant id={}", id);
+    @PostMapping("/bulk")
+    public ResponseEntity<List<RolePrivilegeResponse>> grantBulk(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeBulkRequest request) {
+        log.debug("Received request to bulk grant {} privileges to roleCode={}", request.getPrivilegeCodes().size(), roleCode);
+        List<RolePrivilegeResponse> created = rolePrivilegeService.grantBulk(roleCode, request);
+        log.info("Bulk granted {} privileges to roleCode={}", created.size(), roleCode);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @Override
+    @DeleteMapping("/{privilegeCode}")
+    public RolePrivilegeResponse revoke(@PathVariable String roleCode, @PathVariable String privilegeCode) {
+        log.debug("Received request to revoke privilegeCode={} for roleCode={}", privilegeCode, roleCode);
+        RolePrivilegeResponse revoked = rolePrivilegeService.revoke(roleCode, privilegeCode)
+            .orElseThrow(() -> ResourceNotFoundException.rolePrivilegeByRoleCodeAndPrivilegeCode(roleCode, privilegeCode));
+        log.info("Revoked privilegeCode={} for roleCode={}", privilegeCode, roleCode);
         return revoked;
     }
 }

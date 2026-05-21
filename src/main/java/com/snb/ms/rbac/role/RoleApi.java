@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -32,22 +31,22 @@ public interface RoleApi {
     })
     List<RoleResponse> findAll();
 
-    @Operation(operationId = "getRoleById", summary = "Get role by id", description = "Finds a role by identifier.")
+    @Operation(operationId = "getRoleByCode", summary = "Get role by code", description = "Finds a role by code.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Role identifier", required = true, example = "1")})
+    @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Role fetched successfully",
             content = @Content(schema = @Schema(implementation = RoleResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+        @ApiResponse(responseCode = "400", description = "Invalid role code supplied",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "RoleNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    RoleResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    RoleResponse findByCode(String roleCode);
 
     @Operation(operationId = "createRole", summary = "Create role", description = "Creates a new role record.")
     @CommonApiParameters
@@ -65,9 +64,25 @@ public interface RoleApi {
     })
     ResponseEntity<RoleResponse> create(@Valid RoleCreateRequest request);
 
-    @Operation(operationId = "updateRole", summary = "Update role", description = "Updates an existing role record.")
+    @Operation(operationId = "createRolesBulk", summary = "Create roles in bulk", description = "Creates multiple role records in a single request.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Role identifier", required = true, example = "1")})
+    @RequestBody(required = true, description = "Bulk role payload to create",
+        content = @Content(schema = @Schema(implementation = RoleBulkCreateRequest.class),
+            examples = @ExampleObject(name = "CreateRolesBulk",
+                value = "{\n  \"roles\": [\n    {\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"description\": \"Full platform access\"\n    },\n    {\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"description\": \"Read-only audit access\"\n    }\n  ]\n}")))
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Roles created successfully",
+            content = @Content(schema = @Schema(implementation = RoleBulkResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Validation failed",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+    })
+    ResponseEntity<RoleBulkResponse> createBulk(@Valid RoleBulkCreateRequest request);
+
+    @Operation(operationId = "updateRole", summary = "Update role", description = "Updates an existing role record by code.")
+    @CommonApiParameters
+    @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @RequestBody(required = true, description = "Role payload to update",
         content = @Content(schema = @Schema(implementation = RoleUpdateRequest.class),
             examples = @ExampleObject(name = "UpdateRole",
@@ -80,24 +95,24 @@ public interface RoleApi {
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "RoleNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    RoleResponse update(@Positive(message = "{validation.common.id.positive}") Long id, @Valid RoleUpdateRequest request);
+    RoleResponse update(String roleCode, @Valid RoleUpdateRequest request);
 
-    @Operation(operationId = "deleteRole", summary = "Delete role", description = "Soft-deletes a role record.")
+    @Operation(operationId = "deleteRole", summary = "Delete role", description = "Soft-deletes a role record by code.")
     @CommonApiParameters
-    @Parameters({@Parameter(name = "id", description = "Role identifier", required = true, example = "1")})
+    @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Role deleted successfully",
             content = @Content(schema = @Schema(implementation = RoleResponse.class))),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "RoleNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for id=999\"\n    }\n  ]\n}"))),
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
     })
-    RoleResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    RoleResponse softDelete(String roleCode);
 }

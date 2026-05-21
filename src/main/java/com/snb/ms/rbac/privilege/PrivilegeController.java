@@ -29,12 +29,12 @@ public class PrivilegeController implements PrivilegeApi {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public PrivilegeResponse findById(@PathVariable Long id) {
-        log.debug("Received request to fetch privilege by id={}", id);
-        PrivilegeResponse result = privilegeService.findById(id)
-            .orElseThrow(() -> ResourceNotFoundException.privilegeById(id));
-        log.info("Privilege found for id={}", id);
+    @GetMapping("/{privilegeCode}")
+    public PrivilegeResponse findByCode(@PathVariable String privilegeCode) {
+        log.debug("Received request to fetch privilege by code={}", privilegeCode);
+        PrivilegeResponse result = privilegeService.findByCode(privilegeCode)
+            .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(privilegeCode));
+        log.info("Privilege found for code={}", privilegeCode);
         return result;
     }
 
@@ -48,22 +48,22 @@ public class PrivilegeController implements PrivilegeApi {
     }
 
     @Override
-    @PutMapping("/{id}")
-    public PrivilegeResponse update(@PathVariable Long id, @RequestBody PrivilegeUpdateRequest request) {
-        log.debug("Received request to update privilege id={}", id);
-        PrivilegeResponse updated = privilegeService.update(id, request)
-            .orElseThrow(() -> ResourceNotFoundException.privilegeById(id));
-        log.info("Updated privilege id={}", id);
+    @PutMapping("/{privilegeCode}")
+    public PrivilegeResponse update(@PathVariable String privilegeCode, @RequestBody PrivilegeUpdateRequest request) {
+        log.debug("Received request to update privilege code={}", privilegeCode);
+        PrivilegeResponse updated = privilegeService.update(privilegeCode, request)
+            .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(privilegeCode));
+        log.info("Updated privilege code={}", privilegeCode);
         return updated;
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public PrivilegeResponse softDelete(@PathVariable Long id) {
-        log.debug("Received request to soft-delete privilege id={}", id);
-        PrivilegeResponse deleted = privilegeService.softDelete(id)
-            .orElseThrow(() -> ResourceNotFoundException.privilegeById(id));
-        log.info("Soft-deleted privilege id={}", id);
+    @DeleteMapping("/{privilegeCode}")
+    public PrivilegeResponse softDelete(@PathVariable String privilegeCode) {
+        log.debug("Received request to soft-delete privilege code={}", privilegeCode);
+        PrivilegeResponse deleted = privilegeService.softDelete(privilegeCode)
+            .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(privilegeCode));
+        log.info("Soft-deleted privilege code={}", privilegeCode);
         return deleted;
     }
 }

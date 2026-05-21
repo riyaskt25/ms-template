@@ -17,8 +17,11 @@ public interface RolePrivilegeRepository extends JpaRepository<RolePrivilege, Lo
     @Query("SELECT rp FROM RolePrivilege rp JOIN FETCH rp.role JOIN FETCH rp.privilege WHERE rp.id = :id AND rp.deletedFlag = 'N'")
     Optional<RolePrivilege> findActiveById(@Param("id") Long id);
 
-    @Query("SELECT rp FROM RolePrivilege rp JOIN FETCH rp.role JOIN FETCH rp.privilege WHERE rp.role.roleId = :roleId AND rp.deletedFlag = 'N'")
-    List<RolePrivilege> findActiveByRoleId(@Param("roleId") Long roleId);
+    @Query("SELECT rp FROM RolePrivilege rp JOIN FETCH rp.role JOIN FETCH rp.privilege WHERE rp.role.roleCode = :roleCode AND rp.deletedFlag = 'N'")
+    List<RolePrivilege> findActiveByRoleCode(@Param("roleCode") String roleCode);
 
-    boolean existsByRole_RoleIdAndPrivilege_PrivilegeIdAndDeletedFlag(Long roleId, Long privilegeId, String deletedFlag);
+    @Query("SELECT rp FROM RolePrivilege rp JOIN FETCH rp.role JOIN FETCH rp.privilege WHERE rp.role.roleCode = :roleCode AND rp.privilege.privilegeCode = :privilegeCode AND rp.deletedFlag = 'N'")
+    Optional<RolePrivilege> findActiveByRoleCodeAndPrivilegeCode(@Param("roleCode") String roleCode, @Param("privilegeCode") String privilegeCode);
+
+    boolean existsByRole_RoleCodeAndPrivilege_PrivilegeCodeAndDeletedFlag(String roleCode, String privilegeCode, String deletedFlag);
 }

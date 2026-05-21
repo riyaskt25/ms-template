@@ -1,6 +1,7 @@
 package com.snb.ms.rbac.role;
 
 import com.snb.ms.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,18 +30,18 @@ public class RoleController implements RoleApi {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public RoleResponse findById(@PathVariable Long id) {
-        log.debug("Received request to fetch role by id={}", id);
-        RoleResponse result = roleService.findById(id)
-            .orElseThrow(() -> ResourceNotFoundException.roleById(id));
-        log.info("Role found for id={}", id);
+    @GetMapping("/{roleCode}")
+    public RoleResponse findByCode(@PathVariable String roleCode) {
+        log.debug("Received request to fetch role by code={}", roleCode);
+        RoleResponse result = roleService.findByCode(roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        log.info("Role found for code={}", roleCode);
         return result;
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<RoleResponse> create(@RequestBody RoleCreateRequest request) {
+    public ResponseEntity<RoleResponse> create(@Valid @RequestBody RoleCreateRequest request) {
         log.debug("Received request to create role roleCode={}", request.getRoleCode());
         RoleResponse created = roleService.create(request);
         log.info("Created role id={}", created.getRoleId());
@@ -48,22 +49,31 @@ public class RoleController implements RoleApi {
     }
 
     @Override
-    @PutMapping("/{id}")
-    public RoleResponse update(@PathVariable Long id, @RequestBody RoleUpdateRequest request) {
-        log.debug("Received request to update role id={}", id);
-        RoleResponse updated = roleService.update(id, request)
-            .orElseThrow(() -> ResourceNotFoundException.roleById(id));
-        log.info("Updated role id={}", id);
+    @PostMapping("/bulk")
+    public ResponseEntity<RoleBulkResponse> createBulk(@Valid @RequestBody RoleBulkCreateRequest request) {
+        log.debug("Received request to bulk create {} roles", request.getRoles().size());
+        List<RoleResponse> created = roleService.createBulk(request);
+        log.info("Created {} roles in bulk request", created.size());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new RoleBulkResponse(created));
+    }
+
+    @Override
+    @PutMapping("/{roleCode}")
+    public RoleResponse update(@PathVariable String roleCode, @RequestBody RoleUpdateRequest request) {
+        log.debug("Received request to update role code={}", roleCode);
+        RoleResponse updated = roleService.update(roleCode, request)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        log.info("Updated role code={}", roleCode);
         return updated;
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public RoleResponse softDelete(@PathVariable Long id) {
-        log.debug("Received request to soft-delete role id={}", id);
-        RoleResponse deleted = roleService.softDelete(id)
-            .orElseThrow(() -> ResourceNotFoundException.roleById(id));
-        log.info("Soft-deleted role id={}", id);
+    @DeleteMapping("/{roleCode}")
+    public RoleResponse softDelete(@PathVariable String roleCode) {
+        log.debug("Received request to soft-delete role code={}", roleCode);
+        RoleResponse deleted = roleService.softDelete(roleCode)
+            .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
+        log.info("Soft-deleted role code={}", roleCode);
         return deleted;
     }
 }

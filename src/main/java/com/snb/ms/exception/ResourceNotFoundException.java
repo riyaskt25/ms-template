@@ -66,11 +66,27 @@ public class ResourceNotFoundException extends RuntimeException {
         );
     }
 
+    public static ResourceNotFoundException roleByCode(Object roleCode) {
+        return new ResourceNotFoundException(
+            "error.resource.role.not.found.by.code",
+            new Object[]{roleCode},
+            "Role not found for code=" + roleCode
+        );
+    }
+
     public static ResourceNotFoundException privilegeById(Object id) {
         return new ResourceNotFoundException(
             "error.resource.privilege.not.found.by.id",
             new Object[]{id},
             "Privilege not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException privilegeByCode(Object privilegeCode) {
+        return new ResourceNotFoundException(
+            "error.resource.privilege.not.found.by.code",
+            new Object[]{privilegeCode},
+            "Privilege not found for code=" + privilegeCode
         );
     }
 
@@ -95,6 +111,22 @@ public class ResourceNotFoundException extends RuntimeException {
             "error.resource.rolePrivilege.not.found.by.id",
             new Object[]{id},
             "Role-privilege grant not found for id=" + id
+        );
+    }
+
+    public static ResourceNotFoundException rolePrivilegeByRoleIdAndPrivilegeId(Object roleId, Object privilegeId) {
+        return new ResourceNotFoundException(
+            "error.resource.rolePrivilege.not.found.by.roleId.and.privilegeId",
+            new Object[]{roleId, privilegeId},
+            "Role-privilege grant not found for roleId=" + roleId + " and privilegeId=" + privilegeId
+        );
+    }
+
+    public static ResourceNotFoundException rolePrivilegeByRoleCodeAndPrivilegeCode(Object roleCode, Object privilegeCode) {
+        return new ResourceNotFoundException(
+            "error.resource.rolePrivilege.not.found.by.roleCode.and.privilegeCode",
+            new Object[]{roleCode, privilegeCode},
+            "Role-privilege grant not found for roleCode=" + roleCode + " and privilegeCode=" + privilegeCode
         );
     }
 
