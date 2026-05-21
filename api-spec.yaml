@@ -496,13 +496,13 @@ paths:
                 $ref: "#/components/schemas/BaseResponseDTO"
               examples:
                 InternalServerError:
-                  description: InternalServerError
-                  value:
-                    errors:
-                    - type: SERVER_ERROR
-                      code: INTERNAL_ERROR
-                      message: Unexpected internal server error
-                      description: null
+                    description: PermissionSystemFailure
+                    value:
+                      errors:
+                      - type: SERVER_ERROR
+                        code: INTERNAL_ERROR
+                        message: Permission system failure
+                        description: Unable to verify user permissions due to authorization service outage
     delete:
       tags:
       - Companies
@@ -581,13 +581,13 @@ paths:
                 $ref: "#/components/schemas/BaseResponseDTO"
               examples:
                 InternalServerError:
-                  description: InternalServerError
-                  value:
-                    errors:
-                    - type: SERVER_ERROR
-                      code: INTERNAL_ERROR
-                      message: Unexpected internal server error
-                      description: null
+                    description: AuthProviderFailure
+                    value:
+                      errors:
+                      - type: SERVER_ERROR
+                        code: INTERNAL_ERROR
+                        message: Authentication provider failure
+                        description: Unable to authenticate user due to external auth provider timeout
   /api/admin-users/{id}:
     get:
       tags:
