@@ -44,7 +44,7 @@ public class OpenApiConfig {
                 .info(new io.swagger.v3.oas.models.info.Info()
                         .title("MS Template API")
                         .version("v1")
-                        .description("Detailed API contract for companies, salesmen, admin users, RBAC, and external posts integration endpoints.",))
+                        .description("Detailed API contract for companies, salesmen, admin users, RBAC, and external posts integration endpoints."))
                 .components(new Components()
                         .addParameters("XRequestIdHeader", new Parameter()
                                 .name("X-Request-Id")
