@@ -43,7 +43,9 @@ public interface RoleApi {
                 examples = @ExampleObject(name = "RoleNotFound",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "RoleFetchInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch role\",\n      \"description\": \"Database unavailable while loading role for code=SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     RoleResponse findByCode(String roleCode);
 

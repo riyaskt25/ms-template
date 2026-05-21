@@ -26,7 +26,9 @@ public interface PrivilegeApi {
         @ApiResponse(responseCode = "200", description = "Privileges fetched successfully",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = PrivilegeResponse.class)))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "ListPrivilegesInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch privileges\",\n      \"description\": \"Database unavailable while listing privileges\"\n    }\n  ]\n}")))
     })
     List<PrivilegeResponse> findAll();
 
@@ -37,13 +39,17 @@ public interface PrivilegeApi {
         @ApiResponse(responseCode = "200", description = "Privilege fetched successfully",
             content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
         @ApiResponse(responseCode = "400", description = "Invalid privilege code supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "InvalidPrivilegeCode",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PRIVILEGE_CODE\",\n      \"message\": \"privilegeCode is invalid\",\n      \"description\": \"Path variable 'privilegeCode' must be non-empty alphanumeric\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "PrivilegeNotFound",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "GetPrivilegeInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch privilege\",\n      \"description\": \"Database unavailable while loading privilege for code=USER_VIEW\"\n    }\n  ]\n}")))
     })
     PrivilegeResponse findByCode(String privilegeCode);
 
@@ -57,9 +63,13 @@ public interface PrivilegeApi {
         @ApiResponse(responseCode = "201", description = "Privilege created successfully",
             content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreatePrivilegeValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"PRIVILEGECODE_REQUIRED\",\n      \"message\": \"privilegeCode is required\",\n      \"description\": \"Field 'privilegeCode' must not be blank\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreatePrivilegeInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create privilege\",\n      \"description\": \"Database transaction failed while creating privilege USER_VIEW\"\n    }\n  ]\n}")))
     })
     ResponseEntity<PrivilegeResponse> create(@Valid PrivilegeCreateRequest request);
 
@@ -74,13 +84,17 @@ public interface PrivilegeApi {
         @ApiResponse(responseCode = "200", description = "Privilege updated successfully",
             content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "UpdatePrivilegeValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"PRIVILEGENAME_REQUIRED\",\n      \"message\": \"privilegeName is required\",\n      \"description\": \"Field 'privilegeName' must not be blank\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "PrivilegeNotFound",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "UpdatePrivilegeInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update privilege\",\n      \"description\": \"Database unavailable while updating privilege USER_VIEW\"\n    }\n  ]\n}")))
     })
     PrivilegeResponse update(String privilegeCode, @Valid PrivilegeUpdateRequest request);
 
@@ -95,7 +109,9 @@ public interface PrivilegeApi {
                 examples = @ExampleObject(name = "PrivilegeNotFound",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "DeletePrivilegeInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete privilege\",\n      \"description\": \"Database unavailable while soft deleting privilege USER_VIEW\"\n    }\n  ]\n}")))
     })
     PrivilegeResponse softDelete(String privilegeCode);
 }
