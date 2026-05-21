@@ -47,3 +47,9 @@ compileJava {
 		'-Amapstruct.unmappedSourcePolicy=IGNORE'
 	]
 }
+
+tasks.register('generatePostmanFromAnnotations', Exec) {
+	group = 'documentation'
+	description = 'Refreshes api-spec.yaml from /v3/api-docs.yaml and regenerates Postman collection.'
+	commandLine 'powershell', '-ExecutionPolicy', 'Bypass', '-File', 'scripts/refresh-openapi-and-postman.ps1'
+}
