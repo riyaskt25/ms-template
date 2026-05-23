@@ -27,9 +27,6 @@ public class AdminUserResponse {
     @Schema(description = "Organization employee identifier", example = "SNB1001")
     private String snbId;
 
-    @Schema(description = "Admin role type", example = "SUPERVISOR")
-    private String adminType;
-
     @Schema(description = "Admin status", example = "ACTIVE")
     private String adminStatus;
 

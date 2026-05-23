@@ -41,9 +41,6 @@ public class AdminUser extends BaseEntity {
     @Column(name = "SNB_ID", nullable = false, unique = true, length = 50)
     private String snbId;
 
-    @Column(name = "ADMIN_TYPE", length = 30)
-    private String adminType;
-
     @Column(name = "ADMIN_STATUS", length = 20)
     private String adminStatus;
 }

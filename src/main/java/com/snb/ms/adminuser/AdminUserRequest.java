@@ -21,9 +21,6 @@ public class AdminUserRequest {
     @Size(max = 20, message = "extensionNumber must not exceed 20 characters")
     private String extensionNumber;
 
-    @Size(max = 30, message = "adminType must not exceed 30 characters")
-    private String adminType;
-
     @Size(max = 20, message = "adminStatus must not exceed 20 characters")
     private String adminStatus;
 
