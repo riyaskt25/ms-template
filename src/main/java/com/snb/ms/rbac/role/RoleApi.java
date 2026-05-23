@@ -120,16 +120,11 @@ public interface RoleApi {
     @CommonApiParameters
     @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Role deleted successfully",
-            content = @Content(schema = @Schema(implementation = RoleResponse.class))),
+        @ApiResponse(responseCode = "204", description = "Role deleted successfully"),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "DeleteRoleNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "DeleteRoleInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete role\",\n      \"description\": \"Database unavailable while soft deleting role SUPER_ADMIN\"\n    }\n  ]\n}")))
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}")))
     })
-    RoleResponse softDelete(String roleCode);
+    ResponseEntity<Void> softDelete(String roleCode);
 }

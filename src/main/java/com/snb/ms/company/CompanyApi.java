@@ -287,39 +287,16 @@ public interface CompanyApi {
     })
     @ApiResponses({
         @ApiResponse(
-            responseCode = "200",
-            description = "Company soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = CompanyWriteResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid company id supplied",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "SoftDeleteCompanyValidationError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
-                )
-            )
+            responseCode = "204",
+            description = "Company soft-deleted successfully"
         ),
         @ApiResponse(
             responseCode = "404",
             description = "Company not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Internal server error",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "DeleteCompanyInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete company\",\n      \"description\": \"Database unavailable while soft deleting company id=1\"\n    }\n  ]\n}"
-                )
-            )
         )
     })
-    CompanyWriteResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    ResponseEntity<Void> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 
     @Operation(
         operationId = "decideCompanyStatus",

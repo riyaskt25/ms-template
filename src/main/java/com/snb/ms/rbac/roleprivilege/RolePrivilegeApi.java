@@ -90,18 +90,13 @@ public interface RolePrivilegeApi {
         @Parameter(name = "privilegeCode", description = "Privilege code", required = true, example = "USER_VIEW")
     })
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Privilege revoked successfully",
-            content = @Content(schema = @Schema(implementation = RolePrivilegeResponse.class))),
+        @ApiResponse(responseCode = "204", description = "Privilege revoked successfully"),
         @ApiResponse(responseCode = "404", description = "Grant not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "RevokeRolePrivilegeNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role-privilege grant not found for roleCode=SUPER_ADMIN and privilegeCode=USER_VIEW\"\n    }\n  ]\n}"))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RevokeRolePrivilegeInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to revoke role privilege\",\n      \"description\": \"Database unavailable while revoking grant for roleCode=SUPER_ADMIN and privilegeCode=USER_VIEW\"\n    }\n  ]\n}")))
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role-privilege grant not found for roleCode=SUPER_ADMIN and privilegeCode=USER_VIEW\"\n    }\n  ]\n}")))
     })
-    RolePrivilegeResponse revoke(
+    ResponseEntity<Void> revoke(
         String roleCode,
         String privilegeCode
     );

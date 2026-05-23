@@ -59,11 +59,11 @@ public class AdminUserController implements AdminUserApi {
 
     @Override
     @DeleteMapping("/{snbId}")
-    public AdminUserResponse softDelete(@PathVariable String snbId) {
+    public ResponseEntity<Void> softDelete(@PathVariable String snbId) {
         log.debug("Received request to soft-delete admin user snbId={}", snbId);
-        AdminUserResponse deleted = adminUserService.softDeleteBySnbId(snbId)
+        adminUserService.softDeleteBySnbId(snbId)
             .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
         log.info("Soft-deleted admin user snbId={}", snbId);
-        return deleted;
+        return ResponseEntity.noContent().build();
     }
 }

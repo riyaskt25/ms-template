@@ -82,12 +82,12 @@ public class CompanyController implements CompanyApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public CompanyWriteResponse softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
+    public ResponseEntity<Void> softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long id) {
         log.debug("Received request to soft-delete company id={}", id);
-        CompanyWriteResponse deleted = companyService.softDelete(id)
+        companyService.softDelete(id)
             .orElseThrow(() -> ResourceNotFoundException.companyById(id));
         log.info("Soft-deleted company id={}", id);
-        return deleted;
+        return ResponseEntity.noContent().build();
     }
 
     @Override

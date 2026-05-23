@@ -46,11 +46,11 @@ public class RolePrivilegeController implements RolePrivilegeApi {
 
     @Override
     @DeleteMapping("/{privilegeCode}")
-    public RolePrivilegeResponse revoke(@PathVariable String roleCode, @PathVariable String privilegeCode) {
+    public ResponseEntity<Void> revoke(@PathVariable String roleCode, @PathVariable String privilegeCode) {
         log.debug("Received request to revoke privilegeCode={} for roleCode={}", privilegeCode, roleCode);
-        RolePrivilegeResponse revoked = rolePrivilegeService.revoke(roleCode, privilegeCode)
+        rolePrivilegeService.revoke(roleCode, privilegeCode)
             .orElseThrow(() -> ResourceNotFoundException.rolePrivilegeByRoleCodeAndPrivilegeCode(roleCode, privilegeCode));
         log.info("Revoked privilegeCode={} for roleCode={}", privilegeCode, roleCode);
-        return revoked;
+        return ResponseEntity.noContent().build();
     }
 }

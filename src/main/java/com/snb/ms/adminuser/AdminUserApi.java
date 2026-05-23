@@ -231,20 +231,8 @@ public interface AdminUserApi {
     })
     @ApiResponses({
         @ApiResponse(
-            responseCode = "200",
-            description = "Admin user soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = AdminUserResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid snbId supplied",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "SoftDeleteAdminUserBySnbIdValidationError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_SNB_ID\",\n      \"message\": \"snbId is invalid\",\n      \"description\": \"Path variable 'snbId' must be non-empty\"\n    }\n  ]\n}"
-                )
-            )
+            responseCode = "204",
+            description = "Admin user soft-deleted successfully"
         ),
         @ApiResponse(
             responseCode = "404",
@@ -256,18 +244,7 @@ public interface AdminUserApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for snbId=SNB9999\"\n    }\n  ]\n}"
                 )
             )
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Internal server error",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "SoftDeleteAdminUserBySnbIdInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete admin user\",\n      \"description\": \"Database unavailable while soft deleting admin user snbId=SNB1001\"\n    }\n  ]\n}"
-                )
-            )
         )
     })
-    AdminUserResponse softDelete(@NotBlank(message = "{validation.adminUser.snbId.required}") String snbId);
+    ResponseEntity<Void> softDelete(@NotBlank(message = "{validation.adminUser.snbId.required}") String snbId);
 }

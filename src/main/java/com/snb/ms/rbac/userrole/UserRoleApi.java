@@ -91,18 +91,13 @@ public interface UserRoleApi {
         @Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")
     })
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Role revoked successfully",
-            content = @Content(schema = @Schema(implementation = UserRoleResponse.class))),
+        @ApiResponse(responseCode = "204", description = "Role revoked successfully"),
         @ApiResponse(responseCode = "404", description = "Assignment not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "RevokeUserRoleNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"User-role assignment not found for userId=10 and roleCode=INVALID\"\n    }\n  ]\n}"))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RevokeUserRoleInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to revoke user role\",\n      \"description\": \"Database unavailable while revoking roleCode=SUPER_ADMIN for userId=10\"\n    }\n  ]\n}")))
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"User-role assignment not found for userId=10 and roleCode=INVALID\"\n    }\n  ]\n}")))
     })
-    UserRoleResponse revoke(
+    ResponseEntity<Void> revoke(
         @Positive(message = "{validation.common.id.positive}") Long userId,
         String roleCode
     );

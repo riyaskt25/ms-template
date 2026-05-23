@@ -68,11 +68,11 @@ public class RoleController implements RoleApi {
 
     @Override
     @DeleteMapping("/{roleCode}")
-    public RoleResponse softDelete(@PathVariable String roleCode) {
+    public ResponseEntity<Void> softDelete(@PathVariable String roleCode) {
         log.debug("Received request to soft-delete role code={}", roleCode);
-        RoleResponse deleted = roleService.softDelete(roleCode)
+        roleService.softDelete(roleCode)
             .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
         log.info("Soft-deleted role code={}", roleCode);
-        return deleted;
+        return ResponseEntity.noContent().build();
     }
 }

@@ -46,11 +46,11 @@ public class UserRoleController implements UserRoleApi {
 
     @Override
     @DeleteMapping("/{roleCode}")
-    public UserRoleResponse revoke(@PathVariable Long userId, @PathVariable String roleCode) {
+    public ResponseEntity<Void> revoke(@PathVariable Long userId, @PathVariable String roleCode) {
         log.debug("Received request to revoke roleCode={} for userId={}", roleCode, userId);
-        UserRoleResponse revoked = userRoleService.revoke(userId, roleCode)
+        userRoleService.revoke(userId, roleCode)
             .orElseThrow(() -> ResourceNotFoundException.userRoleByUserIdAndRoleCode(userId, roleCode));
         log.info("Revoked roleCode={} for userId={}", roleCode, userId);
-        return revoked;
+        return ResponseEntity.noContent().build();
     }
 }

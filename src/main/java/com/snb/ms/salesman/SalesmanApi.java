@@ -231,20 +231,8 @@ public interface SalesmanApi {
     })
     @ApiResponses({
         @ApiResponse(
-            responseCode = "200",
-            description = "Salesman soft-deleted successfully",
-            content = @Content(schema = @Schema(implementation = SalesmanResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid id supplied",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "SoftDeleteSalesmanValidationError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
-                )
-            )
+            responseCode = "204",
+            description = "Salesman soft-deleted successfully"
         ),
         @ApiResponse(
             responseCode = "404",
@@ -256,18 +244,7 @@ public interface SalesmanApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
                 )
             )
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Internal server error",
-            content = @Content(
-                schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(
-                    name = "DeleteSalesmanInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete salesman\",\n      \"description\": \"Database unavailable while soft deleting salesman id=1\"\n    }\n  ]\n}"
-                )
-            )
         )
     })
-    SalesmanResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    ResponseEntity<Void> softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
 }

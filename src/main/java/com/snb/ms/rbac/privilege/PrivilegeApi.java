@@ -102,16 +102,11 @@ public interface PrivilegeApi {
     @CommonApiParameters
     @Parameters({@Parameter(name = "privilegeCode", description = "Privilege code", required = true, example = "USER_VIEW")})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Privilege deleted successfully",
-            content = @Content(schema = @Schema(implementation = PrivilegeResponse.class))),
+        @ApiResponse(responseCode = "204", description = "Privilege deleted successfully"),
         @ApiResponse(responseCode = "404", description = "Privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "DeletePrivilegeNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}"))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "DeletePrivilegeInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete privilege\",\n      \"description\": \"Database unavailable while soft deleting privilege USER_VIEW\"\n    }\n  ]\n}")))
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID\"\n    }\n  ]\n}")))
     })
-    PrivilegeResponse softDelete(String privilegeCode);
+    ResponseEntity<Void> softDelete(String privilegeCode);
 }

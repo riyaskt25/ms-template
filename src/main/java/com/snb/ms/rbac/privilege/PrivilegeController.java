@@ -58,11 +58,11 @@ public class PrivilegeController implements PrivilegeApi {
 
     @Override
     @DeleteMapping("/{privilegeCode}")
-    public PrivilegeResponse softDelete(@PathVariable String privilegeCode) {
+    public ResponseEntity<Void> softDelete(@PathVariable String privilegeCode) {
         log.debug("Received request to soft-delete privilege code={}", privilegeCode);
-        PrivilegeResponse deleted = privilegeService.softDelete(privilegeCode)
+        privilegeService.softDelete(privilegeCode)
             .orElseThrow(() -> ResourceNotFoundException.privilegeByCode(privilegeCode));
         log.info("Soft-deleted privilege code={}", privilegeCode);
-        return deleted;
+        return ResponseEntity.noContent().build();
     }
 }

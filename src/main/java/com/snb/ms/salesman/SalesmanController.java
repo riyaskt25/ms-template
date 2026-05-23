@@ -59,11 +59,11 @@ public class SalesmanController implements SalesmanApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public SalesmanResponse softDelete(@PathVariable Long id) {
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
         log.debug("Received request to soft-delete salesman id={}", id);
-        SalesmanResponse deleted = salesmanService.softDelete(id)
+        salesmanService.softDelete(id)
             .orElseThrow(() -> ResourceNotFoundException.salesmanById(id));
         log.info("Soft-deleted salesman id={}", id);
-        return deleted;
+        return ResponseEntity.noContent().build();
     }
 }
