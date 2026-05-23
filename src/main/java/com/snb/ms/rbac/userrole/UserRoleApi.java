@@ -29,7 +29,7 @@ public interface UserRoleApi {
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "ListUserRolesInternalError",
+                examples = @ExampleObject(name = "GetUserRolesInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch user roles\",\n      \"description\": \"Database unavailable while loading roles for userId=10\"\n    }\n  ]\n}")))
     })
     List<UserRoleResponse> findByUserId(@Positive(message = "{validation.common.id.positive}") Long userId);
@@ -39,7 +39,7 @@ public interface UserRoleApi {
     @Parameters({@Parameter(name = "userId", description = "User identifier", required = true, example = "10")})
     @RequestBody(required = true, description = "Assignment payload",
         content = @Content(schema = @Schema(implementation = UserRoleRequest.class),
-            examples = @ExampleObject(name = "AssignRoles",
+            examples = @ExampleObject(name = "AssignUserRolesRequestExample",
                 value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Roles assigned successfully",
@@ -50,7 +50,7 @@ public interface UserRoleApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLECODES_REQUIRED\",\n      \"message\": \"at least one roleCode is required\",\n      \"description\": \"Field 'roleCodes' must contain at least one value\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "User or role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "UserOrRoleNotFound",
+                examples = @ExampleObject(name = "AssignUserRolesNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID_ROLE\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
@@ -64,7 +64,7 @@ public interface UserRoleApi {
     @Parameters({@Parameter(name = "userId", description = "User identifier", required = true, example = "10")})
     @RequestBody(required = true, description = "Role replacement payload",
         content = @Content(schema = @Schema(implementation = UserRoleRequest.class),
-            examples = @ExampleObject(name = "ReplaceRoles",
+            examples = @ExampleObject(name = "ReplaceUserRolesRequestExample",
                 value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User roles updated successfully",
@@ -75,7 +75,7 @@ public interface UserRoleApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLECODES_REQUIRED\",\n      \"message\": \"at least one roleCode is required\",\n      \"description\": \"Field 'roleCodes' must contain at least one value\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "User or role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleNotFound",
+                examples = @ExampleObject(name = "ReplaceUserRolesNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID_ROLE\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
@@ -95,7 +95,7 @@ public interface UserRoleApi {
             content = @Content(schema = @Schema(implementation = UserRoleResponse.class))),
         @ApiResponse(responseCode = "404", description = "Assignment not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "NotFound",
+                examples = @ExampleObject(name = "RevokeUserRoleNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"User-role assignment not found for userId=10 and roleCode=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),

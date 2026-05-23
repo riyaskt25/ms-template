@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -36,19 +36,25 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "ListAdminUsersInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch admin users\",\n      \"description\": \"Database unavailable while listing admin users\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     List<AdminUserResponse> findAll();
 
     @Operation(
-        operationId = "getAdminUserById",
-        summary = "Get admin user by id",
-        description = "Finds an admin user by identifier."
+        operationId = "getAdminUserBySnbId",
+        summary = "Get admin user by snbId",
+        description = "Finds an admin user by organization employee identifier (snbId)."
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
+        @Parameter(name = "snbId", description = "Organization employee identifier", required = true, example = "SNB1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -58,8 +64,14 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Invalid id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            description = "Invalid snbId supplied",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetAdminUserBySnbIdValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_SNB_ID\",\n      \"message\": \"snbId is invalid\",\n      \"description\": \"Path variable 'snbId' must be non-empty\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -67,18 +79,24 @@ public interface AdminUserApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "AdminUserNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
+                    name = "GetAdminUserBySnbIdNotFoundError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for snbId=SNB9999\"\n    }\n  ]\n}"
                 )
             )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetAdminUserBySnbIdInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch admin user\",\n      \"description\": \"Database unavailable while loading admin user snbId=SNB1001\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
-    AdminUserResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
+    AdminUserResponse findById(@NotBlank(message = "{validation.adminUser.snbId.required}") String snbId);
 
     @Operation(
         operationId = "createAdminUser",
@@ -92,8 +110,8 @@ public interface AdminUserApi {
         content = @Content(
             schema = @Schema(implementation = AdminUserCreateRequest.class),
             examples = @ExampleObject(
-                name = "CreateAdminUser",
-                value = "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"M\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1001\",\n  \"emailAddress\": \"sara.naseer@example.com\",\n  \"mobileNumber\": \"+971555010301\"\n}"
+                name = "CreateAdminUserRequestExample",
+                value = "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"M\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1001\",\n  \"snbId\": \"SNB1001\",\n  \"emailAddress\": \"sara.naseer@example.com\",\n  \"mobileNumber\": \"+971555010301\"\n}"
             )
         )
     )
@@ -106,7 +124,13 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "400",
             description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateAdminUserValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"EMAILADDRESS_INVALID\",\n      \"message\": \"emailAddress must be a valid email\",\n      \"description\": \"Rejected value: invalid-email\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -114,7 +138,7 @@ public interface AdminUserApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "AdminUserNotFound",
+                    name = "CreateAdminUserNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
                 )
             )
@@ -122,7 +146,13 @@ public interface AdminUserApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateAdminUserInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create admin user\",\n      \"description\": \"Database transaction failed while creating admin user sara.naseer@example.com\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     ResponseEntity<AdminUserResponse> create(@Valid AdminUserCreateRequest request);
@@ -130,11 +160,11 @@ public interface AdminUserApi {
     @Operation(
         operationId = "updateAdminUser",
         summary = "Update admin user",
-        description = "Updates an existing admin user by identifier."
+        description = "Updates an existing admin user by organization employee identifier (snbId)."
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
+        @Parameter(name = "snbId", description = "Organization employee identifier", required = true, example = "SNB1001")
     })
     @RequestBody(
         required = true,
@@ -142,7 +172,7 @@ public interface AdminUserApi {
         content = @Content(
             schema = @Schema(implementation = AdminUserUpdateRequest.class),
             examples = @ExampleObject(
-                name = "UpdateAdminUser",
+                name = "UpdateAdminUserRequestExample",
                 value = "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"Mariam\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1002\",\n  \"emailAddress\": \"sara.naseer@example.com\",\n  \"mobileNumber\": \"+971555010302\"\n}"
             )
         )
@@ -155,8 +185,14 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Validation failed or invalid id",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            description = "Validation failed or invalid snbId",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateAdminUserValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"MOBILENUMBER_REQUIRED\",\n      \"message\": \"mobileNumber is required\",\n      \"description\": \"Field 'mobileNumber' must not be blank\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -164,28 +200,34 @@ public interface AdminUserApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "AdminUserNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
+                    name = "UpdateAdminUserBySnbIdNotFoundError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for snbId=SNB9999\"\n    }\n  ]\n}"
                 )
             )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateAdminUserBySnbIdInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update admin user\",\n      \"description\": \"Database unavailable while updating admin user snbId=SNB1001\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
-    AdminUserResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
+    AdminUserResponse update(@NotBlank(message = "{validation.adminUser.snbId.required}") String snbId,
                             @Valid AdminUserUpdateRequest request);
 
     @Operation(
         operationId = "softDeleteAdminUser",
         summary = "Soft delete admin user",
-        description = "Marks an admin user as inactive without deleting the record physically."
+        description = "Marks an admin user as inactive by organization employee identifier (snbId)."
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Admin user identifier", required = true, example = "1")
+        @Parameter(name = "snbId", description = "Organization employee identifier", required = true, example = "SNB1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -195,8 +237,14 @@ public interface AdminUserApi {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Invalid id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            description = "Invalid snbId supplied",
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "SoftDeleteAdminUserBySnbIdValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_SNB_ID\",\n      \"message\": \"snbId is invalid\",\n      \"description\": \"Path variable 'snbId' must be non-empty\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -204,16 +252,22 @@ public interface AdminUserApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "AdminUserNotFound",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
+                    name = "SoftDeleteAdminUserBySnbIdNotFoundError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for snbId=SNB9999\"\n    }\n  ]\n}"
                 )
             )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "SoftDeleteAdminUserBySnbIdInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete admin user\",\n      \"description\": \"Database unavailable while soft deleting admin user snbId=SNB1001\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
-    AdminUserResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
+    AdminUserResponse softDelete(@NotBlank(message = "{validation.adminUser.snbId.required}") String snbId);
 }

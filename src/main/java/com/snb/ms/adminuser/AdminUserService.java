@@ -1,5 +1,6 @@
 package com.snb.ms.adminuser;
 
+import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.Users;
@@ -31,16 +32,23 @@ public class AdminUserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<AdminUserResponse> findById(Long id) {
-        log.debug("Fetching admin user by id={}", id);
-        Optional<AdminUserResponse> result = adminUserRepository.findByIdWithUser(id).map(adminUserMapper::toDto);
-        log.info("Admin user lookup id={} found={}", id, result.isPresent());
+    public Optional<AdminUserResponse> findBySnbId(String snbId) {
+        log.debug("Fetching admin user by snbId={}", snbId);
+        Optional<AdminUserResponse> result = adminUserRepository.findBySnbIdWithUser(snbId).map(adminUserMapper::toDto);
+        log.info("Admin user lookup snbId={} found={}", snbId, result.isPresent());
         return result;
     }
 
     @Transactional
     public AdminUserResponse create(AdminUserCreateRequest request) {
-        log.debug("Creating admin user with extensionNumber={}", request.getExtensionNumber());
+        log.debug("Creating admin user with snbId={} extensionNumber={}", request.getSnbId(), request.getExtensionNumber());
+        if (adminUserRepository.existsBySnbIdAndDeletedFlag(request.getSnbId(), "N")) {
+            throw new BusinessValidationException(
+                "error.adminUser.snbId.alreadyExists",
+                new Object[]{request.getSnbId()},
+                "Admin user with snbId already exists: " + request.getSnbId()
+            );
+        }
         UsersRequest userRequest = new UsersRequest();
         userRequest.setEmailAddress(request.getEmailAddress());
         userRequest.setMobileNumber(request.getMobileNumber());
@@ -62,11 +70,11 @@ public class AdminUserService {
     }
 
     @Transactional
-    public Optional<AdminUserResponse> update(Long id, AdminUserUpdateRequest request) {
-        log.debug("Updating admin user id={}", id);
+    public Optional<AdminUserResponse> updateBySnbId(String snbId, AdminUserUpdateRequest request) {
+        log.debug("Updating admin user snbId={}", snbId);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<AdminUserResponse> updated = adminUserRepository.findByIdWithUser(id).map(existing -> {
+        Optional<AdminUserResponse> updated = adminUserRepository.findBySnbIdWithUser(snbId).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -81,16 +89,16 @@ public class AdminUserService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
-        log.info("Admin user update id={} success={}", id, updated.isPresent());
+        log.info("Admin user update snbId={} success={}", snbId, updated.isPresent());
         return updated;
     }
 
     @Transactional
-    public Optional<AdminUserResponse> softDelete(Long id) {
-        log.debug("Soft-deleting admin user id={}", id);
+    public Optional<AdminUserResponse> softDeleteBySnbId(String snbId) {
+        log.debug("Soft-deleting admin user snbId={}", snbId);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<AdminUserResponse> deleted = adminUserRepository.findByIdWithUser(id).map(existing -> {
+        Optional<AdminUserResponse> deleted = adminUserRepository.findBySnbIdWithUser(snbId).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
@@ -98,7 +106,7 @@ public class AdminUserService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
-        log.info("Admin user soft-delete id={} success={}", id, deleted.isPresent());
+        log.info("Admin user soft-delete snbId={} success={}", snbId, deleted.isPresent());
         return deleted;
     }
 }

@@ -28,12 +28,12 @@ public class AdminUserController implements AdminUserApi {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public AdminUserResponse findById(@PathVariable Long id) {
-        log.debug("Received request to fetch admin user by id={}", id);
-        AdminUserResponse result = adminUserService.findById(id)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
-        log.info("Admin user found for id={}", id);
+    @GetMapping("/{snbId}")
+    public AdminUserResponse findById(@PathVariable String snbId) {
+        log.debug("Received request to fetch admin user by snbId={}", snbId);
+        AdminUserResponse result = adminUserService.findBySnbId(snbId)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
+        log.info("Admin user found for snbId={}", snbId);
         return result;
     }
 
@@ -47,23 +47,23 @@ public class AdminUserController implements AdminUserApi {
     }
 
     @Override
-    @PutMapping("/{id}")
-    public AdminUserResponse update(@PathVariable Long id,
+    @PutMapping("/{snbId}")
+    public AdminUserResponse update(@PathVariable String snbId,
                                     @RequestBody AdminUserUpdateRequest request) {
-        log.debug("Received request to update admin user id={}", id);
-        AdminUserResponse updated = adminUserService.update(id, request)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
-        log.info("Updated admin user id={}", id);
+        log.debug("Received request to update admin user snbId={}", snbId);
+        AdminUserResponse updated = adminUserService.updateBySnbId(snbId, request)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
+        log.info("Updated admin user snbId={}", snbId);
         return updated;
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public AdminUserResponse softDelete(@PathVariable Long id) {
-        log.debug("Received request to soft-delete admin user id={}", id);
-        AdminUserResponse deleted = adminUserService.softDelete(id)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserById(id));
-        log.info("Soft-deleted admin user id={}", id);
+    @DeleteMapping("/{snbId}")
+    public AdminUserResponse softDelete(@PathVariable String snbId) {
+        log.debug("Received request to soft-delete admin user snbId={}", snbId);
+        AdminUserResponse deleted = adminUserService.softDeleteBySnbId(snbId)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
+        log.info("Soft-deleted admin user snbId={}", snbId);
         return deleted;
     }
 }

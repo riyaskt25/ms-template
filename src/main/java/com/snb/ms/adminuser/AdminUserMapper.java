@@ -27,6 +27,7 @@ public interface AdminUserMapper {
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "adminUserId", ignore = true)
+    @Mapping(target = "snbId", ignore = true)
     @Mapping(target = "adminType", ignore = true)
     @Mapping(target = "adminStatus", ignore = true)
     @Mapping(target = "createdBy", ignore = true)

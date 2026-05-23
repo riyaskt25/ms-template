@@ -24,6 +24,9 @@ public class AdminUserResponse {
     @Schema(description = "Extension number", example = "EXT-1001")
     private String extensionNumber;
 
+    @Schema(description = "Organization employee identifier", example = "SNB1001")
+    private String snbId;
+
     @Schema(description = "Admin role type", example = "SUPERVISOR")
     private String adminType;
 

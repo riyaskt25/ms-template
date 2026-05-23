@@ -36,7 +36,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "ListSalesmenInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch salesmen\",\n      \"description\": \"Database unavailable while listing salesmen\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     List<SalesmanResponse> findAll();
@@ -59,7 +65,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetSalesmanByIdValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -67,7 +79,7 @@ public interface SalesmanApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "SalesmanNotFound",
+                    name = "GetSalesmanByIdNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
                 )
             )
@@ -75,7 +87,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetSalesmanInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch salesman\",\n      \"description\": \"Database unavailable while loading salesman id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     SalesmanResponse findById(@Positive(message = "{validation.common.id.positive}") Long id);
@@ -92,7 +110,7 @@ public interface SalesmanApi {
         content = @Content(
             schema = @Schema(implementation = SalesmanCreateRequest.class),
             examples = @ExampleObject(
-                name = "CreateSalesman",
+                name = "CreateSalesmanRequestExample",
                 value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"I\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\",\n  \"companyId\": 1,\n  \"emailAddress\": \"ahamed.khan@example.com\",\n  \"mobileNumber\": \"+971555010201\"\n}"
             )
         )
@@ -106,17 +124,35 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "400",
             description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateSalesmanValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"FIRSTNAME_REQUIRED\",\n      \"message\": \"firstName is required\",\n      \"description\": \"Field 'firstName' must not be blank\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
             description = "Company reference not found",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateSalesmanCompanyNotFoundError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=999\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateSalesmanInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create salesman\",\n      \"description\": \"Database transaction failed while creating salesman ACC-9911\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     ResponseEntity<SalesmanResponse> create(@Valid SalesmanCreateRequest request);
@@ -136,7 +172,7 @@ public interface SalesmanApi {
         content = @Content(
             schema = @Schema(implementation = SalesmanUpdateRequest.class),
             examples = @ExampleObject(
-                name = "UpdateSalesman",
+                name = "UpdateSalesmanRequestExample",
                 value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"Ibrahim\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\"\n}"
             )
         )
@@ -150,7 +186,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "400",
             description = "Validation failed or invalid id",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateSalesmanValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"IDNUMBER_REQUIRED\",\n      \"message\": \"idNumber is required\",\n      \"description\": \"Field 'idNumber' must not be blank\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -158,7 +200,7 @@ public interface SalesmanApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "SalesmanNotFound",
+                    name = "UpdateSalesmanNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
                 )
             )
@@ -166,7 +208,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateSalesmanInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update salesman\",\n      \"description\": \"Database unavailable while updating salesman id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     SalesmanResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
@@ -190,7 +238,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "SoftDeleteSalesmanValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -198,7 +252,7 @@ public interface SalesmanApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "SalesmanNotFound",
+                    name = "SoftDeleteSalesmanNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
                 )
             )
@@ -206,7 +260,13 @@ public interface SalesmanApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "DeleteSalesmanInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete salesman\",\n      \"description\": \"Database unavailable while soft deleting salesman id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     SalesmanResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);

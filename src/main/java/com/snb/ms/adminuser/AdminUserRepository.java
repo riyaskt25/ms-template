@@ -16,6 +16,11 @@ public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
     @Query("SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.adminUserId = :id AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
     Optional<AdminUser> findByIdWithUser(@Param("id") Long id);
 
+    @Query("SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.snbId = :snbId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
+    Optional<AdminUser> findBySnbIdWithUser(@Param("snbId") String snbId);
+
     @Query("SELECT a FROM AdminUser a WHERE a.user.userId = :userId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
     Optional<AdminUser> findActiveByUserId(@Param("userId") Long userId);
+
+    boolean existsBySnbIdAndDeletedFlag(String snbId, String deletedFlag);
 }

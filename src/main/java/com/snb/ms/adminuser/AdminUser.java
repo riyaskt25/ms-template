@@ -38,6 +38,9 @@ public class AdminUser extends BaseEntity {
     @Column(name = "EXTENSION_NUMBER", length = 20)
     private String extensionNumber;
 
+    @Column(name = "SNB_ID", nullable = false, unique = true, length = 50)
+    private String snbId;
+
     @Column(name = "ADMIN_TYPE", length = 30)
     private String adminType;
 

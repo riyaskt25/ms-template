@@ -28,7 +28,7 @@ public interface RolePrivilegeApi {
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = RolePrivilegeResponse.class)))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "ListRolePrivilegesInternalError",
+                examples = @ExampleObject(name = "GetPrivilegesByRoleCodeInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch role privileges\",\n      \"description\": \"Database unavailable while loading privileges for roleCode=SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     List<RolePrivilegeResponse> findByRoleCode(String roleCode);
@@ -38,7 +38,7 @@ public interface RolePrivilegeApi {
     @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @RequestBody(required = true, description = "Grant payload",
         content = @Content(schema = @Schema(implementation = RolePrivilegeRequest.class),
-            examples = @ExampleObject(name = "GrantPrivilege",
+            examples = @ExampleObject(name = "GrantPrivilegeToRoleRequestExample",
                 value = "{\n  \"privilegeCode\": \"USER_VIEW\"\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Privilege granted successfully",
@@ -49,7 +49,7 @@ public interface RolePrivilegeApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLEPRIVILEGE_ALREADY_EXISTS\",\n      \"message\": \"Role already has this privilege granted\",\n      \"description\": \"Grant already exists for roleCode=SUPER_ADMIN and privilegeCode=USER_VIEW\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "Role or privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleOrPrivilegeNotFound",
+                examples = @ExampleObject(name = "GrantPrivilegeToRoleNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID_ROLE\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
@@ -63,7 +63,7 @@ public interface RolePrivilegeApi {
     @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @RequestBody(required = true, description = "Bulk grant payload",
         content = @Content(schema = @Schema(implementation = RolePrivilegeBulkRequest.class),
-            examples = @ExampleObject(name = "GrantPrivilegesBulk",
+            examples = @ExampleObject(name = "GrantPrivilegesToRoleBulkRequestExample",
                 value = "{\n  \"privilegeCodes\": [\"USER_VIEW\", \"USER_EDIT\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Privileges granted successfully",
@@ -74,7 +74,7 @@ public interface RolePrivilegeApi {
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"PRIVILEGECODES_REQUIRED\",\n      \"message\": \"at least one privilegeCode is required\",\n      \"description\": \"Field 'privilegeCodes' must contain at least one value\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "Role or privilege not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "PrivilegeNotFound",
+                examples = @ExampleObject(name = "GrantPrivilegesToRoleBulkNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Privilege not found for code=INVALID_PRIVILEGE\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
@@ -94,7 +94,7 @@ public interface RolePrivilegeApi {
             content = @Content(schema = @Schema(implementation = RolePrivilegeResponse.class))),
         @ApiResponse(responseCode = "404", description = "Grant not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "NotFound",
+                examples = @ExampleObject(name = "RevokeRolePrivilegeNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role-privilege grant not found for roleCode=SUPER_ADMIN and privilegeCode=USER_VIEW\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),

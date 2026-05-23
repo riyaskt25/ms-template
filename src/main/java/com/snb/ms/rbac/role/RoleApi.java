@@ -26,7 +26,9 @@ public interface RoleApi {
         @ApiResponse(responseCode = "200", description = "Roles fetched successfully",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = RoleResponse.class)))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "GetAllRolesInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch roles\",\n      \"description\": \"Database unavailable while listing roles\"\n    }\n  ]\n}")))
     })
     List<RoleResponse> findAll();
 
@@ -40,11 +42,11 @@ public interface RoleApi {
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleNotFound",
+                examples = @ExampleObject(name = "GetRoleByCodeNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleFetchInternalError",
+                examples = @ExampleObject(name = "GetRoleByCodeInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch role\",\n      \"description\": \"Database unavailable while loading role for code=SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     RoleResponse findByCode(String roleCode);
@@ -53,15 +55,19 @@ public interface RoleApi {
     @CommonApiParameters
     @RequestBody(required = true, description = "Role payload to create",
         content = @Content(schema = @Schema(implementation = RoleCreateRequest.class),
-            examples = @ExampleObject(name = "CreateRole",
+            examples = @ExampleObject(name = "CreateRoleRequestExample",
                 value = "{\n  \"roleCode\": \"SUPER_ADMIN\",\n  \"roleName\": \"Super Admin\",\n  \"description\": \"Full platform access\"\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Role created successfully",
             content = @Content(schema = @Schema(implementation = RoleResponse.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreateRoleValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLECODE_REQUIRED\",\n      \"message\": \"roleCode is required\",\n      \"description\": \"Field 'roleCode' must not be blank\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreateRoleInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create role\",\n      \"description\": \"Database transaction failed while creating role SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     ResponseEntity<RoleResponse> create(@Valid RoleCreateRequest request);
 
@@ -69,15 +75,19 @@ public interface RoleApi {
     @CommonApiParameters
     @RequestBody(required = true, description = "Bulk role payload to create",
         content = @Content(schema = @Schema(implementation = RoleBulkCreateRequest.class),
-            examples = @ExampleObject(name = "CreateRolesBulk",
+            examples = @ExampleObject(name = "CreateRolesBulkRequestExample",
                 value = "{\n  \"roles\": [\n    {\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"description\": \"Full platform access\"\n    },\n    {\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"description\": \"Read-only audit access\"\n    }\n  ]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Roles created successfully",
             content = @Content(schema = @Schema(implementation = RoleBulkResponse.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreateRolesBulkValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLES_REQUIRED\",\n      \"message\": \"at least one role is required\",\n      \"description\": \"Field 'roles' must contain at least one value\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "CreateRolesBulkInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create roles in bulk\",\n      \"description\": \"Database unavailable while creating bulk roles\"\n    }\n  ]\n}")))
     })
     ResponseEntity<RoleBulkResponse> createBulk(@Valid RoleBulkCreateRequest request);
 
@@ -86,19 +96,23 @@ public interface RoleApi {
     @Parameters({@Parameter(name = "roleCode", description = "Role code", required = true, example = "SUPER_ADMIN")})
     @RequestBody(required = true, description = "Role payload to update",
         content = @Content(schema = @Schema(implementation = RoleUpdateRequest.class),
-            examples = @ExampleObject(name = "UpdateRole",
+            examples = @ExampleObject(name = "UpdateRoleRequestExample",
                 value = "{\n  \"roleName\": \"Super Administrator\",\n  \"description\": \"Updated description\"\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Role updated successfully",
             content = @Content(schema = @Schema(implementation = RoleResponse.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))),
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "UpdateRoleValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLENAME_REQUIRED\",\n      \"message\": \"roleName is required\",\n      \"description\": \"Field 'roleName' must not be blank\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleNotFound",
+                examples = @ExampleObject(name = "UpdateRoleNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "UpdateRoleInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update role\",\n      \"description\": \"Database unavailable while updating role SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     RoleResponse update(String roleCode, @Valid RoleUpdateRequest request);
 
@@ -110,10 +124,12 @@ public interface RoleApi {
             content = @Content(schema = @Schema(implementation = RoleResponse.class))),
         @ApiResponse(responseCode = "404", description = "Role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
-                examples = @ExampleObject(name = "RoleNotFound",
+                examples = @ExampleObject(name = "DeleteRoleNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Role not found for code=INVALID\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class)))
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "DeleteRoleInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete role\",\n      \"description\": \"Database unavailable while soft deleting role SUPER_ADMIN\"\n    }\n  ]\n}")))
     })
     RoleResponse softDelete(String roleCode);
 }

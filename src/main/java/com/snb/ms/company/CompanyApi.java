@@ -47,7 +47,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "ListCompaniesInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch companies\",\n      \"description\": \"Database unavailable while listing companies\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyPageResponse findAll(@Valid @ParameterObject CompanyOffsetListQuery query);
@@ -79,12 +85,24 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid cursor token or parameters",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetAllCompaniesCursorValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_CURSOR\",\n      \"message\": \"Invalid cursor token\",\n      \"description\": \"Cursor token is malformed or expired\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "ListCompaniesLazyInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch companies\",\n      \"description\": \"Database unavailable while reading lazy company page\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyPageResponse findAllLazy(@Valid @ParameterObject CompanyListQuery query);
@@ -108,7 +126,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid company id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "GetCompanyByIdValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -116,7 +140,7 @@ public interface CompanyApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "CompanyNotFound",
+                    name = "GetCompanyByIdNotFoundError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=999\"\n    }\n  ]\n}"
                 )
             )
@@ -127,8 +151,8 @@ public interface CompanyApi {
             content = @Content(
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
-                    name = "InternalServerError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Unexpected internal server error\",\n      \"description\": null\n    }\n  ]\n}"
+                    name = "GetCompanyInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch company\",\n      \"description\": \"Database unavailable while loading company id=1\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -148,7 +172,7 @@ public interface CompanyApi {
         content = @Content(
             schema = @Schema(implementation = CompanyCreateRequest.class),
             examples = @ExampleObject(
-                name = "CreateCompany",
+                name = "CreateCompanyRequestExample",
                 value = "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company@example.com\",\n  \"mobileNumber\": \"+971555010101\"\n}"
             )
         )
@@ -162,17 +186,35 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Validation failed",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateCompanyValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"EMAILADDRESS_INVALID\",\n      \"message\": \"emailAddress must be a valid email\",\n      \"description\": \"Rejected value: company.invalid\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "409",
             description = "Duplicate registration number or conflicting data",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateCompanyConflictError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"BUSINESS_VALIDATION\",\n      \"message\": \"Business validation failed\",\n      \"description\": \"Registration number already exists\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "CreateCompanyInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to create company\",\n      \"description\": \"Database transaction failed while creating registrationNumber REG-2026-0001\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     ResponseEntity<CompanyWriteResponse> create(@Valid CompanyCreateRequest request);
@@ -192,7 +234,7 @@ public interface CompanyApi {
         content = @Content(
             schema = @Schema(implementation = CompanyUpdateRequest.class),
             examples = @ExampleObject(
-                name = "UpdateCompany",
+                name = "UpdateCompanyRequestExample",
                 value = "{\n  \"registrationNumber\": \"REG-2026-0001\",\n  \"emailAddress\": \"company.updated@example.com\",\n  \"mobileNumber\": \"+971555010102\"\n}"
             )
         )
@@ -206,7 +248,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Validation failed or invalid id",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateCompanyValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"MOBILENUMBER_REQUIRED\",\n      \"message\": \"mobileNumber is required\",\n      \"description\": \"Field 'mobileNumber' must not be blank\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -216,7 +264,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "UpdateCompanyInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company\",\n      \"description\": \"Database unavailable while updating company id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyWriteResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
@@ -240,7 +294,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid company id supplied",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "SoftDeleteCompanyValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"INVALID_PATH_PARAM\",\n      \"message\": \"id must be greater than 0\",\n      \"description\": \"Path variable 'id' must be positive\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -250,7 +310,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "DeleteCompanyInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to delete company\",\n      \"description\": \"Database unavailable while soft deleting company id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyWriteResponse softDelete(@Positive(message = "{validation.common.id.positive}") Long id);
@@ -270,7 +336,7 @@ public interface CompanyApi {
         content = @Content(
             schema = @Schema(implementation = CompanyStatusDecisionRequest.class),
             examples = @ExampleObject(
-                name = "DecideCompanyStatus",
+                name = "DecideCompanyStatusRequestExample",
                 value = "{\n  \"status\": \"ACTIVE\"\n}"
             )
         )
@@ -284,7 +350,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid status value or transition",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "DecideCompanyStatusValidationError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"BUSINESS_VALIDATION\",\n      \"message\": \"Business validation failed\",\n      \"description\": \"Status transition from REJECTED to ACTIVE is not allowed\"\n    }\n  ]\n}"
+                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
@@ -294,7 +366,13 @@ public interface CompanyApi {
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class))
+            content = @Content(
+                schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(
+                    name = "DecideCompanyStatusInternalError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company status\",\n      \"description\": \"Database unavailable while deciding status for company id=1\"\n    }\n  ]\n}"
+                )
+            )
         )
     })
     CompanyWriteResponse decideStatus(@Positive(message = "{validation.common.id.positive}") Long id,
