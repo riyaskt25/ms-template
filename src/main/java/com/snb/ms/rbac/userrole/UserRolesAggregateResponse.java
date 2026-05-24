@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "User details with associated role details")
 public class UserRolesAggregateResponse {
 
-    @Schema(description = "User identifier", example = "10")
+    @Schema(description = "User identifier", example = "1001")
     private Long userId;
 
     @Schema(description = "User email address", example = "admin1@snb.com")

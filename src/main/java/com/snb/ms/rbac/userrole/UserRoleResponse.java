@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "User-role assignment response payload")
 public class UserRoleResponse {
 
-    @Schema(description = "Assignment record identifier", example = "1")
+    @Schema(description = "Assignment record identifier", example = "1001")
     private Long id;
 
-    @Schema(description = "User identifier", example = "10")
+    @Schema(description = "User identifier", example = "1001")
     private Long userId;
 
     @Schema(description = "User email address", example = "admin1@snb.com")
@@ -30,7 +30,7 @@ public class UserRoleResponse {
     @Schema(description = "User account status", example = "ACTIVE")
     private String userAccountStatus;
 
-    @Schema(description = "Role identifier", example = "1")
+    @Schema(description = "Role identifier", example = "1001")
     private Long roleId;
 
     @Schema(description = "Role code", example = "SUPER_ADMIN")
@@ -42,13 +42,13 @@ public class UserRoleResponse {
     @Schema(description = "Role description", example = "Full platform access")
     private String roleDescription;
 
-    @Schema(description = "Identifier of actor who created the record", example = "1")
+    @Schema(description = "Identifier of actor who created the record", example = "1001")
     private Long createdBy;
 
     @Schema(description = "Record creation timestamp", example = "2026-05-19T10:00:00")
     private LocalDateTime createdAt;
 
-    @Schema(description = "Identifier of actor who last updated the record", example = "1")
+    @Schema(description = "Identifier of actor who last updated the record", example = "1002")
     private Long updatedBy;
 
     @Schema(description = "Last update timestamp", example = "2026-05-19T11:00:00")

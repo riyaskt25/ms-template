@@ -34,6 +34,11 @@ public class AdminUserUpdateRequest {
     @Schema(description = "Extension number", example = "EXT-1002", maxLength = 20, requiredMode = Schema.RequiredMode.REQUIRED)
     private String extensionNumber;
 
+    @NotBlank(message = "{validation.adminUser.snbId.required}")
+    @Size(max = 50, message = "{validation.adminUser.snbId.size}")
+    @Schema(description = "Organization employee identifier", example = "SNB1002", maxLength = 50, requiredMode = Schema.RequiredMode.REQUIRED)
+    private String snbId;
+
     @NotBlank(message = "{validation.adminUser.emailAddress.required}")
     @Email(message = "{validation.adminUser.emailAddress.email}")
     @Size(max = 150, message = "{validation.adminUser.emailAddress.size}")

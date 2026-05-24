@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(description = "Admin user response payload")
 public class AdminUserResponse {
-    @Schema(description = "Unique admin user identifier", example = "1")
+    @Schema(description = "Unique admin user identifier", example = "1001")
     private Long adminUserId;
 
     @Schema(description = "First name", example = "Sara")

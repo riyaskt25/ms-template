@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(description = "Salesman response payload")
 public class SalesmanResponse {
-    @Schema(description = "Unique salesman identifier", example = "1")
+    @Schema(description = "Unique salesman identifier", example = "1001")
     private Long salesmanId;
 
     @Schema(description = "First name", example = "Ahamed")

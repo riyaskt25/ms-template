@@ -75,6 +75,13 @@ public class AdminUserService {
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
         Optional<AdminUserResponse> updated = adminUserRepository.findByUserIdWithUser(userId).map(existing -> {
+            if (adminUserRepository.existsBySnbIdAndDeletedFlagAndAdminUserIdNot(request.getSnbId(), "N", existing.getAdminUserId())) {
+                throw new BusinessValidationException(
+                    "error.adminUser.snbId.alreadyExists",
+                    new Object[]{request.getSnbId()},
+                    "Admin user with snbId already exists: " + request.getSnbId()
+                );
+            }
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {

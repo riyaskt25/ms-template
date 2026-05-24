@@ -54,7 +54,7 @@ public interface AdminUserApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "userId", description = "User identifier", required = true, example = "10")
+        @Parameter(name = "userId", description = "User identifier", required = true, example = "1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -80,7 +80,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetAdminUserByUserIdNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -91,7 +91,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetAdminUserByUserIdInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch admin user\",\n      \"description\": \"Database unavailable while loading admin user userId=10\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch admin user\",\n      \"description\": \"Database unavailable while loading admin user userId=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -139,7 +139,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "CreateAdminUserNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -164,7 +164,7 @@ public interface AdminUserApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "userId", description = "User identifier", required = true, example = "10")
+        @Parameter(name = "userId", description = "User identifier", required = true, example = "1001")
     })
     @RequestBody(
         required = true,
@@ -173,7 +173,7 @@ public interface AdminUserApi {
             schema = @Schema(implementation = AdminUserUpdateRequest.class),
             examples = @ExampleObject(
                 name = "UpdateAdminUserRequestExample",
-                value = "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"Mariam\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1002\",\n  \"emailAddress\": \"sara.naseer@example.com\",\n  \"mobileNumber\": \"+971555010302\"\n}"
+                value = "{\n  \"firstName\": \"Sara\",\n  \"middleName\": \"Mariam\",\n  \"lastName\": \"Naseer\",\n  \"extensionNumber\": \"EXT-1002\",\n  \"snbId\": \"SNB1002\",\n  \"emailAddress\": \"sara.naseer@example.com\",\n  \"mobileNumber\": \"+971555010302\"\n}"
             )
         )
     )
@@ -201,7 +201,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "UpdateAdminUserByUserIdNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -212,7 +212,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "UpdateAdminUserByUserIdInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update admin user\",\n      \"description\": \"Database unavailable while updating admin user userId=10\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update admin user\",\n      \"description\": \"Database unavailable while updating admin user userId=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -227,7 +227,7 @@ public interface AdminUserApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "userId", description = "User identifier", required = true, example = "10")
+        @Parameter(name = "userId", description = "User identifier", required = true, example = "1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -241,7 +241,7 @@ public interface AdminUserApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "SoftDeleteAdminUserByUserIdNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Admin user not found for userId=1999\"\n    }\n  ]\n}"
                 )
             )
         )

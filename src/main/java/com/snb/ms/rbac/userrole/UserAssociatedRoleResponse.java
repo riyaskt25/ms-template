@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Associated role details")
 public class UserAssociatedRoleResponse {
 
-    @Schema(description = "Role identifier", example = "1")
+    @Schema(description = "Role identifier", example = "1001")
     private Long roleId;
 
     @Schema(description = "Role code", example = "SUPER_ADMIN")

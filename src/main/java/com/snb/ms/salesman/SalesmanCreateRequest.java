@@ -42,7 +42,7 @@ public class SalesmanCreateRequest {
 
     @NotNull(message = "{validation.salesman.companyId.required}")
     @Positive(message = "{validation.salesman.companyId.positive}")
-    @Schema(description = "Linked company identifier", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Linked company identifier", example = "1001", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long companyId;
 
     @NotBlank(message = "{validation.salesman.emailAddress.required}")

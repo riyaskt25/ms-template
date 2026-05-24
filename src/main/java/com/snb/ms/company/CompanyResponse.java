@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(description = "Company response payload")
 public class CompanyResponse {
-    @Schema(description = "Unique company identifier", example = "1")
+    @Schema(description = "Unique company identifier", example = "1001")
     private Long companyId;
 
     @Schema(description = "Primary email address", example = "company@example.com")

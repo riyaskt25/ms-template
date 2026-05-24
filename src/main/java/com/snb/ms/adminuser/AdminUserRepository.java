@@ -23,4 +23,6 @@ public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
     Optional<AdminUser> findActiveByUserId(@Param("userId") Long userId);
 
     boolean existsBySnbIdAndDeletedFlag(String snbId, String deletedFlag);
+
+    boolean existsBySnbIdAndDeletedFlagAndAdminUserIdNot(String snbId, String deletedFlag, Long adminUserId);
 }

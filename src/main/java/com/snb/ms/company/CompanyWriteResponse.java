@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "Company write-operation response payload")
 public class CompanyWriteResponse {
-    @Schema(description = "Unique company identifier", example = "1")
+    @Schema(description = "Unique company identifier", example = "1001")
     private Long companyId;
 
     @Schema(description = "Primary email address", example = "company@example.com")

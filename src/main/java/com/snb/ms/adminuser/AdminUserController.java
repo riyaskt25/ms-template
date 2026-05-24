@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin-users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
 @Slf4j

@@ -246,7 +246,7 @@ function Get-BodyTemplateRaw {
     "idNumber": "ID-001"
 }
 "@
-                "POST /api/admin-users" = @"
+                "POST /api/users" = @"
 {
     "firstName": "Admin",
     "middleName": "M",
@@ -256,7 +256,7 @@ function Get-BodyTemplateRaw {
     "mobileNumber": "+971555030303"
 }
 "@
-                "PUT /api/admin-users/{id}" = @"
+                "PUT /api/users/{userId}" = @"
 {
     "firstName": "Admin",
     "middleName": "M",

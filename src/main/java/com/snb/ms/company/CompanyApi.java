@@ -114,7 +114,7 @@ public interface CompanyApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Company identifier", required = true, example = "1"),
+        @Parameter(name = "id", description = "Company identifier", required = true, example = "1001"),
         @Parameter(name = "includeSalesmen", description = "Set true to include associated salesmen for this company. Defaults to false.", example = "false")
     })
     @ApiResponses({
@@ -141,7 +141,7 @@ public interface CompanyApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetCompanyByIdNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -152,7 +152,7 @@ public interface CompanyApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetCompanyInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch company\",\n      \"description\": \"Database unavailable while loading company id=1\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch company\",\n      \"description\": \"Database unavailable while loading company id=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -226,7 +226,7 @@ public interface CompanyApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Company identifier", required = true, example = "1001")
     })
     @RequestBody(
         required = true,
@@ -268,7 +268,7 @@ public interface CompanyApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "UpdateCompanyInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company\",\n      \"description\": \"Database unavailable while updating company id=1\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company\",\n      \"description\": \"Database unavailable while updating company id=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -283,7 +283,7 @@ public interface CompanyApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Company identifier", required = true, example = "1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -305,7 +305,7 @@ public interface CompanyApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Company identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Company identifier", required = true, example = "1001")
     })
     @RequestBody(
         required = true,
@@ -347,7 +347,7 @@ public interface CompanyApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "DecideCompanyStatusInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company status\",\n      \"description\": \"Database unavailable while deciding status for company id=1\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update company status\",\n      \"description\": \"Database unavailable while deciding status for company id=1001\"\n    }\n  ]\n}"
                 )
             )
         )

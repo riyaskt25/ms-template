@@ -54,7 +54,7 @@ public interface SalesmanApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -80,7 +80,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetSalesmanByIdNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -91,7 +91,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "GetSalesmanInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch salesman\",\n      \"description\": \"Database unavailable while loading salesman id=1\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch salesman\",\n      \"description\": \"Database unavailable while loading salesman id=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -111,7 +111,7 @@ public interface SalesmanApi {
             schema = @Schema(implementation = SalesmanCreateRequest.class),
             examples = @ExampleObject(
                 name = "CreateSalesmanRequestExample",
-                value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"I\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\",\n  \"companyId\": 1,\n  \"emailAddress\": \"ahamed.khan@example.com\",\n  \"mobileNumber\": \"+971555010201\"\n}"
+                value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"I\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\",\n  \"companyId\": 1001,\n  \"emailAddress\": \"ahamed.khan@example.com\",\n  \"mobileNumber\": \"+971555010201\"\n}"
             )
         )
     )
@@ -139,7 +139,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "CreateSalesmanCompanyNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Company not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -164,7 +164,7 @@ public interface SalesmanApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1001")
     })
     @RequestBody(
         required = true,
@@ -201,7 +201,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "UpdateSalesmanNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         ),
@@ -212,7 +212,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "UpdateSalesmanInternalError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update salesman\",\n      \"description\": \"Database unavailable while updating salesman id=1\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to update salesman\",\n      \"description\": \"Database unavailable while updating salesman id=1001\"\n    }\n  ]\n}"
                 )
             )
         )
@@ -227,7 +227,7 @@ public interface SalesmanApi {
     )
     @CommonApiParameters
     @Parameters({
-        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1")
+        @Parameter(name = "id", description = "Salesman identifier", required = true, example = "1001")
     })
     @ApiResponses({
         @ApiResponse(
@@ -241,7 +241,7 @@ public interface SalesmanApi {
                 schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(
                     name = "SoftDeleteSalesmanNotFoundError",
-                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=999\"\n    }\n  ]\n}"
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"NOT_FOUND\",\n      \"code\": \"RESOURCE_NOT_FOUND\",\n      \"message\": \"Resource not found\",\n      \"description\": \"Salesman not found for id=1999\"\n    }\n  ]\n}"
                 )
             )
         )
