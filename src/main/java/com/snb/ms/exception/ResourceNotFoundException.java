@@ -58,6 +58,14 @@ public class ResourceNotFoundException extends RuntimeException {
         );
     }
 
+    public static ResourceNotFoundException adminUserByUserId(Object userId) {
+        return new ResourceNotFoundException(
+            "error.resource.adminUser.not.found.by.userId",
+            new Object[]{userId},
+            "Admin user not found for userId=" + userId
+        );
+    }
+
     public static ResourceNotFoundException postById(Object id) {
         return new ResourceNotFoundException(
             "error.resource.post.not.found.by.id",

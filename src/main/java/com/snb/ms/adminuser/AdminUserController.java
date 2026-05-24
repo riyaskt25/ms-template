@@ -2,6 +2,7 @@ package com.snb.ms.adminuser;
 
 import com.snb.ms.exception.ResourceNotFoundException;
 import java.util.List;
+import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,12 +29,12 @@ public class AdminUserController implements AdminUserApi {
     }
 
     @Override
-    @GetMapping("/{snbId}")
-    public AdminUserResponse findById(@PathVariable String snbId) {
-        log.debug("Received request to fetch admin user by snbId={}", snbId);
-        AdminUserResponse result = adminUserService.findBySnbId(snbId)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
-        log.info("Admin user found for snbId={}", snbId);
+    @GetMapping("/{userId}")
+    public AdminUserResponse findById(@Positive(message = "{validation.common.id.positive}") @PathVariable Long userId) {
+        log.debug("Received request to fetch admin user by userId={}", userId);
+        AdminUserResponse result = adminUserService.findByUserId(userId)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserByUserId(userId));
+        log.info("Admin user found for userId={}", userId);
         return result;
     }
 
@@ -47,23 +48,23 @@ public class AdminUserController implements AdminUserApi {
     }
 
     @Override
-    @PutMapping("/{snbId}")
-    public AdminUserResponse update(@PathVariable String snbId,
+    @PutMapping("/{userId}")
+    public AdminUserResponse update(@Positive(message = "{validation.common.id.positive}") @PathVariable Long userId,
                                     @RequestBody AdminUserUpdateRequest request) {
-        log.debug("Received request to update admin user snbId={}", snbId);
-        AdminUserResponse updated = adminUserService.updateBySnbId(snbId, request)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
-        log.info("Updated admin user snbId={}", snbId);
+        log.debug("Received request to update admin user userId={}", userId);
+        AdminUserResponse updated = adminUserService.updateByUserId(userId, request)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserByUserId(userId));
+        log.info("Updated admin user userId={}", userId);
         return updated;
     }
 
     @Override
-    @DeleteMapping("/{snbId}")
-    public ResponseEntity<Void> softDelete(@PathVariable String snbId) {
-        log.debug("Received request to soft-delete admin user snbId={}", snbId);
-        adminUserService.softDeleteBySnbId(snbId)
-            .orElseThrow(() -> ResourceNotFoundException.adminUserBySnbId(snbId));
-        log.info("Soft-deleted admin user snbId={}", snbId);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> softDelete(@Positive(message = "{validation.common.id.positive}") @PathVariable Long userId) {
+        log.debug("Received request to soft-delete admin user userId={}", userId);
+        adminUserService.softDeleteByUserId(userId)
+            .orElseThrow(() -> ResourceNotFoundException.adminUserByUserId(userId));
+        log.info("Soft-deleted admin user userId={}", userId);
         return ResponseEntity.noContent().build();
     }
 }

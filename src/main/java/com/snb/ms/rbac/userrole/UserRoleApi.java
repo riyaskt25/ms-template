@@ -2,7 +2,6 @@ package com.snb.ms.rbac.userrole;
 
 import com.snb.ms.shared.api.CommonApiParameters;
 import com.snb.ms.shared.BaseResponseDTO;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "User Roles", description = "RBAC user-role assignment operations")
@@ -26,13 +24,19 @@ public interface UserRoleApi {
     @Parameters({@Parameter(name = "userId", description = "User identifier", required = true, example = "10")})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User roles fetched successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
+            content = @Content(
+                schema = @Schema(implementation = UserRolesAggregateResponse.class),
+                examples = @ExampleObject(
+                    name = "GetUserRolesSuccess",
+                    value = "{\n  \"userId\": 10,\n  \"userEmailAddress\": \"admin1@snb.com\",\n  \"userMobileNumber\": \"971500000001\",\n  \"userType\": \"ADMIN\",\n  \"userAccountStatus\": \"ACTIVE\",\n  \"roles\": [\n    {\n      \"roleId\": 1,\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"roleDescription\": \"Full platform access\"\n    },\n    {\n      \"roleId\": 2,\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"roleDescription\": \"Read-only audit access\"\n    }\n  ]\n}"
+                )
+            )),
         @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "GetUserRolesInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to fetch user roles\",\n      \"description\": \"Database unavailable while loading roles for userId=10\"\n    }\n  ]\n}")))
     })
-    List<UserRoleResponse> findByUserId(@Positive(message = "{validation.common.id.positive}") Long userId);
+    UserRolesAggregateResponse findByUserId(@Positive(message = "{validation.common.id.positive}") Long userId);
 
     @Operation(operationId = "assignUserRoles", summary = "Assign roles to user", description = "Creates one or more user-role assignments.")
     @CommonApiParameters
@@ -43,7 +47,13 @@ public interface UserRoleApi {
                 value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Roles assigned successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
+            content = @Content(
+                schema = @Schema(implementation = UserRolesAggregateResponse.class),
+                examples = @ExampleObject(
+                    name = "AssignUserRolesSuccess",
+                    value = "{\n  \"userId\": 10,\n  \"userEmailAddress\": \"admin1@snb.com\",\n  \"userMobileNumber\": \"971500000001\",\n  \"userType\": \"ADMIN\",\n  \"userAccountStatus\": \"ACTIVE\",\n  \"roles\": [\n    {\n      \"roleId\": 1,\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"roleDescription\": \"Full platform access\"\n    },\n    {\n      \"roleId\": 2,\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"roleDescription\": \"Read-only audit access\"\n    }\n  ]\n}"
+                )
+            )),
         @ApiResponse(responseCode = "400", description = "Validation failed or role already assigned",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "AssignUserRolesValidationError",
@@ -57,7 +67,7 @@ public interface UserRoleApi {
                 examples = @ExampleObject(name = "AssignUserRolesInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to assign roles\",\n      \"description\": \"Database unavailable while assigning roles to userId=10\"\n    }\n  ]\n}")))
     })
-    ResponseEntity<List<UserRoleResponse>> assign(@Positive(message = "{validation.common.id.positive}") Long userId, @Valid UserRoleRequest request);
+    ResponseEntity<UserRolesAggregateResponse> assign(@Positive(message = "{validation.common.id.positive}") Long userId, @Valid UserRoleRequest request);
 
     @Operation(operationId = "replaceUserRoles", summary = "Replace user roles", description = "Replaces all active role assignments for a user with the provided roles.")
     @CommonApiParameters
@@ -68,7 +78,13 @@ public interface UserRoleApi {
                 value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User roles updated successfully",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserRoleResponse.class)))),
+            content = @Content(
+                schema = @Schema(implementation = UserRolesAggregateResponse.class),
+                examples = @ExampleObject(
+                    name = "ReplaceUserRolesSuccess",
+                    value = "{\n  \"userId\": 10,\n  \"userEmailAddress\": \"admin1@snb.com\",\n  \"userMobileNumber\": \"971500000001\",\n  \"userType\": \"ADMIN\",\n  \"userAccountStatus\": \"ACTIVE\",\n  \"roles\": [\n    {\n      \"roleId\": 3,\n      \"roleCode\": \"REGIONAL_MANAGER\",\n      \"roleName\": \"Regional Manager\",\n      \"roleDescription\": \"Manages regional operations and approvals\"\n    }\n  ]\n}"
+                )
+            )),
         @ApiResponse(responseCode = "400", description = "Validation failed",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "ReplaceUserRolesValidationError",
@@ -82,7 +98,7 @@ public interface UserRoleApi {
                 examples = @ExampleObject(name = "ReplaceUserRolesInternalError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"SERVER_ERROR\",\n      \"code\": \"INTERNAL_ERROR\",\n      \"message\": \"Failed to replace user roles\",\n      \"description\": \"Database unavailable while replacing roles for userId=10\"\n    }\n  ]\n}")))
     })
-    List<UserRoleResponse> replace(@Positive(message = "{validation.common.id.positive}") Long userId, @Valid UserRoleRequest request);
+    UserRolesAggregateResponse replace(@Positive(message = "{validation.common.id.positive}") Long userId, @Valid UserRoleRequest request);
 
     @Operation(operationId = "revokeUserRole", summary = "Revoke user-role assignment", description = "Soft-deletes a user-role assignment by userId and roleCode.")
     @CommonApiParameters

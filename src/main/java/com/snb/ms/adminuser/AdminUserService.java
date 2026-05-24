@@ -32,10 +32,10 @@ public class AdminUserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<AdminUserResponse> findBySnbId(String snbId) {
-        log.debug("Fetching admin user by snbId={}", snbId);
-        Optional<AdminUserResponse> result = adminUserRepository.findBySnbIdWithUser(snbId).map(adminUserMapper::toDto);
-        log.info("Admin user lookup snbId={} found={}", snbId, result.isPresent());
+    public Optional<AdminUserResponse> findByUserId(Long userId) {
+        log.debug("Fetching admin user by userId={}", userId);
+        Optional<AdminUserResponse> result = adminUserRepository.findByUserIdWithUser(userId).map(adminUserMapper::toDto);
+        log.info("Admin user lookup userId={} found={}", userId, result.isPresent());
         return result;
     }
 
@@ -70,11 +70,11 @@ public class AdminUserService {
     }
 
     @Transactional
-    public Optional<AdminUserResponse> updateBySnbId(String snbId, AdminUserUpdateRequest request) {
-        log.debug("Updating admin user snbId={}", snbId);
+    public Optional<AdminUserResponse> updateByUserId(Long userId, AdminUserUpdateRequest request) {
+        log.debug("Updating admin user userId={}", userId);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<AdminUserResponse> updated = adminUserRepository.findBySnbIdWithUser(snbId).map(existing -> {
+        Optional<AdminUserResponse> updated = adminUserRepository.findByUserIdWithUser(userId).map(existing -> {
             adminUserMapper.updateEntity(request, existing);
             Users user = existing.getUser();
             if (user != null) {
@@ -89,16 +89,16 @@ public class AdminUserService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
-        log.info("Admin user update snbId={} success={}", snbId, updated.isPresent());
+        log.info("Admin user update userId={} success={}", userId, updated.isPresent());
         return updated;
     }
 
     @Transactional
-    public Optional<AdminUserResponse> softDeleteBySnbId(String snbId) {
-        log.debug("Soft-deleting admin user snbId={}", snbId);
+    public Optional<AdminUserResponse> softDeleteByUserId(Long userId) {
+        log.debug("Soft-deleting admin user userId={}", userId);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
         LocalDateTime now = LocalDateTime.now();
-        Optional<AdminUserResponse> deleted = adminUserRepository.findBySnbIdWithUser(snbId).map(existing -> {
+        Optional<AdminUserResponse> deleted = adminUserRepository.findByUserIdWithUser(userId).map(existing -> {
             existing.setDeletedFlag("Y");
             existing.setDeletedAt(now);
             existing.setUpdatedAt(now);
@@ -106,7 +106,7 @@ public class AdminUserService {
             existing.setVersionNumber(existing.getVersionNumber() + 1);
             return adminUserMapper.toDto(adminUserRepository.save(existing));
         });
-        log.info("Admin user soft-delete snbId={} success={}", snbId, deleted.isPresent());
+        log.info("Admin user soft-delete userId={} success={}", userId, deleted.isPresent());
         return deleted;
     }
 }

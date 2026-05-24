@@ -2,7 +2,6 @@ package com.snb.ms.rbac.userrole;
 
 import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,26 +20,26 @@ public class UserRoleController implements UserRoleApi {
 
     @Override
     @GetMapping
-    public List<UserRoleResponse> findByUserId(@PathVariable Long userId) {
+    public UserRolesAggregateResponse findByUserId(@PathVariable Long userId) {
         log.debug("Received request to fetch roles for userId={}", userId);
         return userRoleService.findByUserId(userId);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<List<UserRoleResponse>> assign(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
+    public ResponseEntity<UserRolesAggregateResponse> assign(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
         log.debug("Received request to assign roleCodes={} to userId={}", request.getRoleCodes(), userId);
-        List<UserRoleResponse> created = userRoleService.assign(userId, request);
-        log.info("Assigned {} roles to userId={}", created.size(), userId);
+        UserRolesAggregateResponse created = userRoleService.assign(userId, request);
+        log.info("Assigned roles; userId={} now has {} roles", userId, created.getRoles().size());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Override
     @PutMapping
-    public List<UserRoleResponse> replace(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
+    public UserRolesAggregateResponse replace(@PathVariable Long userId, @Valid @RequestBody UserRoleRequest request) {
         log.debug("Received request to replace roles with roleCodes={} for userId={}", request.getRoleCodes(), userId);
-        List<UserRoleResponse> updated = userRoleService.replace(userId, request);
-        log.info("Replaced roles for userId={} with {} roles", userId, updated.size());
+        UserRolesAggregateResponse updated = userRoleService.replace(userId, request);
+        log.info("Replaced roles for userId={} with {} roles", userId, updated.getRoles().size());
         return updated;
     }
 

@@ -18,6 +18,18 @@ public class UserRoleResponse {
     @Schema(description = "User identifier", example = "10")
     private Long userId;
 
+    @Schema(description = "User email address", example = "admin1@snb.com")
+    private String userEmailAddress;
+
+    @Schema(description = "User mobile number", example = "971500000001")
+    private String userMobileNumber;
+
+    @Schema(description = "User type", example = "ADMIN")
+    private String userType;
+
+    @Schema(description = "User account status", example = "ACTIVE")
+    private String userAccountStatus;
+
     @Schema(description = "Role identifier", example = "1")
     private Long roleId;
 
@@ -26,6 +38,9 @@ public class UserRoleResponse {
 
     @Schema(description = "Role name", example = "Super Admin")
     private String roleName;
+
+    @Schema(description = "Role description", example = "Full platform access")
+    private String roleDescription;
 
     @Schema(description = "Identifier of actor who created the record", example = "1")
     private Long createdBy;

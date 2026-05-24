@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +33,18 @@ public class UserRoleService {
     private final RequestContextAccessor contextAccessor;
 
     @Transactional(readOnly = true)
-    public List<UserRoleResponse> findByUserId(Long userId) {
+    public UserRolesAggregateResponse findByUserId(Long userId) {
         log.debug("Fetching roles for userId={}", userId);
-        List<UserRoleResponse> results = userRoleMapper.toDtoList(userRoleRepository.findActiveByUserId(userId));
-        log.info("Fetched {} roles for userId={}", results.size(), userId);
+        Users user = usersRepository.findActiveById(userId)
+            .orElseThrow(() -> ResourceNotFoundException.userById(userId));
+        List<UserRole> assignments = userRoleRepository.findActiveByUserId(userId);
+        UserRolesAggregateResponse results = toAggregateResponse(user, assignments);
+        log.info("Fetched {} roles for userId={}", results.getRoles().size(), userId);
         return results;
     }
 
     @Transactional
-    public List<UserRoleResponse> assign(Long userId, UserRoleRequest request) {
+    public UserRolesAggregateResponse assign(Long userId, UserRoleRequest request) {
         Set<String> requestedRoleCodes = normalizeRoleCodes(request.getRoleCodes());
         log.debug("Assigning roleCodes={} to userId={}", requestedRoleCodes, userId);
         Users user = usersRepository.findActiveById(userId)
@@ -71,13 +75,15 @@ public class UserRoleService {
             .map(roleCode -> newUserRole(user, roleByCode.get(roleCode), callerId, now))
             .collect(Collectors.toList());
 
-        List<UserRoleResponse> created = userRoleMapper.toDtoList(userRoleRepository.saveAll(createdAssignments));
-        log.info("Assigned {} roles to userId={}", created.size(), userId);
+        userRoleRepository.saveAll(createdAssignments);
+        List<UserRole> activeAfterAssign = userRoleRepository.findActiveByUserId(userId);
+        UserRolesAggregateResponse created = toAggregateResponse(user, activeAfterAssign);
+        log.info("Assigned roles; userId={} now has {} active roles", userId, created.getRoles().size());
         return created;
     }
 
     @Transactional
-    public List<UserRoleResponse> replace(Long userId, UserRoleRequest request) {
+    public UserRolesAggregateResponse replace(Long userId, UserRoleRequest request) {
         Set<String> requestedRoleCodes = normalizeRoleCodes(request.getRoleCodes());
         log.debug("Replacing roles for userId={} with roleCodes={}", userId, requestedRoleCodes);
         Users user = usersRepository.findActiveById(userId)
@@ -109,8 +115,9 @@ public class UserRoleService {
         userRoleRepository.saveAll(existingAssignments);
         userRoleRepository.saveAll(assignmentsToAdd);
 
-        List<UserRoleResponse> results = userRoleMapper.toDtoList(userRoleRepository.findActiveByUserId(userId));
-        log.info("Replaced roles for userId={} with {} active roles", userId, results.size());
+        List<UserRole> activeAfterReplace = userRoleRepository.findActiveByUserId(userId);
+        UserRolesAggregateResponse results = toAggregateResponse(user, activeAfterReplace);
+        log.info("Replaced roles for userId={} with {} active roles", userId, results.getRoles().size());
         return results;
     }
 
@@ -152,5 +159,28 @@ public class UserRoleService {
         userRole.setDeletedFlag("N");
         userRole.setVersionNumber(0L);
         return userRole;
+    }
+
+    private UserRolesAggregateResponse toAggregateResponse(Users user, List<UserRole> assignments) {
+        List<UserAssociatedRoleResponse> roles = assignments.stream()
+            .map(assignment -> {
+                Role role = assignment.getRole();
+                return new UserAssociatedRoleResponse(
+                    role.getRoleId(),
+                    role.getRoleCode(),
+                    role.getRoleName(),
+                    role.getDescription()
+                );
+            })
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        return new UserRolesAggregateResponse(
+            user.getUserId(),
+            user.getEmailAddress(),
+            user.getMobileNumber(),
+            user.getUserType(),
+            user.getAccountStatus(),
+            roles
+        );
     }
 }
