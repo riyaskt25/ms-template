@@ -2,10 +2,8 @@ package com.snb.ms.rbac.roleprivilege;
 
 import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,27 +19,27 @@ public class RolePrivilegeController implements RolePrivilegeApi {
 
     @Override
     @GetMapping
-    public List<RolePrivilegeResponse> findByRoleCode(@PathVariable String roleCode) {
+    public RolePrivilegesAggregateResponse findByRoleCode(@PathVariable String roleCode) {
         log.debug("Received request to fetch privileges for roleCode={}", roleCode);
         return rolePrivilegeService.findByRoleCode(roleCode);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<RolePrivilegeResponse> grant(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeRequest request) {
+    public ResponseEntity<RolePrivilegesAggregateResponse> grant(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeRequest request) {
         log.debug("Received request to grant privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
-        RolePrivilegeResponse created = rolePrivilegeService.grant(roleCode, request);
+        RolePrivilegesAggregateResponse created = rolePrivilegeService.grant(roleCode, request);
         log.info("Granted privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.ok(created);
     }
 
     @Override
     @PostMapping("/bulk")
-    public ResponseEntity<List<RolePrivilegeResponse>> grantBulk(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeBulkRequest request) {
+    public ResponseEntity<RolePrivilegesAggregateResponse> grantBulk(@PathVariable String roleCode, @Valid @RequestBody RolePrivilegeBulkRequest request) {
         log.debug("Received request to bulk grant {} privileges to roleCode={}", request.getPrivilegeCodes().size(), roleCode);
-        List<RolePrivilegeResponse> created = rolePrivilegeService.grantBulk(roleCode, request);
-        log.info("Bulk granted {} privileges to roleCode={}", created.size(), roleCode);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        RolePrivilegesAggregateResponse created = rolePrivilegeService.grantBulk(roleCode, request);
+        log.info("Bulk granted privileges to roleCode={} now total={}", roleCode, created.getPrivileges().size());
+        return ResponseEntity.ok(created);
     }
 
     @Override

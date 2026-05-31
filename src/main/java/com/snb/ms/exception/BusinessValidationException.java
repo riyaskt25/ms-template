@@ -11,8 +11,12 @@ public class BusinessValidationException extends RuntimeException {
     private final Object[] descriptionArgs;
 
     public BusinessValidationException(String descriptionKey, Object[] descriptionArgs, String fallbackDescription) {
+        this(ErrorCodeEnum.INVALID_ARGUMENT, descriptionKey, descriptionArgs, fallbackDescription);
+    }
+
+    public BusinessValidationException(ErrorCodeEnum errorCode, String descriptionKey, Object[] descriptionArgs, String fallbackDescription) {
         super(fallbackDescription);
-        this.errorCode = ErrorCodeEnum.INVALID_ARGUMENT;
+        this.errorCode = errorCode;
         this.description = fallbackDescription;
         this.descriptionKey = descriptionKey;
         this.descriptionArgs = descriptionArgs;

@@ -54,10 +54,14 @@ public interface UserRoleApi {
                     value = "{\n  \"userId\": 1001,\n  \"userEmailAddress\": \"admin1@snb.com\",\n  \"userMobileNumber\": \"971500000001\",\n  \"userType\": \"ADMIN\",\n  \"userAccountStatus\": \"ACTIVE\",\n  \"roles\": [\n    {\n      \"roleId\": 1001,\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"roleDescription\": \"Full platform access\"\n    },\n    {\n      \"roleId\": 1002,\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"roleDescription\": \"Read-only audit access\"\n    }\n  ]\n}"
                 )
             )),
-        @ApiResponse(responseCode = "400", description = "Validation failed or role already assigned",
+        @ApiResponse(responseCode = "400", description = "Validation failed",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "AssignUserRolesValidationError",
                     value = "{\n  \"errors\": [\n    {\n      \"type\": \"VALIDATION_ERROR\",\n      \"code\": \"ROLECODES_REQUIRED\",\n      \"message\": \"at least one roleCode is required\",\n      \"description\": \"Field 'roleCodes' must contain at least one value\"\n    }\n  ]\n}"))),
+        @ApiResponse(responseCode = "409", description = "Role already assigned",
+            content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
+                examples = @ExampleObject(name = "AssignUserRolesConflictError",
+                    value = "{\n  \"errors\": [\n    {\n      \"type\": \"CONFLICT\",\n      \"code\": \"CONFLICT\",\n      \"message\": \"Conflict\",\n      \"description\": \"User already has this role assigned\"\n    }\n  ]\n}"))),
         @ApiResponse(responseCode = "404", description = "User or role not found",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "AssignUserRolesNotFoundError",

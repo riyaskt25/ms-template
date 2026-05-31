@@ -1,6 +1,7 @@
 package com.snb.ms.rbac.userrole;
 
 import com.snb.ms.exception.BusinessValidationException;
+import com.snb.ms.exception.ErrorCodeEnum;
 import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.rbac.role.Role;
 import com.snb.ms.rbac.role.RoleRepository;
@@ -58,6 +59,7 @@ public class UserRoleService {
             .collect(Collectors.toSet());
         if (!duplicateRoleCodes.isEmpty()) {
             throw new BusinessValidationException(
+                ErrorCodeEnum.CONFLICT,
                 "error.userRole.alreadyExists",
                 new Object[]{userId, duplicateRoleCodes.stream().findFirst().orElse(null)},
                 "User already has this role assigned"

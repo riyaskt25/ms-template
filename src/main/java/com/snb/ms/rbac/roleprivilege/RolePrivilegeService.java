@@ -1,6 +1,7 @@
 package com.snb.ms.rbac.roleprivilege;
 
 import com.snb.ms.exception.BusinessValidationException;
+import com.snb.ms.exception.ErrorCodeEnum;
 import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.rbac.privilege.Privilege;
 import com.snb.ms.rbac.privilege.PrivilegeRepository;
@@ -8,6 +9,7 @@ import com.snb.ms.rbac.role.Role;
 import com.snb.ms.rbac.role.RoleRepository;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,21 +34,27 @@ public class RolePrivilegeService {
     private final RequestContextAccessor contextAccessor;
 
     @Transactional(readOnly = true)
-    public List<RolePrivilegeResponse> findByRoleCode(String roleCode) {
+    public RolePrivilegesAggregateResponse findByRoleCode(String roleCode) {
         log.debug("Fetching privileges for roleCode={}", roleCode);
-        roleRepository.findActiveByRoleCode(roleCode)
+        Role role = roleRepository.findActiveByRoleCode(roleCode)
             .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
-        List<RolePrivilegeResponse> results = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.findActiveByRoleCode(roleCode));
-        log.info("Fetched {} privileges for roleCode={}", results.size(), roleCode);
-        return results;
+        List<RolePrivilege> assignments = rolePrivilegeRepository.findActiveByRoleCode(roleCode);
+        RolePrivilegesAggregateResponse response = toAggregateResponse(role, assignments);
+        log.info("Fetched {} privileges for roleCode={}", response.getPrivileges().size(), roleCode);
+        return response;
     }
 
     @Transactional
-    public RolePrivilegeResponse grant(String roleCode, RolePrivilegeRequest request) {
+    public RolePrivilegesAggregateResponse grant(String roleCode, RolePrivilegeRequest request) {
         log.debug("Granting privilegeCode={} to roleCode={}", request.getPrivilegeCode(), roleCode);
         if (rolePrivilegeRepository.existsByRole_RoleCodeAndPrivilege_PrivilegeCodeAndDeletedFlag(
                 roleCode, request.getPrivilegeCode(), "N")) {
-            throw new BusinessValidationException("error.rolePrivilege.alreadyExists", new Object[]{roleCode, request.getPrivilegeCode()}, "Role already has this privilege granted");
+            throw new BusinessValidationException(
+                ErrorCodeEnum.CONFLICT,
+                "error.rolePrivilege.alreadyExists",
+                new Object[]{roleCode, request.getPrivilegeCode()},
+                "Role already has this privilege granted"
+            );
         }
         Role role = roleRepository.findActiveByRoleCode(roleCode)
             .orElseThrow(() -> ResourceNotFoundException.roleByCode(roleCode));
@@ -61,13 +69,16 @@ public class RolePrivilegeService {
         rolePrivilege.setCreatedBy(callerId);
         rolePrivilege.setDeletedFlag("N");
         rolePrivilege.setVersionNumber(0L);
-        RolePrivilegeResponse created = rolePrivilegeMapper.toDto(rolePrivilegeRepository.save(rolePrivilege));
-        log.info("Granted privilegeCode={} to roleCode={} grantId={}", request.getPrivilegeCode(), roleCode, created.getId());
-        return created;
+        rolePrivilegeRepository.save(rolePrivilege);
+
+        List<RolePrivilege> assignments = rolePrivilegeRepository.findActiveByRoleCode(roleCode);
+        RolePrivilegesAggregateResponse response = toAggregateResponse(role, assignments);
+        log.info("Granted privilegeCode={} to roleCode={} now total={}", request.getPrivilegeCode(), roleCode, response.getPrivileges().size());
+        return response;
     }
 
     @Transactional
-    public List<RolePrivilegeResponse> grantBulk(String roleCode, RolePrivilegeBulkRequest request) {
+    public RolePrivilegesAggregateResponse grantBulk(String roleCode, RolePrivilegeBulkRequest request) {
         Set<String> requestedPrivilegeCodes = request.getPrivilegeCodes().stream().collect(Collectors.toCollection(LinkedHashSet::new));
         log.debug("Bulk granting privilegeCodes={} to roleCode={}", requestedPrivilegeCodes, roleCode);
 
@@ -82,6 +93,7 @@ public class RolePrivilegeService {
             .collect(Collectors.toSet());
         if (!duplicatePrivilegeCodes.isEmpty()) {
             throw new BusinessValidationException(
+                ErrorCodeEnum.CONFLICT,
                 "error.rolePrivilege.alreadyExists",
                 new Object[]{roleCode, duplicatePrivilegeCodes.stream().findFirst().orElse(null)},
                 "Role already has this privilege granted"
@@ -103,9 +115,12 @@ public class RolePrivilegeService {
             .map(privilegeCode -> newRolePrivilege(role, privilegeByCode.get(privilegeCode), callerId, now))
             .collect(Collectors.toList());
 
-        List<RolePrivilegeResponse> created = rolePrivilegeMapper.toDtoList(rolePrivilegeRepository.saveAll(newAssignments));
-        log.info("Bulk granted {} privileges to roleCode={}", created.size(), roleCode);
-        return created;
+        rolePrivilegeRepository.saveAll(newAssignments);
+
+        List<RolePrivilege> assignments = rolePrivilegeRepository.findActiveByRoleCode(roleCode);
+        RolePrivilegesAggregateResponse response = toAggregateResponse(role, assignments);
+        log.info("Bulk granted {} privileges to roleCode={} now total={}", newAssignments.size(), roleCode, response.getPrivileges().size());
+        return response;
     }
 
     @Transactional
@@ -134,5 +149,27 @@ public class RolePrivilegeService {
         rolePrivilege.setDeletedFlag("N");
         rolePrivilege.setVersionNumber(0L);
         return rolePrivilege;
+    }
+
+    private RolePrivilegesAggregateResponse toAggregateResponse(Role role, List<RolePrivilege> assignments) {
+        List<RoleAssociatedPrivilegeResponse> privileges = assignments.stream()
+            .map(assignment -> {
+                Privilege privilege = assignment.getPrivilege();
+                return new RoleAssociatedPrivilegeResponse(
+                    privilege.getPrivilegeId(),
+                    privilege.getPrivilegeCode(),
+                    privilege.getPrivilegeName(),
+                    privilege.getDescription()
+                );
+            })
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        return new RolePrivilegesAggregateResponse(
+            role.getRoleId(),
+            role.getRoleCode(),
+            role.getRoleName(),
+            role.getDescription(),
+            privileges
+        );
     }
 }
