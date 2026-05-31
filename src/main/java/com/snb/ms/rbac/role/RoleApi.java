@@ -79,7 +79,13 @@ public interface RoleApi {
                 value = "{\n  \"roles\": [\n    {\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"description\": \"Full platform access\"\n    },\n    {\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"description\": \"Read-only audit access\"\n    }\n  ]\n}")))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Roles created successfully",
-            content = @Content(schema = @Schema(implementation = RoleBulkResponse.class))),
+            content = @Content(
+                schema = @Schema(implementation = RoleBulkResponse.class),
+                examples = @ExampleObject(
+                    name = "CreateRolesBulkSuccess",
+                    value = "{\n  \"roles\": [\n    {\n      \"roleId\": 1001,\n      \"roleCode\": \"SUPER_ADMIN\",\n      \"roleName\": \"Super Admin\",\n      \"description\": \"Full platform access\"\n    },\n    {\n      \"roleId\": 1002,\n      \"roleCode\": \"AUDITOR\",\n      \"roleName\": \"Auditor\",\n      \"description\": \"Read-only audit access\"\n    }\n  ]\n}"
+                )
+            )),
         @ApiResponse(responseCode = "400", description = "Validation failed",
             content = @Content(schema = @Schema(implementation = BaseResponseDTO.class),
                 examples = @ExampleObject(name = "CreateRolesBulkValidationError",
