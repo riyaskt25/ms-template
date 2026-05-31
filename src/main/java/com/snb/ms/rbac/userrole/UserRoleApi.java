@@ -46,7 +46,7 @@ public interface UserRoleApi {
             examples = @ExampleObject(name = "AssignUserRolesRequestExample",
                 value = "{\n  \"roleCodes\": [\"SUPER_ADMIN\", \"AUDITOR\"]\n}")))
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Roles assigned successfully",
+        @ApiResponse(responseCode = "200", description = "Roles assigned successfully",
             content = @Content(
                 schema = @Schema(implementation = UserRolesAggregateResponse.class),
                 examples = @ExampleObject(

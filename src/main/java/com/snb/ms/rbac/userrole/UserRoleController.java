@@ -4,7 +4,6 @@ import com.snb.ms.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,7 @@ public class UserRoleController implements UserRoleApi {
         log.debug("Received request to assign roleCodes={} to userId={}", request.getRoleCodes(), userId);
         UserRolesAggregateResponse created = userRoleService.assign(userId, request);
         log.info("Assigned roles; userId={} now has {} roles", userId, created.getRoles().size());
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.ok(created);
     }
 
     @Override
