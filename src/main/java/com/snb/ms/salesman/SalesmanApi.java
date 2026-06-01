@@ -1,20 +1,21 @@
+// File: src/main/java/com/snb/ms/salesman/SalesmanApi.java
 package com.snb.ms.salesman;
 
-import com.snb.ms.shared.api.CommonApiParameters;
 import com.snb.ms.shared.BaseResponseDTO;
+import com.snb.ms.shared.api.CommonApiParameters;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
@@ -101,7 +102,7 @@ public interface SalesmanApi {
     @Operation(
         operationId = "createSalesman",
         summary = "Create salesman",
-        description = "Creates a salesman and links the record with a company and internal user profile."
+        description = "Creates a salesman and links the record with one or more companies and internal user profile."
     )
     @CommonApiParameters
     @RequestBody(
@@ -111,7 +112,7 @@ public interface SalesmanApi {
             schema = @Schema(implementation = SalesmanCreateRequest.class),
             examples = @ExampleObject(
                 name = "CreateSalesmanRequestExample",
-                value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"I\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\",\n  \"companyId\": 1001,\n  \"emailAddress\": \"ahamed.khan@example.com\",\n  \"mobileNumber\": \"+971555010201\"\n}"
+                value = "{\n  \"firstName\": \"Ahamed\",\n  \"middleName\": \"I\",\n  \"lastName\": \"Khan\",\n  \"accountNumber\": \"ACC-9911\",\n  \"cifNumber\": \"CIF-1022\",\n  \"idNumber\": \"784-1986-0000001-1\",\n  \"companyIds\": [1001, 1002],\n  \"emailAddress\": \"ahamed.khan@example.com\",\n  \"mobileNumber\": \"+971555010201\"\n}"
             )
         )
     )
@@ -218,7 +219,7 @@ public interface SalesmanApi {
         )
     })
     SalesmanResponse update(@Positive(message = "{validation.common.id.positive}") Long id,
-                           @Valid SalesmanUpdateRequest request);
+                            @Valid SalesmanUpdateRequest request);
 
     @Operation(
         operationId = "softDeleteSalesman",

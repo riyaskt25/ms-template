@@ -1,12 +1,17 @@
+// File: src/main/java/com/snb/ms/salesman/SalesmanService.java
 package com.snb.ms.salesman;
 
+import com.snb.ms.company.Company;
+import com.snb.ms.company.CompanyRepository;
 import com.snb.ms.companysalesman.CompanySalesmanService;
-import com.snb.ms.shared.request.RequestContextAccessor;
+import com.snb.ms.exception.ResourceNotFoundException;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.Users;
 import com.snb.ms.shared.UsersRequest;
+import com.snb.ms.shared.request.RequestContextAccessor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,7 @@ public class SalesmanService {
     private final SalesmanMapper salesmanMapper;
     private final UserProvisioningService userProvisioningService;
     private final CompanySalesmanService companySalesmanService;
+    private final CompanyRepository companyRepository;
     private final RequestContextAccessor contextAccessor;
 
     @Transactional(readOnly = true)
@@ -43,7 +49,10 @@ public class SalesmanService {
 
     @Transactional
     public SalesmanResponse create(SalesmanCreateRequest request) {
-        log.debug("Creating salesman for companyId={}", request.getCompanyId());
+        log.debug("Creating salesman for companyIds={}", request.getCompanyIds());
+
+        List<Company> companies = resolveCompanies(request.getCompanyIds());
+
         UsersRequest userRequest = new UsersRequest();
         userRequest.setEmailAddress(request.getEmailAddress());
         userRequest.setMobileNumber(request.getMobileNumber());
@@ -53,6 +62,7 @@ public class SalesmanService {
 
         Users user = userProvisioningService.createUser(userRequest);
         Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
+
         Salesman salesman = salesmanMapper.toEntity(request);
         salesman.setUser(user);
         salesman.setCreatedAt(LocalDateTime.now());
@@ -60,10 +70,14 @@ public class SalesmanService {
         salesman.setDeletedFlag("N");
         salesman.setVersionNumber(0L);
         salesman.setAvailableIncentiveAmount(BigDecimal.ZERO);
+
         Salesman savedSalesman = salesmanRepository.save(salesman);
-        companySalesmanService.createAssociation(request.getCompanyId(), savedSalesman);
+        for (Company company : companies) {
+            companySalesmanService.createAssociation(company.getCompanyId(), savedSalesman);
+        }
+
         SalesmanResponse created = salesmanMapper.toDto(savedSalesman);
-        log.info("Created salesman id={} for companyId={}", created.getSalesmanId(), request.getCompanyId());
+        log.info("Created salesman id={} companyIds={}", created.getSalesmanId(), request.getCompanyIds());
         return created;
     }
 
@@ -97,5 +111,15 @@ public class SalesmanService {
         });
         log.info("Salesman soft-delete id={} success={}", id, deleted.isPresent());
         return deleted;
+    }
+
+    private List<Company> resolveCompanies(List<Long> companyIds) {
+        List<Company> companies = new ArrayList<>();
+        for (Long companyId : companyIds) {
+            Company company = companyRepository.findActiveById(companyId)
+                .orElseThrow(() -> ResourceNotFoundException.companyById(companyId));
+            companies.add(company);
+        }
+        return companies;
     }
 }

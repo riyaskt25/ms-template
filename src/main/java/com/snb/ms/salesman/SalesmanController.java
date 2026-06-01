@@ -1,3 +1,4 @@
+// File: src/main/java/com/snb/ms/salesman/SalesmanController.java
 package com.snb.ms.salesman;
 
 import com.snb.ms.exception.ResourceNotFoundException;
@@ -40,7 +41,7 @@ public class SalesmanController implements SalesmanApi {
     @Override
     @PostMapping
     public ResponseEntity<SalesmanResponse> create(@RequestBody SalesmanCreateRequest request) {
-        log.debug("Received request to create salesman for companyId={}", request.getCompanyId());
+        log.debug("Received request to create salesman for companyIds={}", request.getCompanyIds());
         SalesmanResponse created = salesmanService.create(request);
         log.info("Created salesman with id={}", created.getSalesmanId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);

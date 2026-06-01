@@ -1,11 +1,14 @@
+// File: src/main/java/com/snb/ms/salesman/SalesmanCreateRequest.java
 package com.snb.ms.salesman;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,10 +43,9 @@ public class SalesmanCreateRequest {
     @Schema(description = "National or identity number", example = "784-1986-0000001-1", maxLength = 50)
     private String idNumber;
 
-    @NotNull(message = "{validation.salesman.companyId.required}")
-    @Positive(message = "{validation.salesman.companyId.positive}")
-    @Schema(description = "Linked company identifier", example = "1001", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long companyId;
+    @NotEmpty(message = "{validation.salesman.companyIds.required}")
+    @Schema(description = "Linked company identifiers", example = "[1001, 1002]", requiredMode = Schema.RequiredMode.REQUIRED)
+    private List<@NotNull(message = "{validation.salesman.companyIds.notNull}") @Positive(message = "{validation.salesman.companyIds.positive}") Long> companyIds;
 
     @NotBlank(message = "{validation.salesman.emailAddress.required}")
     @Email(message = "{validation.salesman.emailAddress.email}")
