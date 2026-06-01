@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-@Tag(name = "Privileges", description = "RBAC privilege management operations")
+@Tag(name = "[503] - Privileges", description = "RBAC privilege management operations")
 public interface PrivilegeApi {
 
     @Operation(operationId = "getAllPrivileges", summary = "List privileges", description = "Returns all active privilege records.")

@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Roles", description = "RBAC role management operations")
+@Tag(name = "[500] - Roles", description = "RBAC role management operations")
 public interface RoleApi {
 
     @Operation(operationId = "getAllRoles", summary = "List roles", description = "Returns all active role records.")

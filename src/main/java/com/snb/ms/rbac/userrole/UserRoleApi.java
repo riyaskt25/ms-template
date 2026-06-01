@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "User Roles", description = "RBAC user-role assignment operations")
+@Tag(name = "[505] - User Roles", description = "RBAC user-role assignment operations")
 public interface UserRoleApi {
 
     @Operation(operationId = "getUserRoles", summary = "Get roles by user id", description = "Returns all active role assignments for a user.")

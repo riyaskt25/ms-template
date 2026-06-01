@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 
-@Tag(name = "Posts", description = "Operations for external posts resource consumption")
+@Tag(name = "[999] - Posts", description = "Operations for external posts resource consumption")
 public interface PostsApi {
 
     @Operation(

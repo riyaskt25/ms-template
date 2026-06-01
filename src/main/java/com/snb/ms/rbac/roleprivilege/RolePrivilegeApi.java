@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Role Privileges", description = "RBAC role-privilege grant operations")
+@Tag(name = "[509] - Role Privileges", description = "RBAC role-privilege grant operations")
 public interface RolePrivilegeApi {
 
     @Operation(operationId = "getPrivilegesByRoleCode", summary = "Get privileges by role code", description = "Returns all active privilege grants for a role.")

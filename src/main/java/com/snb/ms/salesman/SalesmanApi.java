@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Salesmen", description = "Operations for salesman resources")
+@Tag(name = "[007] - Salesmen", description = "Operations for salesman resources")
 public interface SalesmanApi {
 
     @Operation(
