@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "[030] - Company Salesman Invitations", description = "Operations for inviting salesmen to register under a company")
+@Tag(name = "[009] - Company Salesman Invitations", description = "Operations for inviting salesmen to register under a company")
 public interface CompanySalesmanInvitationApi {
 
     @Operation(
