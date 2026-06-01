@@ -61,4 +61,18 @@ public class BusinessValidationException extends RuntimeException {
             "Invalid sortDirection value: " + value + ". Allowed values are ASC or DESC."
         );
     }
+
+    public static BusinessValidationException activeCompanySalesmanInvitationExists(
+        Object companyId,
+        Object emailAddress,
+        Object mobileNumber,
+        Object idNumber
+    ) {
+        return new BusinessValidationException(
+            "error.company.salesman.invitation.active.exists",
+            new Object[]{companyId, emailAddress, mobileNumber, idNumber},
+            "An open salesman invitation already exists for companyId=" + companyId
+                + " with the provided email, mobile number, or ID number."
+        );
+    }
 }
