@@ -1,11 +1,16 @@
+// File: src/main/java/com/snb/ms/companysalesmaninvitation/CompanySalesmanInvitationRequest.java
 package com.snb.ms.companysalesmaninvitation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +36,10 @@ public class CompanySalesmanInvitationRequest {
     @Size(max = 50, message = "{validation.companySalesmanInvitation.idNumber.size}")
     @Schema(description = "Invitee national or identity number", example = "784-1986-0000001-1", maxLength = 50, requiredMode = Schema.RequiredMode.REQUIRED)
     private String idNumber;
+
+    @NotEmpty(message = "{validation.companySalesmanInvitation.companyIds.required}")
+    @Schema(description = "Company identifiers to invite against", example = "[1001, 1002]", requiredMode = Schema.RequiredMode.REQUIRED)
+    private List<@NotNull(message = "{validation.companySalesmanInvitation.companyIds.notNull}") @Positive(message = "{validation.companySalesmanInvitation.companyIds.positive}") Long> companyIds;
 
     @Future(message = "{validation.companySalesmanInvitation.expiryDate.future}")
     @Schema(description = "Invitation expiry timestamp. If omitted, the API sets it to 7 days from invitation time.", example = "2026-06-08T10:15:30")
