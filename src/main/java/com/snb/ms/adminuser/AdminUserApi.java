@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Admin Users", description = "Operations for admin user resources")
+@Tag(name = "[009] - Admin Users", description = "Operations for admin user resources")
 public interface AdminUserApi {
 
     @Operation(

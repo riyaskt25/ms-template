@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Companies", description = "Operations for company resources")
+@Tag(name = "[005] - Companies", description = "Operations for company resources")
 public interface CompanyApi {
 
     @Operation(
