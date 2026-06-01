@@ -1,11 +1,13 @@
 package com.snb.ms.companysalesmaninvitation;
 
+import com.snb.ms.company.CompanyMapper;
 import com.snb.ms.company.Company;
 import com.snb.ms.company.CompanyRepository;
 import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.exception.ResourceNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class CompanySalesmanInvitationService {
     private static final long DEFAULT_EXPIRY_DAYS = 7L;
 
     private final CompanyRepository companyRepository;
+    private final CompanyMapper companyMapper;
     private final CompanySalesmanInvitationRepository companySalesmanInvitationRepository;
 
     @Transactional
@@ -79,5 +82,27 @@ public class CompanySalesmanInvitationService {
             invitation.getRespondedAt(),
             invitation.getExpiryDate()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<CompanySalesmanInvitationListResponse> listByEmail(String emailAddress) {
+        log.debug("Listing invitations for emailAddress={}", emailAddress);
+        List<CompanySalesmanInvitation> invitations = companySalesmanInvitationRepository.findAllActiveByEmailAddress(emailAddress);
+        List<CompanySalesmanInvitationListResponse> result = invitations.stream()
+            .map(invitation -> new CompanySalesmanInvitationListResponse(
+                invitation.getCompanySalesmanInvitationId(),
+                invitation.getSalesmanId(),
+                invitation.getEmailAddress(),
+                invitation.getMobileNumber(),
+                invitation.getIdNumber(),
+                invitation.getStatus(),
+                invitation.getInvitedAt(),
+                invitation.getRespondedAt(),
+                invitation.getExpiryDate(),
+                companyMapper.toDto(invitation.getCompany())
+            ))
+            .toList();
+        log.info("Found {} invitations for emailAddress={}", result.size(), emailAddress);
+        return result;
     }
 }

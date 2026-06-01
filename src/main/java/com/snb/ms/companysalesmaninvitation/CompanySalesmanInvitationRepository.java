@@ -1,6 +1,7 @@
 package com.snb.ms.companysalesmaninvitation;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +31,14 @@ public interface CompanySalesmanInvitationRepository extends JpaRepository<Compa
         @Param("idNumber") String idNumber,
         @Param("now") LocalDateTime now
     );
+
+    @Query("""
+        SELECT invitation
+        FROM CompanySalesmanInvitation invitation
+        JOIN FETCH invitation.company company
+        WHERE LOWER(invitation.emailAddress) = LOWER(:emailAddress)
+          AND company.deletedFlag = 'N'
+        ORDER BY invitation.invitedAt DESC, invitation.companySalesmanInvitationId DESC
+        """)
+    List<CompanySalesmanInvitation> findAllActiveByEmailAddress(@Param("emailAddress") String emailAddress);
 }
