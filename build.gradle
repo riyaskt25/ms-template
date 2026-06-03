@@ -1,55 +1,78 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.13'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.13'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'com.snb.ms'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.mapstruct:mapstruct:1.6.3'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
-	runtimeOnly 'com.h2database:h2'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testCompileOnly 'org.projectlombok:lombok'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
+    runtimeOnly 'com.h2database:h2'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+}
+
+spotless {
+    java {
+        target 'src/**/*.java',
+               'build/generated/sources/**/*.java',
+               'bin/generated-sources/**/*.java'
+
+        googleJavaFormat('1.24.0')
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        formatAnnotations()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    dependsOn tasks.named('spotlessApply')
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('spotlessCheck')
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 compileJava {
-	options.compilerArgs += [
-		'-Amapstruct.unmappedTargetPolicy=IGNORE',
-		'-Amapstruct.unmappedSourcePolicy=IGNORE'
-	]
+    options.compilerArgs += [
+        '-Amapstruct.unmappedTargetPolicy=IGNORE',
+        '-Amapstruct.unmappedSourcePolicy=IGNORE'
+    ]
 }
 
 tasks.register('generatePostmanFromAnnotations', Exec) {
-	group = 'documentation'
-	description = 'Refreshes api-spec.yaml from /v3/api-docs.yaml and regenerates Postman collection.'
-	commandLine 'powershell', '-ExecutionPolicy', 'Bypass', '-File', 'scripts/refresh-openapi-and-postman.ps1'
+    group = 'documentation'
+    description = 'Refreshes api-spec.yaml from /v3/api-docs.yaml and regenerates Postman collection.'
+    commandLine 'powershell', '-ExecutionPolicy', 'Bypass', '-File', 'scripts/refresh-openapi-and-postman.ps1'
 }

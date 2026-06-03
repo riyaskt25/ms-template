@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+echo "Pre-commit hook executed"
+echo "Checking formatting with Spotless..."
+if ! ./gradlew spotlessCheck; then
+  echo ""
+  echo "Commit blocked: formatting is not compliant."
+  echo "Run ./gradlew spotlessApply, review the changes, then commit again."
+  exit 1
+fi
+
+echo "Formatting check passed."
