@@ -12,27 +12,29 @@ import lombok.Setter;
 @Setter
 public class CompanyOffsetListQuery {
 
-    @PositiveOrZero
-    private Integer page = ListQueryDefaults.DEFAULT_PAGE;
+  @PositiveOrZero private Integer page = ListQueryDefaults.DEFAULT_PAGE;
 
-    @Positive
-    @Max(ListQueryDefaults.MAX_PAGE_SIZE)
-    private Integer size = ListQueryDefaults.DEFAULT_SIZE;
+  @Positive @Max(ListQueryDefaults.MAX_PAGE_SIZE)
+  private Integer size = ListQueryDefaults.DEFAULT_SIZE;
 
-    private String sortBy;
+  private String sortBy;
 
-    private String sortDirection = "ASC";
+  private String sortDirection = "ASC";
 
-    private String registrationNumber;
+  private String registrationNumber;
 
-    private String companyStatus;
+  private String companyStatus;
 
-    private String companyType;
+  private String companyType;
 
-    private String emailAddress;
+  private String emailAddress;
 
-    private String mobileNumber;
+  private String mobileNumber;
 
-    @Schema(description = "Set true to include associated salesmen in each company response. Defaults to false.", example = "false", defaultValue = "false")
-    private Boolean includeSalesmen = false;
+  @Schema(
+      description =
+          "Set true to include associated salesmen in each company response. Defaults to false.",
+      example = "false",
+      defaultValue = "false")
+  private Boolean includeSalesmen = false;
 }

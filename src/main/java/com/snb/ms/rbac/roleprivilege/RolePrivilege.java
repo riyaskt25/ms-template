@@ -18,16 +18,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class RolePrivilege extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ID")
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ROLE_ID", nullable = false)
+  private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIVILEGE_ID", nullable = false)
-    private Privilege privilege;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIVILEGE_ID", nullable = false)
+  private Privilege privilege;
 }

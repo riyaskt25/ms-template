@@ -7,9 +7,9 @@ import lombok.Getter;
 @Builder
 public class RequestContext {
 
-    private final String requestId;
-    private final String userId;
-    private final String language;
-    private final String tenantId;
-    private final String headerUserId;
+  private final String requestId;
+  private final String userId;
+  private final String language;
+  private final String tenantId;
+  private final String headerUserId;
 }

@@ -10,21 +10,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
-    @Query("SELECT u FROM Users u WHERE u.deletedFlag = 'N'")
-    List<Users> findAllActive();
+  @Query("SELECT u FROM Users u WHERE u.deletedFlag = 'N'")
+  List<Users> findAllActive();
 
-    @Query("SELECT u FROM Users u WHERE u.userId = :id AND u.deletedFlag = 'N'")
-    Optional<Users> findActiveById(@Param("id") Long id);
+  @Query("SELECT u FROM Users u WHERE u.userId = :id AND u.deletedFlag = 'N'")
+  Optional<Users> findActiveById(@Param("id") Long id);
 
-    @Query("SELECT u FROM Users u WHERE u.emailAddress = :emailAddress AND u.deletedFlag = 'N'")
-    Optional<Users> findActiveByEmailAddress(@Param("emailAddress") String emailAddress);
+  @Query("SELECT u FROM Users u WHERE u.emailAddress = :emailAddress AND u.deletedFlag = 'N'")
+  Optional<Users> findActiveByEmailAddress(@Param("emailAddress") String emailAddress);
 
-    @Query("SELECT u FROM Users u WHERE u.mobileNumber = :mobileNumber AND u.deletedFlag = 'N'")
-    Optional<Users> findActiveByMobileNumber(@Param("mobileNumber") String mobileNumber);
+  @Query("SELECT u FROM Users u WHERE u.mobileNumber = :mobileNumber AND u.deletedFlag = 'N'")
+  Optional<Users> findActiveByMobileNumber(@Param("mobileNumber") String mobileNumber);
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u.emailAddress = :emailAddress AND u.deletedFlag = 'N'")
-    boolean existsActiveByEmailAddress(@Param("emailAddress") String emailAddress);
+  @Query(
+      "SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u.emailAddress = :emailAddress AND u.deletedFlag = 'N'")
+  boolean existsActiveByEmailAddress(@Param("emailAddress") String emailAddress);
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u.mobileNumber = :mobileNumber AND u.deletedFlag = 'N'")
-    boolean existsActiveByMobileNumber(@Param("mobileNumber") String mobileNumber);
+  @Query(
+      "SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u.mobileNumber = :mobileNumber AND u.deletedFlag = 'N'")
+  boolean existsActiveByMobileNumber(@Param("mobileNumber") String mobileNumber);
 }

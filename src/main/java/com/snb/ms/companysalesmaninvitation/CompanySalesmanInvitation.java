@@ -28,36 +28,36 @@ import lombok.Setter;
 @Builder
 public class CompanySalesmanInvitation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COMPANY_SALESMAN_INVITATION_ID")
-    private Long companySalesmanInvitationId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "COMPANY_SALESMAN_INVITATION_ID")
+  private Long companySalesmanInvitationId;
 
-    @Column(name = "SALESMAN_ID")
-    private Long salesmanId;
+  @Column(name = "SALESMAN_ID")
+  private Long salesmanId;
 
-    @Column(name = "EMAIL_ADDRESS", nullable = false, length = 150)
-    private String emailAddress;
+  @Column(name = "EMAIL_ADDRESS", nullable = false, length = 150)
+  private String emailAddress;
 
-    @Column(name = "MOBILE_NUMBER", nullable = false, length = 20)
-    private String mobileNumber;
+  @Column(name = "MOBILE_NUMBER", nullable = false, length = 20)
+  private String mobileNumber;
 
-    @Column(name = "ID_NUMBER", nullable = false, length = 50)
-    private String idNumber;
+  @Column(name = "ID_NUMBER", nullable = false, length = 50)
+  private String idNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANY_ID", nullable = false)
-    private Company company;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "COMPANY_ID", nullable = false)
+  private Company company;
 
-    @Column(name = "STATUS", nullable = false, length = 20)
-    private String status;
+  @Column(name = "STATUS", nullable = false, length = 20)
+  private String status;
 
-    @Column(name = "INVITED_AT", nullable = false)
-    private LocalDateTime invitedAt;
+  @Column(name = "INVITED_AT", nullable = false)
+  private LocalDateTime invitedAt;
 
-    @Column(name = "RESPONDED_AT")
-    private LocalDateTime respondedAt;
+  @Column(name = "RESPONDED_AT")
+  private LocalDateTime respondedAt;
 
-    @Column(name = "EXPIRY_DATE", nullable = false)
-    private LocalDateTime expiryDate;
+  @Column(name = "EXPIRY_DATE", nullable = false)
+  private LocalDateTime expiryDate;
 }

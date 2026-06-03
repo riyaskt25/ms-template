@@ -16,17 +16,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Role extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ROLE_ID")
-    private Long roleId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ROLE_ID")
+  private Long roleId;
 
-    @Column(name = "ROLE_CODE", nullable = false, unique = true, length = 100)
-    private String roleCode;
+  @Column(name = "ROLE_CODE", nullable = false, unique = true, length = 100)
+  private String roleCode;
 
-    @Column(name = "ROLE_NAME", nullable = false, unique = true, length = 150)
-    private String roleName;
+  @Column(name = "ROLE_NAME", nullable = false, unique = true, length = 150)
+  private String roleName;
 
-    @Column(name = "DESCRIPTION", length = 255)
-    private String description;
+  @Column(name = "DESCRIPTION", length = 255)
+  private String description;
 }

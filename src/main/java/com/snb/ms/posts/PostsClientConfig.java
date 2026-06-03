@@ -9,10 +9,10 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class PostsClientConfig {
 
-    @Bean
-    public RestClient postsRestClient(@Value("${posts.api.base-url:https://jsonplaceholder.typicode.com}") @NonNull String baseUrl) {
-        return RestClient.builder()
-                .baseUrl(baseUrl)
-                .build();
-    }
+  @Bean
+  public RestClient postsRestClient(
+      @Value("${posts.api.base-url:https://jsonplaceholder.typicode.com}") @NonNull
+          String baseUrl) {
+    return RestClient.builder().baseUrl(baseUrl).build();
+  }
 }

@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanySalesmanInvitationRepository extends JpaRepository<CompanySalesmanInvitation, Long> {
+public interface CompanySalesmanInvitationRepository
+    extends JpaRepository<CompanySalesmanInvitation, Long> {
 
-    @Query("""
+  @Query(
+      """
         SELECT CASE WHEN COUNT(invitation) > 0 THEN true ELSE false END
         FROM CompanySalesmanInvitation invitation
         WHERE invitation.company.companyId = :companyId
@@ -23,16 +25,16 @@ public interface CompanySalesmanInvitationRepository extends JpaRepository<Compa
               OR invitation.idNumber = :idNumber
           )
         """)
-    boolean existsOpenInvitation(
-        @Param("companyId") Long companyId,
-        @Param("status") String status,
-        @Param("emailAddress") String emailAddress,
-        @Param("mobileNumber") String mobileNumber,
-        @Param("idNumber") String idNumber,
-        @Param("now") LocalDateTime now
-    );
+  boolean existsOpenInvitation(
+      @Param("companyId") Long companyId,
+      @Param("status") String status,
+      @Param("emailAddress") String emailAddress,
+      @Param("mobileNumber") String mobileNumber,
+      @Param("idNumber") String idNumber,
+      @Param("now") LocalDateTime now);
 
-    @Query("""
+  @Query(
+      """
         SELECT invitation
         FROM CompanySalesmanInvitation invitation
         JOIN FETCH invitation.company company
@@ -40,5 +42,6 @@ public interface CompanySalesmanInvitationRepository extends JpaRepository<Compa
           AND company.deletedFlag = 'N'
         ORDER BY invitation.invitedAt DESC, invitation.companySalesmanInvitationId DESC
         """)
-    List<CompanySalesmanInvitation> findAllActiveByEmailAddress(@Param("emailAddress") String emailAddress);
+  List<CompanySalesmanInvitation> findAllActiveByEmailAddress(
+      @Param("emailAddress") String emailAddress);
 }

@@ -13,17 +13,25 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Role creation request payload")
 public class RoleCreateRequest {
 
-    @NotBlank(message = "{validation.role.roleCode.required}")
-    @Size(max = 100, message = "{validation.role.roleCode.size}")
-    @Schema(description = "Stable role code used in authorization checks", example = "SUPER_ADMIN", maxLength = 100, requiredMode = Schema.RequiredMode.REQUIRED)
-    private String roleCode;
+  @NotBlank(message = "{validation.role.roleCode.required}")
+  @Size(max = 100, message = "{validation.role.roleCode.size}")
+  @Schema(
+      description = "Stable role code used in authorization checks",
+      example = "SUPER_ADMIN",
+      maxLength = 100,
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String roleCode;
 
-    @NotBlank(message = "{validation.role.roleName.required}")
-    @Size(max = 150, message = "{validation.role.roleName.size}")
-    @Schema(description = "Human-readable role name", example = "Super Admin", maxLength = 150, requiredMode = Schema.RequiredMode.REQUIRED)
-    private String roleName;
+  @NotBlank(message = "{validation.role.roleName.required}")
+  @Size(max = 150, message = "{validation.role.roleName.size}")
+  @Schema(
+      description = "Human-readable role name",
+      example = "Super Admin",
+      maxLength = 150,
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String roleName;
 
-    @Size(max = 255, message = "{validation.role.description.size}")
-    @Schema(description = "Role description", example = "Full platform access", maxLength = 255)
-    private String description;
+  @Size(max = 255, message = "{validation.role.description.size}")
+  @Schema(description = "Role description", example = "Full platform access", maxLength = 255)
+  private String description;
 }

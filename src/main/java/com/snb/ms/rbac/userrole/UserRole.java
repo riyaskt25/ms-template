@@ -18,16 +18,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class UserRole extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ID")
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private Users user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "USER_ID", nullable = false)
+  private Users user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ROLE_ID", nullable = false)
+  private Role role;
 }

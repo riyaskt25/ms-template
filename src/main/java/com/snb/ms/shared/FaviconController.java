@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[999] - favicon-controller", description = "Favicon endpoint")
 public class FaviconController {
 
-    @GetMapping("/favicon.ico")
-    @Operation(summary = "Favicon endpoint", description = "No-content favicon endpoint used by browsers.")
-    public ResponseEntity<Void> favicon() {
-        return ResponseEntity.noContent().build();
-    }
+  @GetMapping("/favicon.ico")
+  @Operation(
+      summary = "Favicon endpoint",
+      description = "No-content favicon endpoint used by browsers.")
+  public ResponseEntity<Void> favicon() {
+    return ResponseEntity.noContent().build();
+  }
 }

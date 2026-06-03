@@ -1,9 +1,9 @@
 package com.snb.ms.shared.request;
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Locale;
@@ -11,8 +11,8 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,30 +22,31 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class RequestContextFilter extends OncePerRequestFilter {
 
-    public static final String REQUEST_ID_HEADER = "X-Request-Id";
-    public static final String TENANT_ID_HEADER = "X-Tenant-Id";
-    public static final String USER_ID_HEADER = "USER_ID";
+  public static final String REQUEST_ID_HEADER = "X-Request-Id";
+  public static final String TENANT_ID_HEADER = "X-Tenant-Id";
+  public static final String USER_ID_HEADER = "USER_ID";
 
-    @Value("${app.logging.request-boundary-enabled:false}")
-    private boolean requestBoundaryEnabled;
+  @Value("${app.logging.request-boundary-enabled:false}")
+  private boolean requestBoundaryEnabled;
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "/favicon.ico".equals(request.getRequestURI());
-    }
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    return "/favicon.ico".equals(request.getRequestURI());
+  }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        long startedAt = System.currentTimeMillis();
-        String requestId = resolveRequestId(request);
-        String userId = resolveUserId(request.getUserPrincipal());
-        String language = resolveLanguage(request.getLocale());
-        String tenantId = resolveHeader(request, TENANT_ID_HEADER);
-        String headerUserId = resolveHeader(request, USER_ID_HEADER);
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    long startedAt = System.currentTimeMillis();
+    String requestId = resolveRequestId(request);
+    String userId = resolveUserId(request.getUserPrincipal());
+    String language = resolveLanguage(request.getLocale());
+    String tenantId = resolveHeader(request, TENANT_ID_HEADER);
+    String headerUserId = resolveHeader(request, USER_ID_HEADER);
 
-        RequestContext context = RequestContext.builder()
+    RequestContext context =
+        RequestContext.builder()
             .requestId(requestId)
             .userId(userId)
             .language(language)
@@ -53,69 +54,76 @@ public class RequestContextFilter extends OncePerRequestFilter {
             .headerUserId(headerUserId)
             .build();
 
-        RequestContextHolder.set(context);
-        response.setHeader(REQUEST_ID_HEADER, requestId);
-        putMdc(context);
+    RequestContextHolder.set(context);
+    response.setHeader(REQUEST_ID_HEADER, requestId);
+    putMdc(context);
 
-        try {
-            if (requestBoundaryEnabled && log.isDebugEnabled()) {
-                log.debug("---------------------------------------------------------------------------------------");
-                log.debug("Incoming request method={} uri={} requestId={}", request.getMethod(), request.getRequestURI(), requestId);
-            }
-            filterChain.doFilter(request, response);
-        } finally {
-            if (requestBoundaryEnabled && log.isDebugEnabled()) {
-                long durationMs = System.currentTimeMillis() - startedAt;
-                log.debug("Completed request method={} uri={} status={} durationMs={} requestId={}",
-                    request.getMethod(),
-                    request.getRequestURI(),
-                    response.getStatus(),
-                    durationMs,
-                    requestId);
-                log.debug("---------------------------------------------------------------------------------------");
-            }
-            RequestContextHolder.clear();
-            MDC.remove("requestId");
-            MDC.remove("userId");
-            MDC.remove("language");
-            MDC.remove("tenantId");
-        }
+    try {
+      if (requestBoundaryEnabled && log.isDebugEnabled()) {
+        log.debug(
+            "---------------------------------------------------------------------------------------");
+        log.debug(
+            "Incoming request method={} uri={} requestId={}",
+            request.getMethod(),
+            request.getRequestURI(),
+            requestId);
+      }
+      filterChain.doFilter(request, response);
+    } finally {
+      if (requestBoundaryEnabled && log.isDebugEnabled()) {
+        long durationMs = System.currentTimeMillis() - startedAt;
+        log.debug(
+            "Completed request method={} uri={} status={} durationMs={} requestId={}",
+            request.getMethod(),
+            request.getRequestURI(),
+            response.getStatus(),
+            durationMs,
+            requestId);
+        log.debug(
+            "---------------------------------------------------------------------------------------");
+      }
+      RequestContextHolder.clear();
+      MDC.remove("requestId");
+      MDC.remove("userId");
+      MDC.remove("language");
+      MDC.remove("tenantId");
     }
+  }
 
-    private String resolveRequestId(HttpServletRequest request) {
-        String requestId = resolveHeader(request, REQUEST_ID_HEADER);
-        return StringUtils.hasText(requestId) ? requestId : UUID.randomUUID().toString();
-    }
+  private String resolveRequestId(HttpServletRequest request) {
+    String requestId = resolveHeader(request, REQUEST_ID_HEADER);
+    return StringUtils.hasText(requestId) ? requestId : UUID.randomUUID().toString();
+  }
 
-    private String resolveUserId(Principal principal) {
-        if (principal == null || !StringUtils.hasText(principal.getName())) {
-            return "anonymous";
-        }
-        return principal.getName();
+  private String resolveUserId(Principal principal) {
+    if (principal == null || !StringUtils.hasText(principal.getName())) {
+      return "anonymous";
     }
+    return principal.getName();
+  }
 
-    private String resolveLanguage(Locale locale) {
-        if (locale == null || !StringUtils.hasText(locale.toLanguageTag())) {
-            return Locale.ENGLISH.toLanguageTag();
-        }
-        return locale.toLanguageTag();
+  private String resolveLanguage(Locale locale) {
+    if (locale == null || !StringUtils.hasText(locale.toLanguageTag())) {
+      return Locale.ENGLISH.toLanguageTag();
     }
+    return locale.toLanguageTag();
+  }
 
-    private String resolveHeader(HttpServletRequest request, String headerName) {
-        String headerValue = request.getHeader(headerName);
-        return StringUtils.hasText(headerValue) ? headerValue.trim() : null;
-    }
+  private String resolveHeader(HttpServletRequest request, String headerName) {
+    String headerValue = request.getHeader(headerName);
+    return StringUtils.hasText(headerValue) ? headerValue.trim() : null;
+  }
 
-    private void putMdc(RequestContext context) {
-        MDC.put("requestId", context.getRequestId());
-        if (context.getUserId() != null) {
-            MDC.put("userId", context.getUserId());
-        }
-        if (context.getLanguage() != null) {
-            MDC.put("language", context.getLanguage());
-        }
-        if (context.getTenantId() != null) {
-            MDC.put("tenantId", context.getTenantId());
-        }
+  private void putMdc(RequestContext context) {
+    MDC.put("requestId", context.getRequestId());
+    if (context.getUserId() != null) {
+      MDC.put("userId", context.getUserId());
     }
+    if (context.getLanguage() != null) {
+      MDC.put("language", context.getLanguage());
+    }
+    if (context.getTenantId() != null) {
+      MDC.put("tenantId", context.getTenantId());
+    }
+  }
 }

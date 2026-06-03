@@ -13,21 +13,23 @@ import lombok.NoArgsConstructor;
 @Schema(description = "User details with associated role details")
 public class UserRolesAggregateResponse {
 
-    @Schema(description = "User identifier", example = "1001")
-    private Long userId;
+  @Schema(description = "User identifier", example = "1001")
+  private Long userId;
 
-    @Schema(description = "User email address", example = "admin1@snb.com")
-    private String userEmailAddress;
+  @Schema(description = "User email address", example = "admin1@snb.com")
+  private String userEmailAddress;
 
-    @Schema(description = "User mobile number", example = "971500000001")
-    private String userMobileNumber;
+  @Schema(description = "User mobile number", example = "971500000001")
+  private String userMobileNumber;
 
-    @Schema(description = "User type", example = "ADMIN")
-    private String userType;
+  @Schema(description = "User type", example = "ADMIN")
+  private String userType;
 
-    @Schema(description = "User account status", example = "ACTIVE")
-    private String userAccountStatus;
+  @Schema(description = "User account status", example = "ACTIVE")
+  private String userAccountStatus;
 
-    @ArraySchema(schema = @Schema(implementation = UserAssociatedRoleResponse.class), arraySchema = @Schema(description = "Associated roles"))
-    private List<UserAssociatedRoleResponse> roles;
+  @ArraySchema(
+      schema = @Schema(implementation = UserAssociatedRoleResponse.class),
+      arraySchema = @Schema(description = "Associated roles"))
+  private List<UserAssociatedRoleResponse> roles;
 }

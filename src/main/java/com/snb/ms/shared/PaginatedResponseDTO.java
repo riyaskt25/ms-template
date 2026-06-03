@@ -16,14 +16,15 @@ import org.springframework.data.domain.Sort;
 @Schema(description = "Standard paginated response wrapper")
 public class PaginatedResponseDTO<T> {
 
-    @ArraySchema(arraySchema = @Schema(description = "List of items in the current page"))
-    private List<T> data;
+  @ArraySchema(arraySchema = @Schema(description = "List of items in the current page"))
+  private List<T> data;
 
-    @Schema(description = "Pagination metadata")
-    private PaginationMeta pagination;
+  @Schema(description = "Pagination metadata")
+  private PaginationMeta pagination;
 
-    public static <T> PaginatedResponseDTO<T> fromPage(Page<T> page) {
-        PaginationMeta meta = new PaginationMeta(
+  public static <T> PaginatedResponseDTO<T> fromPage(Page<T> page) {
+    PaginationMeta meta =
+        new PaginationMeta(
             page.getNumber(),
             page.getSize(),
             page.getNumberOfElements(),
@@ -34,53 +35,53 @@ public class PaginatedResponseDTO<T> {
             page.hasNext(),
             page.hasPrevious(),
             page.getSort().isSorted(),
-            mapSortFields(page.getSort())
-        );
-        return new PaginatedResponseDTO<>(page.getContent(), meta);
-    }
+            mapSortFields(page.getSort()));
+    return new PaginatedResponseDTO<>(page.getContent(), meta);
+  }
 
-    private static List<String> mapSortFields(Sort sort) {
-        return sort.stream()
-            .map(order -> order.getProperty() + "," + order.getDirection().name())
-            .collect(Collectors.toList());
-    }
+  private static List<String> mapSortFields(Sort sort) {
+    return sort.stream()
+        .map(order -> order.getProperty() + "," + order.getDirection().name())
+        .collect(Collectors.toList());
+  }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Schema(description = "Pagination metadata")
-    public static class PaginationMeta {
-        @Schema(description = "Zero-based page index", example = "0")
-        private int page;
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Schema(description = "Pagination metadata")
+  public static class PaginationMeta {
+    @Schema(description = "Zero-based page index", example = "0")
+    private int page;
 
-        @Schema(description = "Requested page size", example = "10")
-        private int size;
+    @Schema(description = "Requested page size", example = "10")
+    private int size;
 
-        @Schema(description = "Number of elements in current page", example = "7")
-        private int numberOfElements;
+    @Schema(description = "Number of elements in current page", example = "7")
+    private int numberOfElements;
 
-        @Schema(description = "Total number of matching elements", example = "57")
-        private long totalElements;
+    @Schema(description = "Total number of matching elements", example = "57")
+    private long totalElements;
 
-        @Schema(description = "Total number of pages", example = "6")
-        private int totalPages;
+    @Schema(description = "Total number of pages", example = "6")
+    private int totalPages;
 
-        @Schema(description = "Whether this page is the first page", example = "true")
-        private boolean first;
+    @Schema(description = "Whether this page is the first page", example = "true")
+    private boolean first;
 
-        @Schema(description = "Whether this page is the last page", example = "false")
-        private boolean last;
+    @Schema(description = "Whether this page is the last page", example = "false")
+    private boolean last;
 
-        @Schema(description = "Whether there is a next page", example = "true")
-        private boolean hasNext;
+    @Schema(description = "Whether there is a next page", example = "true")
+    private boolean hasNext;
 
-        @Schema(description = "Whether there is a previous page", example = "false")
-        private boolean hasPrevious;
+    @Schema(description = "Whether there is a previous page", example = "false")
+    private boolean hasPrevious;
 
-        @Schema(description = "Whether any sorting is applied", example = "true")
-        private boolean sorted;
+    @Schema(description = "Whether any sorting is applied", example = "true")
+    private boolean sorted;
 
-        @ArraySchema(arraySchema = @Schema(description = "Applied sort fields in property,DIRECTION format"))
-        private List<String> sort;
-    }
+    @ArraySchema(
+        arraySchema = @Schema(description = "Applied sort fields in property,DIRECTION format"))
+    private List<String> sort;
+  }
 }

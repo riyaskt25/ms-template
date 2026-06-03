@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "Base API response wrapper with error details")
 public class BaseResponseDTO {
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @ArraySchema(schema = @Schema(implementation = ErrorInfo.class), arraySchema = @Schema(description = "List of errors returned for failed requests"))
-    private List<ErrorInfo> errors = new ArrayList<>();
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  @ArraySchema(
+      schema = @Schema(implementation = ErrorInfo.class),
+      arraySchema = @Schema(description = "List of errors returned for failed requests"))
+  private List<ErrorInfo> errors = new ArrayList<>();
 }

@@ -9,16 +9,20 @@ import lombok.Setter;
 @Setter
 public class CompanyListQuery extends BaseListQuery {
 
-    private String registrationNumber;
+  private String registrationNumber;
 
-    private String companyStatus;
+  private String companyStatus;
 
-    private String companyType;
+  private String companyType;
 
-    private String emailAddress;
+  private String emailAddress;
 
-    private String mobileNumber;
+  private String mobileNumber;
 
-    @Schema(description = "Set true to include associated salesmen in each company response. Defaults to false.", example = "false", defaultValue = "false")
-    private Boolean includeSalesmen = false;
+  @Schema(
+      description =
+          "Set true to include associated salesmen in each company response. Defaults to false.",
+      example = "false",
+      defaultValue = "false")
+  private Boolean includeSalesmen = false;
 }

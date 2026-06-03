@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {
 
-    @Query("SELECT p FROM Privilege p WHERE p.deletedFlag = 'N'")
-    List<Privilege> findAllActive();
+  @Query("SELECT p FROM Privilege p WHERE p.deletedFlag = 'N'")
+  List<Privilege> findAllActive();
 
-    @Query("SELECT p FROM Privilege p WHERE p.privilegeCode = :privilegeCode AND p.deletedFlag = 'N'")
-    Optional<Privilege> findActiveByPrivilegeCode(@Param("privilegeCode") String privilegeCode);
+  @Query("SELECT p FROM Privilege p WHERE p.privilegeCode = :privilegeCode AND p.deletedFlag = 'N'")
+  Optional<Privilege> findActiveByPrivilegeCode(@Param("privilegeCode") String privilegeCode);
 
-    boolean existsByPrivilegeCodeAndDeletedFlag(String privilegeCode, String deletedFlag);
+  boolean existsByPrivilegeCodeAndDeletedFlag(String privilegeCode, String deletedFlag);
 }

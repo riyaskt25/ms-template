@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Bulk role response payload")
 public class RoleBulkResponse {
 
-    @Schema(description = "Created role records")
-    private List<RoleResponse> roles;
+  @Schema(description = "Created role records")
+  private List<RoleResponse> roles;
 }

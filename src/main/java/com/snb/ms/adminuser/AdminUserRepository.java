@@ -10,19 +10,24 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
 
-    @Query("SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
-    List<AdminUser> findAllWithUser();
+  @Query(
+      "SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
+  List<AdminUser> findAllWithUser();
 
-    @Query("SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.adminUserId = :id AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
-    Optional<AdminUser> findByIdWithUser(@Param("id") Long id);
+  @Query(
+      "SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.adminUserId = :id AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
+  Optional<AdminUser> findByIdWithUser(@Param("id") Long id);
 
-    @Query("SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.user.userId = :userId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
-    Optional<AdminUser> findByUserIdWithUser(@Param("userId") Long userId);
+  @Query(
+      "SELECT a FROM AdminUser a JOIN FETCH a.user WHERE a.user.userId = :userId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
+  Optional<AdminUser> findByUserIdWithUser(@Param("userId") Long userId);
 
-    @Query("SELECT a FROM AdminUser a WHERE a.user.userId = :userId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
-    Optional<AdminUser> findActiveByUserId(@Param("userId") Long userId);
+  @Query(
+      "SELECT a FROM AdminUser a WHERE a.user.userId = :userId AND a.deletedFlag = 'N' AND a.user.deletedFlag = 'N'")
+  Optional<AdminUser> findActiveByUserId(@Param("userId") Long userId);
 
-    boolean existsBySnbIdAndDeletedFlag(String snbId, String deletedFlag);
+  boolean existsBySnbIdAndDeletedFlag(String snbId, String deletedFlag);
 
-    boolean existsBySnbIdAndDeletedFlagAndAdminUserIdNot(String snbId, String deletedFlag, Long adminUserId);
+  boolean existsBySnbIdAndDeletedFlagAndAdminUserIdNot(
+      String snbId, String deletedFlag, Long adminUserId);
 }

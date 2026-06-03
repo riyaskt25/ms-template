@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Role-privilege grant request payload")
 public class RolePrivilegeRequest {
 
-    @NotNull(message = "{validation.rolePrivilege.privilegeCode.required}")
-    @NotBlank(message = "{validation.rolePrivilege.privilegeCode.required}")
-    @Schema(description = "Privilege code to grant", example = "USER_VIEW", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String privilegeCode;
+  @NotNull(message = "{validation.rolePrivilege.privilegeCode.required}") @NotBlank(message = "{validation.rolePrivilege.privilegeCode.required}")
+  @Schema(
+      description = "Privilege code to grant",
+      example = "USER_VIEW",
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String privilegeCode;
 }

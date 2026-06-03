@@ -10,16 +10,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    @Query("SELECT r FROM Role r WHERE r.deletedFlag = 'N'")
-    List<Role> findAllActive();
+  @Query("SELECT r FROM Role r WHERE r.deletedFlag = 'N'")
+  List<Role> findAllActive();
 
-    @Query("SELECT r FROM Role r WHERE r.roleId = :id AND r.deletedFlag = 'N'")
-    Optional<Role> findActiveById(@Param("id") Long id);
+  @Query("SELECT r FROM Role r WHERE r.roleId = :id AND r.deletedFlag = 'N'")
+  Optional<Role> findActiveById(@Param("id") Long id);
 
-    @Query("SELECT r FROM Role r WHERE r.roleCode = :roleCode AND r.deletedFlag = 'N'")
-    Optional<Role> findActiveByRoleCode(@Param("roleCode") String roleCode);
+  @Query("SELECT r FROM Role r WHERE r.roleCode = :roleCode AND r.deletedFlag = 'N'")
+  Optional<Role> findActiveByRoleCode(@Param("roleCode") String roleCode);
 
-    boolean existsByRoleCodeAndDeletedFlag(String roleCode, String deletedFlag);
+  boolean existsByRoleCodeAndDeletedFlag(String roleCode, String deletedFlag);
 
-    boolean existsByRoleNameAndDeletedFlag(String roleName, String deletedFlag);
+  boolean existsByRoleNameAndDeletedFlag(String roleName, String deletedFlag);
 }

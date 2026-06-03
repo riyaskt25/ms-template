@@ -10,19 +10,19 @@ import lombok.*;
 @AllArgsConstructor
 public class CompanyRequest {
 
-    @NotBlank(message = "registrationNumber is required")
-    @Size(max = 100, message = "registrationNumber must not exceed 100 characters")
-    private String registrationNumber;
+  @NotBlank(message = "registrationNumber is required")
+  @Size(max = 100, message = "registrationNumber must not exceed 100 characters")
+  private String registrationNumber;
 
-    @Size(max = 20, message = "companyStatus must not exceed 20 characters")
-    private String companyStatus;
+  @Size(max = 20, message = "companyStatus must not exceed 20 characters")
+  private String companyStatus;
 
-    @Size(max = 50, message = "companyType must not exceed 50 characters")
-    private String companyType;
+  @Size(max = 50, message = "companyType must not exceed 50 characters")
+  private String companyType;
 
-    @PositiveOrZero(message = "createdBy must be zero or positive")
-    private Long createdBy;
+  @PositiveOrZero(message = "createdBy must be zero or positive")
+  private Long createdBy;
 
-    @PositiveOrZero(message = "updatedBy must be zero or positive")
-    private Long updatedBy;
+  @PositiveOrZero(message = "updatedBy must be zero or positive")
+  private Long updatedBy;
 }

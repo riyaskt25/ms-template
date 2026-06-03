@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Company status decision request payload")
 public class CompanyStatusDecisionRequest {
 
-    @NotBlank(message = "{validation.company.status.required}")
-    @Schema(description = "Target company status decided by administrator", example = "ACTIVE", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String status;
+  @NotBlank(message = "{validation.company.status.required}")
+  @Schema(
+      description = "Target company status decided by administrator",
+      example = "ACTIVE",
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String status;
 }

@@ -14,18 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-public class CompanySalesmanInvitationLookupController implements CompanySalesmanInvitationLookupApi {
+public class CompanySalesmanInvitationLookupController
+    implements CompanySalesmanInvitationLookupApi {
 
-    private final CompanySalesmanInvitationService companySalesmanInvitationService;
+  private final CompanySalesmanInvitationService companySalesmanInvitationService;
 
-    @Override
-    @GetMapping("/api/company-salesman-invitations")
-    public List<CompanySalesmanInvitationListResponse> listByEmail(
-        @NotBlank(message = "{validation.companySalesmanInvitation.lookupEmail.required}")
-        @Email(message = "{validation.companySalesmanInvitation.lookupEmail.email}")
-        @RequestParam(name = "email") String email
-    ) {
-        log.debug("Received request to list salesman invitations emailAddress={}", email);
-        return companySalesmanInvitationService.listByEmail(email);
-    }
+  @Override
+  @GetMapping("/api/company-salesman-invitations")
+  public List<CompanySalesmanInvitationListResponse> listByEmail(
+      @NotBlank(message = "{validation.companySalesmanInvitation.lookupEmail.required}")
+          @Email(message = "{validation.companySalesmanInvitation.lookupEmail.email}")
+          @RequestParam(name = "email")
+          String email) {
+    log.debug("Received request to list salesman invitations emailAddress={}", email);
+    return companySalesmanInvitationService.listByEmail(email);
+  }
 }

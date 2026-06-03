@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Privilege details associated with a role")
 public class RoleAssociatedPrivilegeResponse {
 
-    @Schema(description = "Privilege identifier", example = "1001")
-    private Long privilegeId;
+  @Schema(description = "Privilege identifier", example = "1001")
+  private Long privilegeId;
 
-    @Schema(description = "Privilege code", example = "USER_VIEW")
-    private String privilegeCode;
+  @Schema(description = "Privilege code", example = "USER_VIEW")
+  private String privilegeCode;
 
-    @Schema(description = "Privilege name", example = "View Users")
-    private String privilegeName;
+  @Schema(description = "Privilege name", example = "View Users")
+  private String privilegeName;
 
-    @Schema(description = "Privilege description", example = "Can view user profiles")
-    private String privilegeDescription;
+  @Schema(description = "Privilege description", example = "Can view user profiles")
+  private String privilegeDescription;
 }

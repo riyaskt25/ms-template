@@ -7,13 +7,13 @@ import lombok.*;
 @AllArgsConstructor
 public class UsersRequest {
 
-    private String emailAddress;
+  private String emailAddress;
 
-    private String mobileNumber;
+  private String mobileNumber;
 
-    private String userType;
+  private String userType;
 
-    private String accountStatus;
+  private String accountStatus;
 
-    private String accountLockedFlag;
+  private String accountLockedFlag;
 }

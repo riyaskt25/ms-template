@@ -13,12 +13,19 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Privilege update request payload")
 public class PrivilegeUpdateRequest {
 
-    @NotBlank(message = "{validation.privilege.privilegeName.required}")
-    @Size(max = 150, message = "{validation.privilege.privilegeName.size}")
-    @Schema(description = "Human-readable privilege name", example = "View Users", maxLength = 150, requiredMode = Schema.RequiredMode.REQUIRED)
-    private String privilegeName;
+  @NotBlank(message = "{validation.privilege.privilegeName.required}")
+  @Size(max = 150, message = "{validation.privilege.privilegeName.size}")
+  @Schema(
+      description = "Human-readable privilege name",
+      example = "View Users",
+      maxLength = 150,
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  private String privilegeName;
 
-    @Size(max = 255, message = "{validation.privilege.description.size}")
-    @Schema(description = "Privilege description", example = "Can view user profiles", maxLength = 255)
-    private String description;
+  @Size(max = 255, message = "{validation.privilege.description.size}")
+  @Schema(
+      description = "Privilege description",
+      example = "Can view user profiles",
+      maxLength = 255)
+  private String description;
 }
