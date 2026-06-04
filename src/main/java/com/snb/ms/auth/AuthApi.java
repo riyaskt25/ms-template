@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public interface AuthApi {
       summary = "Authenticate user",
       description =
           "Authenticates a user with identifier and password and returns a JWT access token.")
+  @SecurityRequirements
   @CommonApiParameters
   @ApiResponses({
     @ApiResponse(
