@@ -41,10 +41,8 @@ dependencies {
 
 spotless {
     java {
-        target 'src/**/*.java',
-               'build/generated/sources/**/*.java',
-               'bin/generated-sources/**/*.java'
-
+        target 'src/**/*.java'
+        
         googleJavaFormat('1.24.0')
         removeUnusedImports()
         trimTrailingWhitespace()
