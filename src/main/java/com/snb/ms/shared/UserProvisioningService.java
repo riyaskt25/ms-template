@@ -4,6 +4,8 @@ import com.snb.ms.shared.request.RequestContextAccessor;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,10 @@ public class UserProvisioningService {
   private final UsersRepository usersRepository;
   private final UsersMapper usersMapper;
   private final RequestContextAccessor contextAccessor;
+  private final PasswordEncoder passwordEncoder;
+
+  @Value("${app.security.default-password:Ksa@123}")
+  private String defaultPassword;
 
   @Transactional
   public Users createUser(UsersRequest request) {
@@ -23,6 +29,7 @@ public class UserProvisioningService {
     Users user = usersMapper.toEntity(request);
     user.setCreatedAt(LocalDateTime.now());
     user.setCreatedBy(callerId);
+    user.setPasswordHash(passwordEncoder.encode(defaultPassword));
     user.setDeletedFlag("N");
     user.setAccountLockedFlag("N");
     user.setFailedAttempts(0);

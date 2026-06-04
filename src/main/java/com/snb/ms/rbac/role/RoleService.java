@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class RoleService {
   private final RequestContextAccessor contextAccessor;
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public List<RoleResponse> findAll() {
     log.debug("Fetching all active roles");
     List<RoleResponse> roles = roleMapper.toDtoList(roleRepository.findAllActive());
@@ -28,6 +30,7 @@ public class RoleService {
   }
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<RoleResponse> findByCode(String roleCode) {
     log.debug("Fetching role by code={}", roleCode);
     Optional<RoleResponse> result =
@@ -37,6 +40,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public RoleResponse create(RoleCreateRequest request) {
     log.debug("Creating role roleCode={}", request.getRoleCode());
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -52,6 +56,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public List<RoleResponse> createBulk(RoleBulkCreateRequest request) {
     log.debug("Creating roles in bulk count={}", request.getRoles().size());
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -76,6 +81,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<RoleResponse> update(String roleCode, RoleUpdateRequest request) {
     log.debug("Updating role code={}", roleCode);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -96,6 +102,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<RoleResponse> softDelete(String roleCode) {
     log.debug("Soft-deleting role code={}", roleCode);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);

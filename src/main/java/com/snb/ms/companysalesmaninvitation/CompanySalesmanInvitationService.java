@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class CompanySalesmanInvitationService {
   private final CompanySalesmanInvitationRepository companySalesmanInvitationRepository;
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_VIEW)")
   public List<CompanySalesmanInvitationResponse> create(CompanySalesmanInvitationRequest request) {
     log.debug(
         "Creating salesman invitations for companyIds={} emailAddress={}",
@@ -70,6 +72,7 @@ public class CompanySalesmanInvitationService {
   }
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_VIEW)")
   public List<CompanySalesmanInvitationListResponse> listByEmail(String emailAddress) {
     log.debug("Listing invitations for emailAddress={}", emailAddress);
     List<CompanySalesmanInvitation> invitations =

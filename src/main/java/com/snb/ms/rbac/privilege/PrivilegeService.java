@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class PrivilegeService {
   private final RequestContextAccessor contextAccessor;
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public List<PrivilegeResponse> findAll() {
     log.debug("Fetching all active privileges");
     List<PrivilegeResponse> privileges =
@@ -28,6 +30,7 @@ public class PrivilegeService {
   }
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<PrivilegeResponse> findByCode(String privilegeCode) {
     log.debug("Fetching privilege by code={}", privilegeCode);
     Optional<PrivilegeResponse> result =
@@ -37,6 +40,7 @@ public class PrivilegeService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public PrivilegeResponse create(PrivilegeCreateRequest request) {
     log.debug("Creating privilege privilegeCode={}", request.getPrivilegeCode());
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -54,6 +58,7 @@ public class PrivilegeService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<PrivilegeResponse> update(String privilegeCode, PrivilegeUpdateRequest request) {
     log.debug("Updating privilege code={}", privilegeCode);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -74,6 +79,7 @@ public class PrivilegeService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
   public Optional<PrivilegeResponse> softDelete(String privilegeCode) {
     log.debug("Soft-deleting privilege code={}", privilegeCode);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -73,7 +75,15 @@ public class OpenApiConfig {
                         .description(
                             "Preferred locale for localized validation and error messages.")
                         .required(false)
-                        .schema(new StringSchema().example("en"))))
+                        .schema(new StringSchema().example("en")))
+                .addSecuritySchemes(
+                    "bearerAuth",
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("JWT Bearer authentication")))
+        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
         .externalDocs(
             new io.swagger.v3.oas.models.ExternalDocumentation()
                 .description("MS Template reference documentation")

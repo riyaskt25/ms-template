@@ -50,3 +50,9 @@ logging:
 app:
   logging:
     request-boundary-enabled: true
+  security:
+    default-password: Ksa@123
+    jwt:
+      issuer: ms-template
+      secret: c25iLW1zLXRlbXBsYXRlLWp1dC1zZWNyZXQtMzItYnl0ZXM=
+      expiration-minutes: 480

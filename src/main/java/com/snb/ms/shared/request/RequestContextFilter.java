@@ -13,6 +13,8 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -40,10 +42,10 @@ public class RequestContextFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     long startedAt = System.currentTimeMillis();
     String requestId = resolveRequestId(request);
-    String userId = resolveUserId(request.getUserPrincipal());
+    String userId = resolveUserId(request);
     String language = resolveLanguage(request.getLocale());
     String tenantId = resolveHeader(request, TENANT_ID_HEADER);
-    String headerUserId = resolveHeader(request, USER_ID_HEADER);
+    String headerUserId = resolveHeaderUserId(request);
 
     RequestContext context =
         RequestContext.builder()
@@ -95,11 +97,52 @@ public class RequestContextFilter extends OncePerRequestFilter {
     return StringUtils.hasText(requestId) ? requestId : UUID.randomUUID().toString();
   }
 
-  private String resolveUserId(Principal principal) {
-    if (principal == null || !StringUtils.hasText(principal.getName())) {
+  private String resolveUserId(HttpServletRequest request) {
+    String resolved = resolvePrincipalName(request.getUserPrincipal());
+    if (StringUtils.hasText(resolved)) {
+      return resolved;
+    }
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
       return "anonymous";
     }
-    return principal.getName();
+
+    resolved = resolvePrincipalName(authentication);
+    return StringUtils.hasText(resolved) ? resolved : "anonymous";
+  }
+
+  private String resolvePrincipalName(Object principal) {
+    if (principal == null) {
+      return null;
+    }
+    if (principal instanceof Principal securityPrincipal) {
+      return StringUtils.hasText(securityPrincipal.getName()) ? securityPrincipal.getName() : null;
+    }
+    if (principal instanceof Authentication authentication) {
+      return StringUtils.hasText(authentication.getName()) ? authentication.getName() : null;
+    }
+    return null;
+  }
+
+  private String resolveHeaderUserId(HttpServletRequest request) {
+    String headerUserId = resolveHeader(request, USER_ID_HEADER);
+    if (StringUtils.hasText(headerUserId)) {
+      return headerUserId;
+    }
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return null;
+    }
+
+    Object principal = authentication.getPrincipal();
+    if (principal instanceof com.snb.ms.auth.AuthenticatedUserPrincipal authenticatedUser
+        && authenticatedUser.getUserId() != null) {
+      return String.valueOf(authenticatedUser.getUserId());
+    }
+
+    return StringUtils.hasText(authentication.getName()) ? authentication.getName() : null;
   }
 
   private String resolveLanguage(Locale locale) {

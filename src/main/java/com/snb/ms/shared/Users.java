@@ -27,6 +27,9 @@ public class Users extends BaseEntity {
   @Column(name = "MOBILE_NUMBER", nullable = false, unique = true, length = 20)
   private String mobileNumber;
 
+  @Column(name = "PASSWORD_HASH", length = 255)
+  private String passwordHash;
+
   @Column(name = "USER_TYPE", length = 20)
   private String userType;
 

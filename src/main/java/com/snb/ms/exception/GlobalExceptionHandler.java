@@ -13,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -79,6 +81,18 @@ public class GlobalExceptionHandler {
   public ResponseEntity<BaseResponseDTO> handleInvalidJson(HttpMessageNotReadableException ex) {
     log.error("Malformed JSON request", ex);
     return buildResponse(ErrorCodeEnum.MALFORMED_JSON, null);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  public ResponseEntity<BaseResponseDTO> handleAuthentication(AuthenticationException ex) {
+    log.warn("Authentication failed: {}", ex.getMessage());
+    return buildResponse(ErrorCodeEnum.AUTHENTICATION_FAILED, ex.getMessage());
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<BaseResponseDTO> handleAccessDenied(AccessDeniedException ex) {
+    log.warn("Access denied: {}", ex.getMessage());
+    return buildResponse(ErrorCodeEnum.ACCESS_DENIED, ex.getMessage());
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
