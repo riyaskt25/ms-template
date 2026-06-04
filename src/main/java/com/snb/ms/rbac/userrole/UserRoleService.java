@@ -1,5 +1,7 @@
 package com.snb.ms.rbac.userrole;
 
+import com.snb.ms.auth.authorization.Privileges;
+import com.snb.ms.auth.authorization.RequirePrivilege;
 import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.exception.ErrorCodeEnum;
 import com.snb.ms.exception.ResourceNotFoundException;
@@ -19,7 +21,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class UserRoleService {
   private final RequestContextAccessor contextAccessor;
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
+  @RequirePrivilege(Privileges.ROLE_MANAGE)
   public UserRolesAggregateResponse findByUserId(Long userId) {
     log.debug("Fetching roles for userId={}", userId);
     Users user =
@@ -49,7 +50,7 @@ public class UserRoleService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
+  @RequirePrivilege(Privileges.ROLE_MANAGE)
   public UserRolesAggregateResponse assign(Long userId, UserRoleRequest request) {
     Set<String> requestedRoleCodes = normalizeRoleCodes(request.getRoleCodes());
     log.debug("Assigning roleCodes={} to userId={}", requestedRoleCodes, userId);
@@ -94,7 +95,7 @@ public class UserRoleService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
+  @RequirePrivilege(Privileges.ROLE_MANAGE)
   public UserRolesAggregateResponse replace(Long userId, UserRoleRequest request) {
     Set<String> requestedRoleCodes = normalizeRoleCodes(request.getRoleCodes());
     log.debug("Replacing roles for userId={} with roleCodes={}", userId, requestedRoleCodes);
@@ -142,7 +143,7 @@ public class UserRoleService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).ROLE_MANAGE)")
+  @RequirePrivilege(Privileges.ROLE_MANAGE)
   public Optional<UserRoleResponse> revoke(Long userId, String roleCode) {
     log.debug("Revoking roleCode={} for userId={}", roleCode, userId);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);

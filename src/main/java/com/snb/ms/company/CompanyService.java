@@ -1,5 +1,7 @@
 package com.snb.ms.company;
 
+import com.snb.ms.auth.authorization.Privileges;
+import com.snb.ms.auth.authorization.RequirePrivilege;
 import com.snb.ms.companysalesman.CompanySalesman;
 import com.snb.ms.companysalesman.CompanySalesmanRepository;
 import com.snb.ms.exception.BusinessValidationException;
@@ -18,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class CompanyService {
   private final CompanySalesmanRepository companySalesmanRepository;
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_VIEW)")
+  @RequirePrivilege(Privileges.COMPANY_VIEW)
   public Page<CompanyResponse> findAll(CompanyOffsetListQuery query) {
     Page<Company> companiesPage =
         companyRepository.findAll(
@@ -65,7 +66,7 @@ public class CompanyService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_VIEW)")
+  @RequirePrivilege(Privileges.COMPANY_VIEW)
   public CompanyCursorSlice findAllLazy(CompanyListQuery query) {
     Specification<Company> spec =
         CompanyQueryBuilder.withCursor(
@@ -169,7 +170,7 @@ public class CompanyService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_VIEW)")
+  @RequirePrivilege(Privileges.COMPANY_VIEW)
   public Optional<CompanyResponse> findById(Long id, Boolean includeSalesmen) {
     log.debug("Fetching company by id={}", id);
     Optional<CompanyResponse> result =
@@ -182,7 +183,7 @@ public class CompanyService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_MANAGE)")
+  @RequirePrivilege(Privileges.COMPANY_MANAGE)
   public CompanyWriteResponse create(CompanyCreateRequest request) {
     log.debug("Creating company for registrationNumber={}", request.getRegistrationNumber());
     UsersRequest userRequest = new UsersRequest();
@@ -211,7 +212,7 @@ public class CompanyService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_MANAGE)")
+  @RequirePrivilege(Privileges.COMPANY_MANAGE)
   public Optional<CompanyWriteResponse> update(Long id, CompanyUpdateRequest request) {
     log.debug("Updating company id={}", id);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -241,7 +242,7 @@ public class CompanyService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_MANAGE)")
+  @RequirePrivilege(Privileges.COMPANY_MANAGE)
   public Optional<CompanyWriteResponse> softDelete(Long id) {
     log.debug("Soft-deleting company id={}", id);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -263,7 +264,7 @@ public class CompanyService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).COMPANY_MANAGE)")
+  @RequirePrivilege(Privileges.COMPANY_MANAGE)
   public Optional<CompanyWriteResponse> decideStatus(
       Long id, CompanyStatusDecisionRequest request) {
     log.debug(

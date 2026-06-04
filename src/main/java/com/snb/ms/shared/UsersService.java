@@ -1,5 +1,7 @@
 package com.snb.ms.shared;
 
+import com.snb.ms.auth.authorization.Privileges;
+import com.snb.ms.auth.authorization.RequirePrivilege;
 import com.snb.ms.shared.request.RequestContextAccessor;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,7 +9,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class UsersService {
   private String defaultPassword;
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_VIEW)")
+  @RequirePrivilege(Privileges.USER_VIEW)
   public List<UsersDto> findAll() {
     log.debug("Fetching all users");
     List<UsersDto> users = usersMapper.toDtoList(usersRepository.findAllActive());
@@ -35,7 +36,7 @@ public class UsersService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_VIEW)")
+  @RequirePrivilege(Privileges.USER_VIEW)
   public Optional<UsersDto> findById(Long id) {
     log.debug("Fetching user by id={}", id);
     Optional<UsersDto> result = usersRepository.findActiveById(id).map(usersMapper::toDto);
@@ -44,7 +45,7 @@ public class UsersService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_VIEW)")
+  @RequirePrivilege(Privileges.USER_VIEW)
   public Optional<UsersDto> findByEmail(String email) {
     log.debug("Fetching user by email={}", email);
     Optional<UsersDto> result =
@@ -54,7 +55,7 @@ public class UsersService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public UsersDto create(UsersRequest request) {
     log.debug("Creating user email={}", request.getEmailAddress());
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -72,7 +73,7 @@ public class UsersService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public Optional<UsersDto> update(Long id, UsersRequest request) {
     log.debug("Updating user id={}", id);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -96,7 +97,7 @@ public class UsersService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public Optional<UsersDto> softDelete(Long id, Long deletedBy) {
     log.debug("Soft-deleting user id={} deletedBy={}", id, deletedBy);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(deletedBy);

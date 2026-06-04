@@ -1,5 +1,7 @@
 package com.snb.ms.adminuser;
 
+import com.snb.ms.auth.authorization.Privileges;
+import com.snb.ms.auth.authorization.RequirePrivilege;
 import com.snb.ms.exception.BusinessValidationException;
 import com.snb.ms.shared.UserProvisioningService;
 import com.snb.ms.shared.Users;
@@ -10,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class AdminUserService {
   private final RequestContextAccessor contextAccessor;
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_VIEW)")
+  @RequirePrivilege(Privileges.USER_VIEW)
   public List<AdminUserResponse> findAll() {
     log.debug("Fetching all admin users");
     List<AdminUserResponse> adminUsers =
@@ -35,7 +36,7 @@ public class AdminUserService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_VIEW)")
+  @RequirePrivilege(Privileges.USER_VIEW)
   public Optional<AdminUserResponse> findByUserId(Long userId) {
     log.debug("Fetching admin user by userId={}", userId);
     Optional<AdminUserResponse> result =
@@ -45,7 +46,7 @@ public class AdminUserService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public AdminUserResponse create(AdminUserCreateRequest request) {
     log.debug(
         "Creating admin user with snbId={} extensionNumber={}",
@@ -81,7 +82,7 @@ public class AdminUserService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public Optional<AdminUserResponse> updateByUserId(Long userId, AdminUserUpdateRequest request) {
     log.debug("Updating admin user userId={}", userId);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -118,7 +119,7 @@ public class AdminUserService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).USER_MANAGE)")
+  @RequirePrivilege(Privileges.USER_MANAGE)
   public Optional<AdminUserResponse> softDeleteByUserId(Long userId) {
     log.debug("Soft-deleting admin user userId={}", userId);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);

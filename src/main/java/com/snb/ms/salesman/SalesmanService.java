@@ -1,6 +1,8 @@
 // File: src/main/java/com/snb/ms/salesman/SalesmanService.java
 package com.snb.ms.salesman;
 
+import com.snb.ms.auth.authorization.Privileges;
+import com.snb.ms.auth.authorization.RequirePrivilege;
 import com.snb.ms.company.Company;
 import com.snb.ms.company.CompanyRepository;
 import com.snb.ms.companysalesman.CompanySalesmanService;
@@ -16,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class SalesmanService {
   private final RequestContextAccessor contextAccessor;
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_VIEW)")
+  @RequirePrivilege(Privileges.SALESMAN_VIEW)
   public List<SalesmanResponse> findAll() {
     log.debug("Fetching all salesmen");
     List<SalesmanResponse> salesmen =
@@ -43,7 +44,7 @@ public class SalesmanService {
   }
 
   @Transactional(readOnly = true)
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_VIEW)")
+  @RequirePrivilege(Privileges.SALESMAN_VIEW)
   public Optional<SalesmanResponse> findById(Long id) {
     log.debug("Fetching salesman by id={}", id);
     Optional<SalesmanResponse> result =
@@ -53,7 +54,7 @@ public class SalesmanService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_MANAGE)")
+  @RequirePrivilege(Privileges.SALESMAN_MANAGE)
   public SalesmanResponse create(SalesmanCreateRequest request) {
     log.debug("Creating salesman for companyIds={}", request.getCompanyIds());
 
@@ -89,7 +90,7 @@ public class SalesmanService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_MANAGE)")
+  @RequirePrivilege(Privileges.SALESMAN_MANAGE)
   public Optional<SalesmanResponse> update(Long id, SalesmanUpdateRequest request) {
     log.debug("Updating salesman id={}", id);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
@@ -109,7 +110,7 @@ public class SalesmanService {
   }
 
   @Transactional
-  @PreAuthorize("hasAuthority(T(com.snb.ms.auth.authorization.Privileges).SALESMAN_MANAGE)")
+  @RequirePrivilege(Privileges.SALESMAN_MANAGE)
   public Optional<SalesmanResponse> softDelete(Long id) {
     log.debug("Soft-deleting salesman id={}", id);
     Long callerId = contextAccessor.headerUserIdAsLong().orElse(null);
