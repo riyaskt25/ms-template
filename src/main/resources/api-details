@@ -1,0 +1,50 @@
+Companies
+List companies (offset pagination), GET, /api/companies=COMPANY_VIEW
+List companies (lazy loading with cursor), GET, /api/companies/lazy=COMPANY_VIEW
+Get company by id, GET, /api/companies/{id}=COMPANY_VIEW
+Create company, POST, /api/companies=COMPANY_MANAGE
+Update company, PUT, /api/companies/{id}=COMPANY_MANAGE
+Soft delete company, DELETE, /api/companies/{id}=COMPANY_MANAGE
+Decide company status, PATCH, /api/companies/{id}/status=COMPANY_MANAGE
+
+Salesmen
+List salesmen, GET, /api/salesmen=SALESMAN_VIEW
+Get salesman by id, GET, /api/salesmen/{id}=SALESMAN_VIEW
+Create salesman, POST, /api/salesmen=SALESMAN_MANAGE
+Update salesman, PUT, /api/salesmen/{id}=SALESMAN_MANAGE
+Soft delete salesman, DELETE, /api/salesmen/{id}=SALESMAN_MANAGE
+
+Admin Users
+List admin users, GET, /api/users=USER_VIEW
+Get admin user by userId, GET, /api/users/{userId}=USER_VIEW
+Create admin user, POST, /api/users=USER_MANAGE
+Update admin user, PUT, /api/users/{userId}=USER_MANAGE
+Soft delete admin user, DELETE, /api/users/{userId}=USER_MANAGE
+
+Company Salesman Invitations
+Create salesman invitation, POST, /api/company-salesman-invitations=SALESMAN_VIEW
+List invitations by email, GET, /api/company-salesman-invitations?email={email}=SALESMAN_VIEW
+
+Roles
+List roles, GET, /api/rbac/roles=ROLE_MANAGE
+Get role by code, GET, /api/rbac/roles/{roleCode}=ROLE_MANAGE
+Create role, POST, /api/rbac/roles=ROLE_MANAGE
+Create roles in bulk, POST, /api/rbac/roles/bulk=ROLE_MANAGE
+Update role, PUT, /api/rbac/roles/{roleCode}=ROLE_MANAGE
+Delete role, DELETE, /api/rbac/roles/{roleCode}=ROLE_MANAGE
+
+Privileges
+List privileges, GET, /api/rbac/privileges=ROLE_MANAGE
+Get privilege by code, GET, /api/rbac/privileges/{privilegeCode}=ROLE_MANAGE
+
+User Roles
+Get roles by user id, GET, /api/users/{userId}/roles=ROLE_MANAGE
+Replace user roles, PUT, /api/users/{userId}/roles=ROLE_MANAGE
+Assign roles to user, POST, /api/users/{userId}/roles=ROLE_MANAGE
+Revoke user-role assignment, GET, /api/users/{userId}/roles/{roleCode}=ROLE_MANAGE
+
+Role Privileges
+Get privileges by role code, GET, /api/roles/{roleCode}/privileges=ROLE_MANAGE
+Grant privilege to role, POST, /api/roles/{roleCode}/privileges=ROLE_MANAGE
+Grant privilege to role in bulk, POST, /api/roles/{roleCode}/privileges/bulk=ROLE_MANAGE
+Revoke role-privilege grant, DELETE, /api/roles/{roleCode}/privileges/{privilegeCode}=ROLE_MANAGE
