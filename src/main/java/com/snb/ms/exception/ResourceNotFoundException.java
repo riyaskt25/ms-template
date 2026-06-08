@@ -34,6 +34,32 @@ public class ResourceNotFoundException extends RuntimeException {
         "Company not found for id=" + id);
   }
 
+  public static ResourceNotFoundException announcementById(Object id) {
+    return new ResourceNotFoundException(
+        "error.resource.announcement.not.found.by.id",
+        new Object[] {id},
+        "Announcement not found for id=" + id);
+  }
+
+  public static ResourceNotFoundException quotationById(Object id) {
+    return new ResourceNotFoundException(
+        "error.resource.quotation.not.found.by.id",
+        new Object[] {id},
+        "Quotation not found for id=" + id);
+  }
+
+  public static ResourceNotFoundException userDeviceById(Object id) {
+    return new ResourceNotFoundException(
+        "error.resource.userDevice.not.found.by.id",
+        new Object[] {id},
+        "User device not found for id=" + id);
+  }
+
+  public static ResourceNotFoundException tierById(Object id) {
+    return new ResourceNotFoundException(
+        "error.resource.tier.not.found.by.id", new Object[] {id}, "Tier not found for id=" + id);
+  }
+
   public static ResourceNotFoundException salesmanById(Object id) {
     return new ResourceNotFoundException(
         "error.resource.salesman.not.found.by.id",

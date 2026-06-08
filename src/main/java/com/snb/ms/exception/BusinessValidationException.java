@@ -76,4 +76,25 @@ public class BusinessValidationException extends RuntimeException {
             + companyId
             + " with the provided email, mobile number, or ID number.");
   }
+
+  public static BusinessValidationException quotationNoAlreadyExists(Object quotationNo) {
+    return new BusinessValidationException(
+        "error.quotation.quotationNo.alreadyExists",
+        new Object[] {quotationNo},
+        "Quotation with quotationNo already exists (" + quotationNo + ").");
+  }
+
+  public static BusinessValidationException tierCodeAlreadyExists(Object tierCode) {
+    return new BusinessValidationException(
+        "error.tier.tierCode.alreadyExists",
+        new Object[] {tierCode},
+        "Tier with tierCode already exists (" + tierCode + ").");
+  }
+
+  public static BusinessValidationException userDeviceIdAlreadyExists(Object deviceId) {
+    return new BusinessValidationException(
+        "error.userDevice.deviceId.alreadyExists",
+        new Object[] {deviceId},
+        "User device with deviceId already exists (" + deviceId + ").");
+  }
 }
